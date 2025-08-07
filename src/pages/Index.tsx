@@ -8,6 +8,8 @@ import { PremiumModal } from "@/components/Premium/PremiumModal";
 import { CoinPurchaseModal } from "@/components/Coins/CoinPurchaseModal";
 import { BottomNav } from "@/components/Layout/BottomNav";
 import { useToast } from "@/hooks/use-toast";
+import { Video, Gem } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-bg.jpg";
 
 interface UserProfile {
@@ -132,40 +134,55 @@ const Index = () => {
         )}
         
         {activeTab === "match" && (
-          <div className="pb-20 px-4 pt-6 text-center">
-            <h2 className="text-2xl font-bold mb-4">Find Your Match</h2>
-            <p className="text-muted-foreground mb-6">Set your preferences and start matching</p>
-            <div className="space-y-4">
-              <button 
-                onClick={handleStartMatch}
-                className="w-full p-4 bg-gradient-primary text-white rounded-lg font-semibold"
-              >
-                Start Random Chat
-              </button>
+          <div className="min-h-screen bg-background pb-24 px-4 pt-12">
+            <div className="max-w-lg mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-4 font-poppins text-foreground">Find Your Match</h2>
+                <p className="text-muted-foreground mb-6 font-poppins">Set your preferences and start matching</p>
+              </div>
+              <div className="space-y-4">
+                <Button 
+                  onClick={handleStartMatch}
+                  className="w-full h-14 font-poppins font-semibold text-lg"
+                  variant="gradient"
+                >
+                  <Video className="w-6 h-6 mr-3" />
+                  Start Random Chat
+                </Button>
+              </div>
             </div>
           </div>
         )}
         
         {activeTab === "coins" && (
-          <div className="pb-20 px-4 pt-6">
-            <h2 className="text-2xl font-bold mb-4 text-center">Your Coins</h2>
-            <div className="text-center mb-6">
-              <p className="text-4xl font-bold text-coin">100</p>
-              <p className="text-muted-foreground">Available Coins</p>
+          <div className="min-h-screen bg-background pb-24 px-4 pt-12">
+            <div className="max-w-lg mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-4 font-dancing text-foreground">Your Treasure</h2>
+                <div className="bg-gradient-secondary p-6 rounded-2xl text-center mb-6">
+                  <Gem className="w-12 h-12 text-white mx-auto mb-4" />
+                  <p className="text-4xl font-bold text-white font-poppins">100</p>
+                  <p className="text-white/80 font-poppins">Available Coins</p>
+                </div>
+              </div>
+              <Button 
+                onClick={handleBuyCoins}
+                className="w-full h-14 font-poppins font-semibold text-lg"
+                variant="gradient"
+              >
+                <Gem className="w-6 h-6 mr-3" />
+                Buy More Coins
+              </Button>
             </div>
-            <button 
-              onClick={handleBuyCoins}
-              className="w-full p-4 bg-gradient-secondary text-white rounded-lg font-semibold"
-            >
-              Buy More Coins
-            </button>
           </div>
         )}
         
         {activeTab === "chat" && (
-          <div className="pb-20 px-4 pt-6 text-center">
-            <h2 className="text-2xl font-bold mb-4">Chat History</h2>
-            <p className="text-muted-foreground">Your recent conversations will appear here</p>
+          <div className="min-h-screen bg-background pb-24 px-4 pt-12">
+            <div className="max-w-lg mx-auto text-center">
+              <h2 className="text-3xl font-bold mb-4 font-poppins text-foreground">Chat History</h2>
+              <p className="text-muted-foreground font-poppins">Your recent conversations will appear here</p>
+            </div>
           </div>
         )}
         
