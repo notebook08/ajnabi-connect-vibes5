@@ -1,12 +1,172 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { LoginScreen } from "@/components/Auth/LoginScreen";
+import { HomeScreen } from "@/components/Home/HomeScreen";
+import { VideoCallScreen } from "@/components/VideoChat/VideoCallScreen";
+import { PremiumModal } from "@/components/Premium/PremiumModal";
+import { CoinPurchaseModal } from "@/components/Coins/CoinPurchaseModal";
+import { BottomNav } from "@/components/Layout/BottomNav";
+import { useToast } from "@/hooks/use-toast";
+import heroBackground from "@/assets/hero-bg.jpg";
 
 const Index = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentScreen, setCurrentScreen] = useState<"home" | "call">("home");
+  const [activeTab, setActiveTab] = useState("home");
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [showCoinModal, setShowCoinModal] = useState(false);
+  const { toast } = useToast();
+
+  if (!isLoggedIn) {
+    return <LoginScreen onLogin={() => setIsLoggedIn(true)} />;
+  }
+
+  if (currentScreen === "call") {
+    return (
+      <VideoCallScreen
+        onEndCall={() => {
+          setCurrentScreen("home");
+          toast({
+            title: "Call ended",
+            description: "Thanks for chatting! Rate your experience.",
+          });
+        }}
+        onReconnect={() => {
+          toast({
+            title: "Reconnecting...",
+            description: "Looking for your previous chat partner.",
+          });
+        }}
+        onReport={() => {
+          toast({
+            title: "Report submitted",
+            description: "Thank you for keeping our community safe.",
+          });
+        }}
+        onBlock={() => {
+          toast({
+            title: "User blocked",
+            description: "You won't be matched with this user again.",
+          });
+        }}
+      />
+    );
+  }
+
+  const handleStartMatch = () => {
+    setCurrentScreen("call");
+    toast({
+      title: "Finding someone for you...",
+      description: "This may take a few seconds.",
+    });
+  };
+
+  const handleBuyCoins = () => {
+    setShowCoinModal(true);
+  };
+
+  const handleUpgradePremium = () => {
+    setShowPremiumModal(true);
+  };
+
+  const handleCoinPurchase = (pack: string) => {
+    setShowCoinModal(false);
+    toast({
+      title: "Purchase successful!",
+      description: "Coins have been added to your account.",
+    });
+  };
+
+  const handlePremiumSubscribe = (plan: string) => {
+    setShowPremiumModal(false);
+    toast({
+      title: "Welcome to Premium!",
+      description: "All premium features are now unlocked.",
+    });
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-background">
+      {/* Hero Background */}
+      <div 
+        className="fixed inset-0 opacity-5 pointer-events-none"
+        style={{
+          backgroundImage: `url(${heroBackground})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+      
+      {/* Main Content */}
+      <div className="relative z-10">
+        {activeTab === "home" && (
+          <HomeScreen
+            onStartMatch={handleStartMatch}
+            onBuyCoins={handleBuyCoins}
+            onUpgradePremium={handleUpgradePremium}
+          />
+        )}
+        
+        {activeTab === "match" && (
+          <div className="pb-20 px-4 pt-6 text-center">
+            <h2 className="text-2xl font-bold mb-4">Find Your Match</h2>
+            <p className="text-muted-foreground mb-6">Set your preferences and start matching</p>
+            <div className="space-y-4">
+              <button 
+                onClick={handleStartMatch}
+                className="w-full p-4 bg-gradient-primary text-white rounded-lg font-semibold"
+              >
+                Start Random Chat
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === "coins" && (
+          <div className="pb-20 px-4 pt-6">
+            <h2 className="text-2xl font-bold mb-4 text-center">Your Coins</h2>
+            <div className="text-center mb-6">
+              <p className="text-4xl font-bold text-coin">100</p>
+              <p className="text-muted-foreground">Available Coins</p>
+            </div>
+            <button 
+              onClick={handleBuyCoins}
+              className="w-full p-4 bg-gradient-secondary text-white rounded-lg font-semibold"
+            >
+              Buy More Coins
+            </button>
+          </div>
+        )}
+        
+        {activeTab === "chat" && (
+          <div className="pb-20 px-4 pt-6 text-center">
+            <h2 className="text-2xl font-bold mb-4">Chat History</h2>
+            <p className="text-muted-foreground">Your recent conversations will appear here</p>
+          </div>
+        )}
+        
+        {activeTab === "profile" && (
+          <div className="pb-20 px-4 pt-6 text-center">
+            <h2 className="text-2xl font-bold mb-4">Your Profile</h2>
+            <p className="text-muted-foreground">Customize your profile and preferences</p>
+          </div>
+        )}
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* Modals */}
+      <PremiumModal
+        isOpen={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        onSubscribe={handlePremiumSubscribe}
+      />
+      
+      <CoinPurchaseModal
+        isOpen={showCoinModal}
+        onClose={() => setShowCoinModal(false)}
+        onPurchase={handleCoinPurchase}
+      />
     </div>
   );
 };
