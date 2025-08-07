@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { LoginScreen } from "@/components/Auth/LoginScreen";
+import { SplashScreen } from "@/components/Onboarding/SplashScreen";
+import { OnboardingScreen } from "@/components/Onboarding/OnboardingScreen";
+import { ProfileScreen } from "@/components/Profile/ProfileScreen";
 import { HomeScreen } from "@/components/Home/HomeScreen";
 import { VideoCallScreen } from "@/components/VideoChat/VideoCallScreen";
 import { PremiumModal } from "@/components/Premium/PremiumModal";
@@ -8,16 +10,39 @@ import { BottomNav } from "@/components/Layout/BottomNav";
 import { useToast } from "@/hooks/use-toast";
 import heroBackground from "@/assets/hero-bg.jpg";
 
+interface UserProfile {
+  username: string;
+  photos: string[];
+  bio: string;
+  interests: string[];
+}
+
 const Index = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [appState, setAppState] = useState<"splash" | "onboarding" | "main">("splash");
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [currentScreen, setCurrentScreen] = useState<"home" | "call">("home");
   const [activeTab, setActiveTab] = useState("home");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showCoinModal, setShowCoinModal] = useState(false);
   const { toast } = useToast();
 
-  if (!isLoggedIn) {
-    return <LoginScreen onLogin={() => setIsLoggedIn(true)} />;
+  if (appState === "splash") {
+    return <SplashScreen onComplete={() => setAppState("onboarding")} />;
+  }
+
+  if (appState === "onboarding") {
+    return (
+      <OnboardingScreen
+        onComplete={(profile) => {
+          setUserProfile(profile);
+          setAppState("main");
+          toast({
+            title: "Profile created!",
+            description: "Welcome to AjnabiCam! Your profile looks amazing.",
+          });
+        }}
+      />
+    );
   }
 
   if (currentScreen === "call") {
@@ -144,11 +169,11 @@ const Index = () => {
           </div>
         )}
         
-        {activeTab === "profile" && (
-          <div className="pb-20 px-4 pt-6 text-center">
-            <h2 className="text-2xl font-bold mb-4">Your Profile</h2>
-            <p className="text-muted-foreground">Customize your profile and preferences</p>
-          </div>
+        {activeTab === "profile" && userProfile && (
+          <ProfileScreen 
+            profile={userProfile}
+            onEdit={() => setAppState("onboarding")}
+          />
         )}
       </div>
 
