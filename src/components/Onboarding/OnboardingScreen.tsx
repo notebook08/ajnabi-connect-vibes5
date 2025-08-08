@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Camera, Plus, X, Heart } from "lucide-react";
+import { Camera, Plus, X, Heart, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface UserProfile {
@@ -12,10 +12,14 @@ interface UserProfile {
   photos: string[];
   bio: string;
   interests: string[];
+  matchPreference: "anyone" | "men" | "women";
 }
 
 interface OnboardingScreenProps {
   onComplete: (profile: UserProfile) => void;
+  initialProfile?: Partial<UserProfile>;
+  isPremium?: boolean;
+  onRequestUpgrade?: () => void;
 }
 
 const availableInterests = [
@@ -24,11 +28,12 @@ const availableInterests = [
   "Technology", "Fashion", "Fitness", "Yoga", "Coffee", "Dogs", "Cats"
 ];
 
-export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
-  const [username, setUsername] = useState("");
-  const [photos, setPhotos] = useState<string[]>([]);
-  const [bio, setBio] = useState("");
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+export function OnboardingScreen({ onComplete, initialProfile, isPremium = false, onRequestUpgrade }: OnboardingScreenProps) {
+  const [username, setUsername] = useState(initialProfile?.username ?? "");
+  const [photos, setPhotos] = useState<string[]>(initialProfile?.photos ?? []);
+  const [bio, setBio] = useState(initialProfile?.bio ?? "");
+  const [selectedInterests, setSelectedInterests] = useState<string[]>(initialProfile?.interests ?? []);
+  const [matchPreference, setMatchPreference] = useState<"anyone" | "men" | "women">(initialProfile?.matchPreference ?? "anyone");
   const { toast } = useToast();
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +110,8 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
       username: username.trim(),
       photos,
       bio: bio.trim(),
-      interests: selectedInterests
+      interests: selectedInterests,
+      matchPreference,
     });
   };
 

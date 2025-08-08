@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Coins, X, Zap, CreditCard } from "lucide-react";
+import { RAZORPAY_KEY_ID } from "@/config/payments";
 
 interface CoinPurchaseModalProps {
   isOpen: boolean;
@@ -117,6 +118,7 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase }: CoinPurchaseM
             <p className="text-xs text-muted-foreground">
               Secure payments powered by Razorpay
             </p>
+            <p className="text-[10px] text-muted-foreground">Razorpay ID: {RAZORPAY_KEY_ID}</p>
           </div>
 
           <div className="text-center">

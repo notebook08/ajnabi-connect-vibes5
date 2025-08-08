@@ -102,15 +102,15 @@ export function HomeScreen({ onStartMatch, onBuyCoins, onUpgradePremium }: HomeS
           <CardContent className="p-4">
             <div className="flex items-start space-x-3">
               <AlertCircle className="w-5 h-5 text-primary mt-0.5" />
-              <div>
+              <div className="flex-1">
                 <h4 className="font-semibold text-foreground font-poppins">Limited Time Offer!</h4>
                 <p className="text-sm text-muted-foreground font-poppins">
-                  Only 500 premium spots left at ₹29/day. Join our Telegram for exclusive deals!
+                  Only 500 premium spots left at ₹29/day. Secure payments via Razorpay.
                 </p>
-                <Button variant="outline" size="sm" className="mt-2 font-poppins">
-                  Join Telegram
-                </Button>
               </div>
+              <Button onClick={onUpgradePremium} variant="outline" size="sm" className="font-poppins">
+                Upgrade
+              </Button>
             </div>
           </CardContent>
         </Card>
