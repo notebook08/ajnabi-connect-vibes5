@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { X, Heart, MapPin, Zap } from "lucide-react";
+import { X, Heart, MapPin, Zap, ArrowLeft } from "lucide-react";
 
 interface PostCallProfileScreenProps {
   profile: {
@@ -22,9 +22,10 @@ interface PostCallProfileScreenProps {
   };
   onReject: () => void;
   onAccept: () => void;
+  onBack?: () => void;
 }
 
-export function PostCallProfileScreen({ profile, onReject, onAccept }: PostCallProfileScreenProps) {
+export function PostCallProfileScreen({ profile, onReject, onAccept, onBack }: PostCallProfileScreenProps) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
   const handlePhotoScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -58,6 +59,18 @@ export function PostCallProfileScreen({ profile, onReject, onAccept }: PostCallP
                 {/* Profile info overlay on first photo */}
                 {index === 0 && (
                   <div className="absolute bottom-6 left-6 text-white">
+                    {onBack && index === 0 && (
+                      <div className="absolute top-[-200px] left-[-24px]">
+                        <Button
+                          onClick={onBack}
+                          variant="outline"
+                          size="icon"
+                          className="w-12 h-12 rounded-full bg-black/50 border-white/30 text-white hover:bg-black/70"
+                        >
+                          <ArrowLeft className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    )}
                     <h1 className="text-3xl font-bold mb-2 font-poppins">
                       {profile.username}, {profile.age}
                     </h1>

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Video, Lock, Users, Zap, Heart, Crown, Filter, MapPin } from "lucide-react";
+import { Video, Lock, Users, Zap, Heart, Crown, Filter, MapPin, ArrowLeft, Gem } from "lucide-react";
 
 interface MatchScreenProps {
   onStartMatch: () => void;
@@ -9,6 +9,8 @@ interface MatchScreenProps {
   matchPreference: "anyone" | "men" | "women";
   onChangePreference: (pref: "anyone" | "men" | "women") => void;
   onRequestUpgrade: () => void;
+  onBack?: () => void;
+  onBuyCoins?: () => void;
 }
 
 export function MatchScreen({
@@ -17,6 +19,8 @@ export function MatchScreen({
   matchPreference,
   onChangePreference,
   onRequestUpgrade,
+  onBack,
+  onBuyCoins,
 }: MatchScreenProps) {
   const PreferenceButton = ({
     value,
@@ -53,6 +57,29 @@ export function MatchScreen({
     <div className="min-h-screen bg-background pb-24 safe-area-top safe-area-bottom">
       {/* Header */}
       <div className="bg-gradient-primary pt-16 pb-8 px-4 rounded-b-3xl shadow-warm">
+        <div className="flex items-center justify-between mb-4 text-white">
+          {onBack && (
+            <Button 
+              onClick={onBack}
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20 rounded-full"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          )}
+          <div className="flex-1" />
+          {onBuyCoins && (
+            <Button 
+              onClick={onBuyCoins}
+              variant="outline"
+              size="sm"
+              className="bg-white/20 border-white/30 text-white hover:bg-white/30 p-3 rounded-full min-h-12 min-w-12"
+            >
+              <Gem className="w-5 h-5" />
+            </Button>
+          )}
+        </div>
         <div className="text-center text-white">
           <Video className="w-16 h-16 mx-auto mb-4 animate-float" />
           <h1 className="text-3xl font-bold mb-2 font-dancing">Find Your Match</h1>

@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Gem } from "lucide-react";
 
 export type ChatPreview = {
   id: string;
@@ -16,9 +17,11 @@ export type ChatPreview = {
 interface ChatListScreenProps {
   chats: ChatPreview[];
   onOpenChat: (chatId: string) => void;
+  onBack?: () => void;
+  onBuyCoins?: () => void;
 }
 
-export function ChatListScreen({ chats, onOpenChat }: ChatListScreenProps) {
+export function ChatListScreen({ chats, onOpenChat, onBack, onBuyCoins }: ChatListScreenProps) {
   const [query, setQuery] = useState("");
   const filtered = useMemo(
     () => chats.filter(c => c.name.toLowerCase().includes(query.toLowerCase())),
@@ -26,14 +29,47 @@ export function ChatListScreen({ chats, onOpenChat }: ChatListScreenProps) {
   );
 
   return (
-    <main className="min-h-screen bg-background pb-24 px-4 pt-16 safe-area-top safe-area-bottom">
+    <div className="min-h-screen bg-background safe-area-top">
+      {/* Header with gradient background */}
+      <div className="relative bg-gradient-primary pt-16 pb-8 px-4 rounded-b-3xl shadow-warm">
+        <div className="flex items-center justify-between mb-4">
+          {onBack && (
+            <Button 
+              onClick={onBack}
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20 rounded-full"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          )}
+          <div className="flex-1 text-center">
+            <h1 className="font-dancing text-4xl font-bold text-white mb-1">
+              Chat
+            </h1>
+            <p className="text-white/90 font-poppins text-sm">Your conversations</p>
+          </div>
+          {onBuyCoins && (
+            <Button 
+              onClick={onBuyCoins}
+              variant="outline"
+              size="sm"
+              className="bg-white/20 border-white/30 text-white hover:bg-white/30 p-3 rounded-full min-h-12 min-w-12"
+            >
+              <Gem className="w-5 h-5" />
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <main className="pb-24 px-4 -mt-6 safe-area-bottom">
       <div className="max-w-lg mx-auto">
         <div className="mb-4">
           <Input
             placeholder="Search chats"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="h-12 rounded-xl font-poppins"
+            className="h-12 rounded-xl font-poppins shadow-card bg-white border-0"
           />
         </div>
 
@@ -66,6 +102,7 @@ export function ChatListScreen({ chats, onOpenChat }: ChatListScreenProps) {
           )}
         </div>
       </div>
-    </main>
+      </main>
+    </div>
   );
 }

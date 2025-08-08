@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Zap, Heart, Edit, Camera, Plus, Settings } from "lucide-react";
+import { MapPin, Zap, Heart, Edit, Camera, Plus, Settings, ArrowLeft, Gem } from "lucide-react";
 
 interface UserProfile {
   username: string;
@@ -14,30 +14,56 @@ interface UserProfile {
 interface ProfileScreenProps {
   profile: UserProfile;
   onEdit?: () => void;
+  onBack?: () => void;
+  onBuyCoins?: () => void;
 }
 
-export function ProfileScreen({ profile, onEdit }: ProfileScreenProps) {
+export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileScreenProps) {
   const { username, photos, bio, interests, age = 20 } = profile;
 
   return (
     <div className="min-h-screen bg-background pb-20 safe-area-top safe-area-bottom">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b px-4 py-3">
+      <div className="sticky top-0 z-20 bg-gradient-primary px-4 py-3 pt-16 rounded-b-3xl shadow-warm">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold font-poppins">My Profile</h1>
-          <Button
-            onClick={onEdit}
-            variant="outline"
-            size="sm"
-            className="font-poppins h-10 px-4 rounded-xl"
-          >
-            <Edit className="w-4 h-4 mr-2" />
-            Edit
-          </Button>
+          {onBack && (
+            <Button 
+              onClick={onBack}
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20 rounded-full"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          )}
+          <div className="flex-1 text-center">
+            <h1 className="text-2xl font-bold font-poppins text-white">My Profile</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            {onBuyCoins && (
+              <Button 
+                onClick={onBuyCoins}
+                variant="outline"
+                size="sm"
+                className="bg-white/20 border-white/30 text-white hover:bg-white/30 p-3 rounded-full min-h-10 min-w-10"
+              >
+                <Gem className="w-4 h-4" />
+              </Button>
+            )}
+            <Button
+              onClick={onEdit}
+              variant="outline"
+              size="sm"
+              className="bg-white/20 border-white/30 text-white hover:bg-white/30 font-poppins h-10 px-4 rounded-xl"
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Edit
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="px-4 space-y-6 pt-4">
+      <div className="px-4 space-y-6 pt-4 -mt-6">
         {/* Photo Grid */}
         <Card className="shadow-card rounded-2xl border-0 overflow-hidden">
           <CardContent className="p-0">

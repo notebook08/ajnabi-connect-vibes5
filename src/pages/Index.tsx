@@ -94,10 +94,6 @@ const Index = () => {
           } else {
             setAppState("main");
           }
-          toast({
-            title: isEditingProfile ? "Profile updated!" : "Profile created!",
-            description: isEditingProfile ? "Your changes have been saved." : "Welcome to AjnabiCam! Your profile looks amazing.",
-          });
         }}
       />
     );
@@ -137,18 +133,10 @@ const Index = () => {
         profile={mockCallPartnerProfile}
         onReject={() => {
           setCurrentScreen("home");
-          toast({
-            title: "Connection declined",
-            description: "Looking for your next chat partner.",
-          });
         }}
         onAccept={() => {
           setCurrentScreen("home");
           setActiveTab("chat");
-          toast({
-            title: "New friend added!",
-            description: "Start chatting in your chat list.",
-          });
         }}
       />
     );
@@ -170,10 +158,7 @@ const Index = () => {
           setActiveTab("chat");
         }}
         onSend={(text) => {
-          toast({
-            title: "Message sent",
-            description: "Your message has been delivered.",
-          });
+          // Message sent logic here
         }}
       />
     );
@@ -181,10 +166,6 @@ const Index = () => {
 
   const handleStartMatch = () => {
     setCurrentScreen("call");
-    toast({
-      title: "Finding someone for you...",
-      description: "This may take a few seconds.",
-    });
   };
 
   const handleBuyCoins = () => {
@@ -197,19 +178,11 @@ const Index = () => {
 
   const handleCoinPurchase = (pack: string) => {
     setShowCoinModal(false);
-    toast({
-      title: "Purchase successful!",
-      description: "Coins have been added to your account.",
-    });
   };
 
   const handlePremiumSubscribe = (plan: string) => {
     setIsPremium(true);
     setShowPremiumModal(false);
-    toast({
-      title: "Welcome to Premium!",
-      description: "All premium features are now unlocked.",
-    });
   };
 
   return (
@@ -231,6 +204,14 @@ const Index = () => {
             onStartMatch={handleStartMatch}
             onBuyCoins={handleBuyCoins}
             onUpgradePremium={handleUpgradePremium}
+            matchPreference={userProfile?.matchPreference || "anyone"}
+            onChangePreference={(pref) => {
+              if (userProfile) {
+                setUserProfile({...userProfile, matchPreference: pref});
+              }
+            }}
+            isPremium={isPremium}
+            onRequestUpgrade={() => setShowPremiumModal(true)}
           />
         )}
         
@@ -243,6 +224,7 @@ const Index = () => {
               setUserProfile({...userProfile, matchPreference: pref});
             }}
             onRequestUpgrade={() => setShowPremiumModal(true)}
+            onBuyCoins={handleBuyCoins}
           />
         )}
         
@@ -276,6 +258,7 @@ const Index = () => {
               setActiveChatId(chatId);
               setCurrentScreen("chat-detail");
             }}
+            onBuyCoins={handleBuyCoins}
           />
         )}
         
@@ -283,6 +266,7 @@ const Index = () => {
           <ProfileScreen 
             profile={userProfile}
             onEdit={() => setIsEditingProfile(true)}
+            onBuyCoins={handleBuyCoins}
           />
         )}
       </div>

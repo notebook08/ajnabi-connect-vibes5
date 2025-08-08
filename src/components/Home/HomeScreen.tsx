@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Video, Crown, AlertCircle, Gem } from "lucide-react";
+import { Video, Crown, AlertCircle, Gem, Filter } from "lucide-react";
 import { CoinBalance } from "./CoinBalance";
 import videoChatIllustration from "@/assets/video-chat-illustration.jpg";
 
@@ -9,10 +9,53 @@ interface HomeScreenProps {
   onStartMatch: () => void;
   onBuyCoins: () => void;
   onUpgradePremium: () => void;
+  matchPreference: "anyone" | "men" | "women";
+  onChangePreference: (pref: "anyone" | "men" | "women") => void;
+  isPremium: boolean;
+  onRequestUpgrade: () => void;
 }
 
-export function HomeScreen({ onStartMatch, onBuyCoins, onUpgradePremium }: HomeScreenProps) {
+export function HomeScreen({ 
+  onStartMatch, 
+  onBuyCoins, 
+  onUpgradePremium, 
+  matchPreference, 
+  onChangePreference, 
+  isPremium, 
+  onRequestUpgrade 
+}: HomeScreenProps) {
   const [coinBalance] = useState(100);
+
+  const PreferenceButton = ({
+    value,
+    label,
+    emoji,
+  }: { value: "anyone" | "men" | "women"; label: string; emoji: string }) => {
+    const locked = !isPremium && value !== "anyone";
+    const isActive = matchPreference === value;
+    return (
+      <button
+        onClick={() => (locked ? onRequestUpgrade() : onChangePreference(value))}
+        className={`relative flex-1 h-16 rounded-2xl border-2 text-sm font-medium transition-all duration-300 overflow-hidden
+           ${isActive 
+             ? "bg-gradient-primary text-white border-transparent shadow-warm scale-105" 
+             : "bg-background text-foreground border-border hover:border-primary/50 hover:bg-primary/5"
+           }
+           ${locked ? "opacity-60" : ""}`}
+        aria-disabled={locked}
+      >
+        <div className="flex flex-col items-center justify-center h-full space-y-1">
+          <span className="text-xl">{emoji}</span>
+          <span className="font-poppins font-semibold text-xs">{label}</span>
+          {locked && (
+            <div className="absolute top-1 right-1">
+              <Crown className="w-3 h-3 text-premium" />
+            </div>
+          )}
+        </div>
+      </button>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background safe-area-top">
@@ -79,6 +122,40 @@ export function HomeScreen({ onStartMatch, onBuyCoins, onUpgradePremium }: HomeS
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Match Preferences */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 mb-3">
+                <Filter className="w-4 h-4 text-primary" />
+                <h4 className="font-semibold text-sm font-poppins">Who do you want to meet?</h4>
+              </div>
+              <div className="flex items-center gap-2">
+                <PreferenceButton value="anyone" label="Everyone" emoji="🌟" />
+                <PreferenceButton value="men" label="Men" emoji="👨" />
+                <PreferenceButton value="women" label="Women" emoji="👩" />
+              </div>
+              {!isPremium && (
+                <div className="bg-premium/10 border border-premium/20 rounded-xl p-3">
+                  <div className="flex items-center gap-2">
+                    <Crown className="w-4 h-4 text-premium" />
+                    <div className="flex-1">
+                      <p className="text-xs font-medium font-poppins">Premium Feature</p>
+                      <p className="text-[10px] text-muted-foreground font-poppins">
+                        Filter by gender with Premium
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={onRequestUpgrade} 
+                      variant="outline" 
+                      size="sm"
+                      className="border-premium text-premium hover:bg-premium hover:text-white font-poppins h-8 px-3 text-xs"
+                    >
+                      Upgrade
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+            
             <Button 
               onClick={onStartMatch}
               className="w-full h-14 font-poppins font-semibold text-lg rounded-xl"

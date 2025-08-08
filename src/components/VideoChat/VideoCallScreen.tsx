@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { 
-  Phone, 
   PhoneOff, 
   Mic, 
   MicOff, 
@@ -10,7 +9,8 @@ import {
   CameraOff, 
   RotateCcw,
   Flag,
-  Heart
+  Heart,
+  ArrowLeft
 } from "lucide-react";
 
 interface VideoCallScreenProps {
@@ -18,9 +18,10 @@ interface VideoCallScreenProps {
   onReconnect: () => void;
   onReport: () => void;
   onBlock: () => void;
+  onBack?: () => void;
 }
 
-export function VideoCallScreen({ onEndCall, onReconnect, onReport, onBlock }: VideoCallScreenProps) {
+export function VideoCallScreen({ onEndCall, onReconnect, onReport, onBlock, onBack }: VideoCallScreenProps) {
   const [callDuration, setCallDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
@@ -78,7 +79,17 @@ export function VideoCallScreen({ onEndCall, onReconnect, onReport, onBlock }: V
         </div>
 
         {/* Call Duration */}
-        <div className="absolute top-8 left-4">
+        <div className="absolute top-8 left-4 flex items-center gap-3">
+          {onBack && (
+            <Button
+              onClick={onBack}
+              variant="outline"
+              size="icon"
+              className="w-12 h-12 rounded-full bg-black/50 border-white/30 text-white hover:bg-black/70"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          )}
           <Card className="bg-black/50 border-white/20 rounded-xl border-0">
             <div className="px-3 py-2">
               <p className="text-white font-mono text-lg font-poppins">{formatTime(callDuration)}</p>
