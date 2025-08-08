@@ -4,6 +4,10 @@ import { OnboardingScreen } from "@/components/Onboarding/OnboardingScreen";
 import { ProfileScreen } from "@/components/Profile/ProfileScreen";
 import { HomeScreen } from "@/components/Home/HomeScreen";
 import { VideoCallScreen } from "@/components/VideoChat/VideoCallScreen";
+import { PostCallDecisionScreen } from "@/components/VideoChat/PostCallDecisionScreen";
+import { MatchScreen } from "@/components/Match/MatchScreen";
+import { ChatListScreen, ChatPreview } from "@/components/Chat/ChatListScreen";
+import { ChatDetailScreen, ChatData, Message } from "@/components/Chat/ChatDetailScreen";
 import { PremiumModal } from "@/components/Premium/PremiumModal";
 import { CoinPurchaseModal } from "@/components/Coins/CoinPurchaseModal";
 import { BottomNav } from "@/components/Layout/BottomNav";
@@ -17,30 +21,61 @@ interface UserProfile {
   photos: string[];
   bio: string;
   interests: string[];
+  matchPreference: "anyone" | "men" | "women";
 }
 
 const Index = () => {
   const [appState, setAppState] = useState<"splash" | "onboarding" | "main">("splash");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [currentScreen, setCurrentScreen] = useState<"home" | "call">("home");
+  const [currentScreen, setCurrentScreen] = useState<"home" | "call" | "post-call" | "chat-detail">("home");
   const [activeTab, setActiveTab] = useState("home");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showCoinModal, setShowCoinModal] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  
+  // Mock data
+  const [chats] = useState<ChatPreview[]>([
+    { id: "1", name: "Sarah", lastMessage: "Hey there! 👋", time: "2m", unread: 2 },
+    { id: "2", name: "Mike", lastMessage: "Nice talking to you!", time: "1h" },
+    { id: "3", name: "Emma", lastMessage: "See you later", time: "3h" },
+  ]);
+  
+  const [chatData] = useState<Record<string, ChatData>>({
+    "1": {
+      id: "1",
+      name: "Sarah",
+      messages: [
+        { id: "1", sender: "them", text: "Hey there! 👋", time: "10:30" },
+        { id: "2", sender: "me", text: "Hello! How are you?", time: "10:32" },
+        { id: "3", sender: "them", text: "I'm doing great! Thanks for asking", time: "10:33" },
+      ]
+    }
+  });
+  
   const { toast } = useToast();
 
   if (appState === "splash") {
     return <SplashScreen onComplete={() => setAppState("onboarding")} />;
   }
 
-  if (appState === "onboarding") {
+  if (appState === "onboarding" || isEditingProfile) {
     return (
       <OnboardingScreen
+        initialProfile={isEditingProfile ? userProfile : undefined}
+        isPremium={isPremium}
+        onRequestUpgrade={() => setShowPremiumModal(true)}
         onComplete={(profile) => {
           setUserProfile(profile);
-          setAppState("main");
+          if (isEditingProfile) {
+            setIsEditingProfile(false);
+          } else {
+            setAppState("main");
+          }
           toast({
-            title: "Profile created!",
-            description: "Welcome to AjnabiCam! Your profile looks amazing.",
+            title: isEditingProfile ? "Profile updated!" : "Profile created!",
+            description: isEditingProfile ? "Your changes have been saved." : "Welcome to AjnabiCam! Your profile looks amazing.",
           });
         }}
       />
@@ -51,11 +86,7 @@ const Index = () => {
     return (
       <VideoCallScreen
         onEndCall={() => {
-          setCurrentScreen("home");
-          toast({
-            title: "Call ended",
-            description: "Thanks for chatting! Rate your experience.",
-          });
+          setCurrentScreen("post-call");
         }}
         onReconnect={() => {
           toast({
@@ -73,6 +104,54 @@ const Index = () => {
           toast({
             title: "User blocked",
             description: "You won't be matched with this user again.",
+          });
+        }}
+      />
+    );
+  }
+
+  if (currentScreen === "post-call") {
+    return (
+      <PostCallDecisionScreen
+        profile={{ username: "Anonymous User", photo: undefined }}
+        onReject={() => {
+          setCurrentScreen("home");
+          toast({
+            title: "Connection declined",
+            description: "Looking for your next chat partner.",
+          });
+        }}
+        onAccept={() => {
+          setCurrentScreen("home");
+          setActiveTab("chat");
+          toast({
+            title: "New friend added!",
+            description: "Start chatting in your chat list.",
+          });
+        }}
+      />
+    );
+  }
+
+  if (currentScreen === "chat-detail" && activeChatId) {
+    const chat = chatData[activeChatId];
+    if (!chat) {
+      setCurrentScreen("home");
+      setActiveTab("chat");
+      return null;
+    }
+    
+    return (
+      <ChatDetailScreen
+        chat={chat}
+        onBack={() => {
+          setCurrentScreen("home");
+          setActiveTab("chat");
+        }}
+        onSend={(text) => {
+          toast({
+            title: "Message sent",
+            description: "Your message has been delivered.",
           });
         }}
       />
@@ -104,6 +183,7 @@ const Index = () => {
   };
 
   const handlePremiumSubscribe = (plan: string) => {
+    setIsPremium(true);
     setShowPremiumModal(false);
     toast({
       title: "Welcome to Premium!",
@@ -133,25 +213,16 @@ const Index = () => {
           />
         )}
         
-        {activeTab === "match" && (
-          <div className="min-h-screen bg-background pb-24 px-4 pt-12">
-            <div className="max-w-lg mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4 font-poppins text-foreground">Find Your Match</h2>
-                <p className="text-muted-foreground mb-6 font-poppins">Set your preferences and start matching</p>
-              </div>
-              <div className="space-y-4">
-                <Button 
-                  onClick={handleStartMatch}
-                  className="w-full h-14 font-poppins font-semibold text-lg"
-                  variant="gradient"
-                >
-                  <Video className="w-6 h-6 mr-3" />
-                  Start Random Chat
-                </Button>
-              </div>
-            </div>
-          </div>
+        {activeTab === "match" && userProfile && (
+          <MatchScreen
+            onStartMatch={handleStartMatch}
+            isPremium={isPremium}
+            matchPreference={userProfile.matchPreference}
+            onChangePreference={(pref) => {
+              setUserProfile({...userProfile, matchPreference: pref});
+            }}
+            onRequestUpgrade={() => setShowPremiumModal(true)}
+          />
         )}
         
         {activeTab === "coins" && (
@@ -178,18 +249,19 @@ const Index = () => {
         )}
         
         {activeTab === "chat" && (
-          <div className="min-h-screen bg-background pb-24 px-4 pt-12">
-            <div className="max-w-lg mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-4 font-poppins text-foreground">Chat History</h2>
-              <p className="text-muted-foreground font-poppins">Your recent conversations will appear here</p>
-            </div>
-          </div>
+          <ChatListScreen
+            chats={chats}
+            onOpenChat={(chatId) => {
+              setActiveChatId(chatId);
+              setCurrentScreen("chat-detail");
+            }}
+          />
         )}
         
         {activeTab === "profile" && userProfile && (
           <ProfileScreen 
             profile={userProfile}
-            onEdit={() => setAppState("onboarding")}
+            onEdit={() => setIsEditingProfile(true)}
           />
         )}
       </div>
