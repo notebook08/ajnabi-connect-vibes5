@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Zap, Heart, Edit, Camera, Plus, Settings, ArrowLeft, Gem } from "lucide-react";
+import { MapPin, Zap, Heart, Edit, Camera, Plus, ArrowLeft, Gem } from "lucide-react";
 
 interface UserProfile {
   username: string;
@@ -24,7 +25,7 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileSc
   return (
     <div className="min-h-screen bg-background pb-20 safe-area-top safe-area-bottom">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-gradient-primary px-4 py-3 pt-16 rounded-b-3xl shadow-warm">
+      <div className="sticky top-0 z-20 bg-gradient-primary px-4 py-2 pt-12 pb-4 rounded-b-3xl shadow-warm">
         <div className="flex items-center justify-between">
           {onBack && (
             <Button 
@@ -63,7 +64,7 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileSc
         </div>
       </div>
 
-      <div className="px-4 space-y-6 pt-4 -mt-6">
+      <div className="px-4 space-y-6 pt-2">
         {/* Photo Grid */}
         <Card className="shadow-card rounded-2xl border-0 overflow-hidden">
           <CardContent className="p-0">
@@ -132,28 +133,6 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileSc
           </CardContent>
         </Card>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-4">
-          <Card className="shadow-card rounded-2xl border-0 bg-gradient-primary text-white">
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold font-poppins">127</div>
-              <div className="text-sm opacity-90 font-poppins">Matches</div>
-            </CardContent>
-          </Card>
-          <Card className="shadow-card rounded-2xl border-0 bg-gradient-secondary text-white">
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold font-poppins">89%</div>
-              <div className="text-sm opacity-90 font-poppins">Response Rate</div>
-            </CardContent>
-          </Card>
-          <Card className="shadow-card rounded-2xl border-0 bg-gradient-premium text-white">
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold font-poppins">4.8</div>
-              <div className="text-sm opacity-90 font-poppins">Rating</div>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Bio Section */}
         <Card className="shadow-card rounded-2xl border-0">
           <CardContent className="p-6">
@@ -214,27 +193,6 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileSc
               ))}
               <Button variant="outline" size="sm" className="rounded-full" onClick={onEdit}>
                 <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Settings */}
-        <Card className="shadow-card rounded-2xl border-0">
-          <CardContent className="p-6">
-            <h3 className="text-lg font-semibold mb-4 font-poppins">Settings</h3>
-            <div className="space-y-3">
-              <Button variant="ghost" className="w-full justify-start h-12 font-poppins">
-                <Settings className="w-5 h-5 mr-3" />
-                Account Settings
-              </Button>
-              <Button variant="ghost" className="w-full justify-start h-12 font-poppins">
-                <Heart className="w-5 h-5 mr-3" />
-                Dating Preferences
-              </Button>
-              <Button variant="ghost" className="w-full justify-start h-12 font-poppins">
-                <Zap className="w-5 h-5 mr-3" />
-                Privacy & Safety
               </Button>
             </div>
           </CardContent>
