@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Zap, Heart, Edit, Camera, Plus, Settings, ArrowLeft, Gem } from "lucide-react";
 import { MapPin, Zap, Heart, Edit, Camera, Plus, ArrowLeft, Gem } from "lucide-react";
 
 interface UserProfile {
@@ -23,9 +22,9 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileSc
   const { username, photos, bio, interests, age = 20 } = profile;
 
   return (
-    <div className="min-h-screen bg-background pb-20 safe-area-top safe-area-bottom">
+    <div className="min-h-screen bg-background pb-24 safe-area-top safe-area-bottom">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-gradient-primary px-4 py-2 pt-12 pb-4 rounded-b-3xl shadow-warm">
+      <div className="sticky top-0 z-20 bg-gradient-primary px-4 py-3 pt-16 pb-6 rounded-b-3xl shadow-warm">
         <div className="flex items-center justify-between">
           {onBack && (
             <Button 
@@ -38,7 +37,7 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileSc
             </Button>
           )}
           <div className="flex-1 text-center">
-            <h1 className="text-2xl font-bold font-poppins text-white">My Profile</h1>
+            <h1 className="text-xl font-bold font-poppins text-white">My Profile</h1>
           </div>
           <div className="flex items-center gap-2">
             {onBuyCoins && (
@@ -64,7 +63,7 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileSc
         </div>
       </div>
 
-      <div className="px-4 space-y-6 pt-2">
+      <div className="px-4 space-y-6 pt-4">
         {/* Photo Grid */}
         <Card className="shadow-card rounded-2xl border-0 overflow-hidden">
           <CardContent className="p-0">
