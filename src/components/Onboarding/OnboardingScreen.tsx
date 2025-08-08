@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Camera, Plus, X, Heart, Lock } from "lucide-react";
+import { Camera, Plus, X, Heart, ArrowRight, Sparkles, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface UserProfile {
@@ -23,12 +23,21 @@ interface OnboardingScreenProps {
 }
 
 const availableInterests = [
-  "Reading", "Singing", "Dancing", "Cooking", "Photography", "Travel",
-  "Music", "Movies", "Gaming", "Sports", "Art", "Writing", "Nature",
-  "Technology", "Fashion", "Fitness", "Yoga", "Coffee", "Dogs", "Cats"
+  "🎵 Music", "🎬 Movies", "🏃‍♀️ Fitness", "🍳 Cooking", "📚 Reading", "✈️ Travel",
+  "🎨 Art", "📸 Photography", "🎮 Gaming", "⚽ Sports", "🌱 Nature", "💻 Tech",
+  "👗 Fashion", "🧘‍♀️ Yoga", "☕ Coffee", "🐕 Dogs", "🐱 Cats", "🎭 Theater",
+  "🍷 Wine", "🏖️ Beach", "🏔️ Mountains", "🎪 Adventure", "📖 Writing", "🎯 Goals"
+];
+
+const steps = [
+  { id: 1, title: "What's your name?", subtitle: "This is how others will see you" },
+  { id: 2, title: "Add your photos", subtitle: "Show your best self with 2-6 photos" },
+  { id: 3, title: "Tell us about yourself", subtitle: "Write something that represents you" },
+  { id: 4, title: "What are you into?", subtitle: "Pick your interests to find better matches" },
 ];
 
 export function OnboardingScreen({ onComplete, initialProfile, isPremium = false, onRequestUpgrade }: OnboardingScreenProps) {
+  const [currentStep, setCurrentStep] = useState(1);
   const [username, setUsername] = useState(initialProfile?.username ?? "");
   const [photos, setPhotos] = useState<string[]>(initialProfile?.photos ?? []);
   const [bio, setBio] = useState(initialProfile?.bio ?? "");
@@ -38,8 +47,8 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files && photos.length < 4) {
-      const newPhotos = Array.from(files).slice(0, 4 - photos.length);
+    if (files && photos.length < 6) {
+      const newPhotos = Array.from(files).slice(0, 6 - photos.length);
       newPhotos.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -48,10 +57,10 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
         };
         reader.readAsDataURL(file);
       });
-    } else if (photos.length >= 4) {
+    } else if (photos.length >= 6) {
       toast({
         title: "Maximum photos reached",
-        description: "You can upload a maximum of 4 photos.",
+        description: "You can upload a maximum of 6 photos.",
         variant: "destructive"
       });
     }
@@ -65,47 +74,29 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
     setSelectedInterests(prev => 
       prev.includes(interest)
         ? prev.filter(i => i !== interest)
-        : [...prev, interest]
+        : prev.length < 10 ? [...prev, interest] : prev
     );
   };
 
+  const canProceed = () => {
+    switch (currentStep) {
+      case 1: return username.trim().length >= 2;
+      case 2: return photos.length >= 2;
+      case 3: return bio.trim().length >= 20;
+      case 4: return selectedInterests.length >= 3;
+      default: return false;
+    }
+  };
+
+  const handleNext = () => {
+    if (currentStep < 4) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      handleSubmit();
+    }
+  };
+
   const handleSubmit = () => {
-    if (!username.trim()) {
-      toast({
-        title: "Username required",
-        description: "Please enter a username to continue.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (photos.length === 0) {
-      toast({
-        title: "Photo required",
-        description: "Please add at least one photo.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!bio.trim()) {
-      toast({
-        title: "Bio required",
-        description: "Please write something about yourself.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (selectedInterests.length === 0) {
-      toast({
-        title: "Interests required",
-        description: "Please select at least one interest.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     onComplete({
       username: username.trim(),
       photos,
@@ -115,53 +106,68 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
     });
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-primary p-4 overflow-y-auto safe-area-top safe-area-bottom">
-      <div className="max-w-md mx-auto pt-8 pb-8">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Heart className="w-12 h-12 text-white animate-float" />
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2 font-poppins">{steps[0].title}</h2>
+              <p className="text-muted-foreground font-poppins">{steps[0].subtitle}</p>
+            </div>
+            
+            <div className="space-y-4">
+              <Input
+                placeholder="Enter your first name"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="text-lg h-14 rounded-2xl font-poppins text-center"
+                maxLength={20}
+              />
+              <p className="text-sm text-muted-foreground text-center font-poppins">
+                {username.length}/20 characters
+              </p>
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2 font-dancing">Welcome to AjnabiCam</h1>
-          <p className="text-white/80 font-poppins">Let's set up your profile</p>
-        </div>
+        );
 
-        <Card className="shadow-card mb-6 rounded-2xl border-0">
-          <CardHeader>
-            <CardTitle className="font-poppins">Your Username</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Input
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="text-lg h-12 rounded-xl font-poppins"
-            />
-          </CardContent>
-        </Card>
+      case 2:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 bg-gradient-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Camera className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2 font-poppins">{steps[1].title}</h2>
+              <p className="text-muted-foreground font-poppins">{steps[1].subtitle}</p>
+            </div>
 
-        <Card className="shadow-card mb-6 rounded-2xl border-0">
-          <CardHeader>
-            <CardTitle className="font-poppins">Add Photos (1-4)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-2 gap-4">
               {photos.map((photo, index) => (
-                <div key={index} className="relative aspect-square rounded-xl overflow-hidden">
+                <div key={index} className="relative aspect-[3/4] rounded-2xl overflow-hidden">
                   <img src={photo} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
                   <button
                     onClick={() => removePhoto(index)}
-                    className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 shadow-card"
+                    className="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1.5 backdrop-blur-sm"
                   >
                     <X className="w-4 h-4" />
                   </button>
+                  {index === 0 && (
+                    <div className="absolute bottom-2 left-2 bg-primary text-white px-2 py-1 rounded-full text-xs font-poppins">
+                      Main
+                    </div>
+                  )}
                 </div>
               ))}
-              {photos.length < 4 && (
-                <label className="aspect-square border-2 border-dashed border-muted-foreground rounded-xl flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
+              
+              {photos.length < 6 && (
+                <label className="aspect-[3/4] border-2 border-dashed border-primary/30 rounded-2xl flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors bg-primary/5">
                   <div className="text-center">
-                    <Camera className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground font-poppins">Add Photo</p>
+                    <Plus className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <p className="text-sm text-primary font-poppins font-medium">Add Photo</p>
                   </div>
                   <input
                     type="file"
@@ -173,62 +179,129 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
                 </label>
               )}
             </div>
+            
             <p className="text-sm text-muted-foreground text-center font-poppins">
-              {photos.length}/4 photos added
+              {photos.length}/6 photos • Minimum 2 required
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        );
 
-        <Card className="shadow-card mb-6 rounded-2xl border-0">
-          <CardHeader>
-            <CardTitle className="font-poppins">About You</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              placeholder="Write something about yourself..."
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className="min-h-[100px] resize-none rounded-xl font-poppins"
-              maxLength={500}
-            />
-            <p className="text-sm text-muted-foreground text-right mt-2 font-poppins">
-              {bio.length}/500 characters
-            </p>
-          </CardContent>
-        </Card>
+      case 3:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 bg-gradient-premium rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2 font-poppins">{steps[2].title}</h2>
+              <p className="text-muted-foreground font-poppins">{steps[2].subtitle}</p>
+            </div>
 
-        <Card className="shadow-card mb-8 rounded-2xl border-0">
-          <CardHeader>
-            <CardTitle className="font-poppins">Your Interests</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
+            <div className="space-y-4">
+              <Textarea
+                placeholder="I love exploring new places, trying different cuisines, and having deep conversations over coffee. Looking for someone who shares my passion for adventure and can make me laugh..."
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                className="min-h-[120px] resize-none rounded-2xl font-poppins text-base leading-relaxed"
+                maxLength={500}
+              />
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-muted-foreground font-poppins">
+                  {bio.length}/500 characters
+                </p>
+                <p className="text-sm text-muted-foreground font-poppins">
+                  Minimum 20 characters
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2 font-poppins">{steps[3].title}</h2>
+              <p className="text-muted-foreground font-poppins">{steps[3].subtitle}</p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
               {availableInterests.map((interest) => (
                 <Badge
                   key={interest}
                   variant={selectedInterests.includes(interest) ? "default" : "outline"}
-                  className="cursor-pointer transition-all hover:scale-105 font-poppins"
+                  className={`cursor-pointer transition-all hover:scale-105 font-poppins px-4 py-2 text-sm ${
+                    selectedInterests.includes(interest) 
+                      ? "bg-primary text-white shadow-warm" 
+                      : "hover:bg-primary/10"
+                  }`}
                   onClick={() => toggleInterest(interest)}
                 >
                   {interest}
-                  {selectedInterests.includes(interest) && <Plus className="w-3 h-3 ml-1 rotate-45" />}
                 </Badge>
               ))}
             </div>
-            <p className="text-sm text-muted-foreground mt-4 font-poppins">
-              {selectedInterests.length} interests selected
+            
+            <p className="text-sm text-muted-foreground text-center font-poppins">
+              {selectedInterests.length}/10 selected • Minimum 3 required
             </p>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-primary safe-area-top safe-area-bottom">
+      {/* Progress Bar */}
+      <div className="px-4 pt-8 pb-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-white/80 font-poppins text-sm">Step {currentStep} of 4</span>
+          <span className="text-white/80 font-poppins text-sm">{Math.round((currentStep / 4) * 100)}%</span>
+        </div>
+        <div className="w-full bg-white/20 rounded-full h-2">
+          <div 
+            className="bg-white rounded-full h-2 transition-all duration-500"
+            style={{ width: `${(currentStep / 4) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 px-4 pb-8">
+        <Card className="shadow-card rounded-3xl border-0 min-h-[600px]">
+          <CardContent className="p-8">
+            {renderStepContent()}
           </CardContent>
         </Card>
+      </div>
 
+      {/* Navigation */}
+      <div className="px-4 pb-8 space-y-4">
         <Button
-          onClick={handleSubmit}
-          className="w-full h-14 rounded-xl font-poppins font-semibold text-lg"
+          onClick={handleNext}
+          disabled={!canProceed()}
+          className="w-full h-14 rounded-2xl font-poppins font-semibold text-lg"
           variant="gradient"
-          size="lg"
         >
-          Complete Profile
+          {currentStep === 4 ? "Complete Profile" : "Continue"}
+          <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
+        
+        {currentStep > 1 && (
+          <Button
+            onClick={() => setCurrentStep(currentStep - 1)}
+            variant="outline"
+            className="w-full h-12 rounded-2xl font-poppins bg-white/20 border-white/30 text-white hover:bg-white/30"
+          >
+            Back
+          </Button>
+        )}
       </div>
     </div>
   );
