@@ -10,9 +10,11 @@ import { ChatListScreen, ChatPreview } from "@/components/Chat/ChatListScreen";
 import { ChatDetailScreen, ChatData, Message } from "@/components/Chat/ChatDetailScreen";
 import { PremiumModal } from "@/components/Premium/PremiumModal";
 import { CoinPurchaseModal } from "@/components/Coins/CoinPurchaseModal";
+import { VoiceCallScreen } from "@/components/VoiceCall/VoiceCallScreen";
+import { VoiceCallActiveScreen } from "@/components/VoiceCall/VoiceCallActiveScreen";
 import { BottomNav } from "@/components/Layout/BottomNav";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Gem } from "lucide-react";
+import { Video, Gem, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-bg.jpg";
 
@@ -27,13 +29,14 @@ interface UserProfile {
 const Index = () => {
   const [appState, setAppState] = useState<"splash" | "onboarding" | "main">("splash");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [currentScreen, setCurrentScreen] = useState<"home" | "call" | "post-call" | "chat-detail">("home");
+  const [currentScreen, setCurrentScreen] = useState<"home" | "call" | "voice-call" | "post-call" | "chat-detail">("home");
   const [activeTab, setActiveTab] = useState("home");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showCoinModal, setShowCoinModal] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [coinBalance, setCoinBalance] = useState(100);
   
   // Mock profile data for post-call screen
   const mockCallPartnerProfile = {
@@ -127,6 +130,34 @@ const Index = () => {
     );
   }
 
+  if (currentScreen === "voice-call") {
+    return (
+      <VoiceCallActiveScreen
+        onEndCall={() => {
+          setCurrentScreen("post-call");
+        }}
+        onReconnect={() => {
+          toast({
+            title: "Reconnecting...",
+            description: "Looking for your previous chat partner.",
+          });
+        }}
+        onReport={() => {
+          toast({
+            title: "Report submitted",
+            description: "Thank you for keeping our community safe.",
+          });
+        }}
+        onBlock={() => {
+          toast({
+            title: "User blocked",
+            description: "You won't be matched with this user again.",
+          });
+        }}
+      />
+    );
+  }
+
   if (currentScreen === "post-call") {
     return (
       <PostCallProfileScreen
@@ -168,6 +199,10 @@ const Index = () => {
     setCurrentScreen("call");
   };
 
+  const handleStartVoiceCall = () => {
+    setCurrentScreen("voice-call");
+  };
+
   const handleBuyCoins = () => {
     setShowCoinModal(true);
   };
@@ -178,11 +213,31 @@ const Index = () => {
 
   const handleCoinPurchase = (pack: string) => {
     setShowCoinModal(false);
+    // Add coins based on pack
+    const coinAmounts = { small: 30, medium: 100, large: 350 };
+    const amount = coinAmounts[pack as keyof typeof coinAmounts] || 0;
+    setCoinBalance(prev => prev + amount);
+    toast({
+      title: "Coins purchased!",
+      description: `${amount} coins added to your account.`,
+    });
   };
 
   const handlePremiumSubscribe = (plan: string) => {
     setIsPremium(true);
     setShowPremiumModal(false);
+    toast({
+      title: "Welcome to Premium!",
+      description: "You now have access to all premium features including unlimited voice calls.",
+    });
+  };
+
+  const handleSpendCoins = (amount: number) => {
+    setCoinBalance(prev => Math.max(0, prev - amount));
+    toast({
+      title: "Coins spent",
+      description: `${amount} coins used for voice call.`,
+    });
   };
 
   return (
@@ -228,6 +283,21 @@ const Index = () => {
           />
         )}
         
+        {activeTab === "voice" && userProfile && (
+          <VoiceCallScreen
+            onStartCall={handleStartVoiceCall}
+            isPremium={isPremium}
+            coinBalance={coinBalance}
+            matchPreference={userProfile.matchPreference}
+            onChangePreference={(pref) => {
+              setUserProfile({...userProfile, matchPreference: pref});
+            }}
+            onRequestUpgrade={() => setShowPremiumModal(true)}
+            onBuyCoins={handleBuyCoins}
+            onSpendCoins={handleSpendCoins}
+          />
+        )}
+        
         {activeTab === "coins" && (
           <div className="min-h-screen bg-background pb-24 px-4 pt-16 safe-area-top safe-area-bottom">
             <div className="max-w-lg mx-auto">
@@ -235,7 +305,7 @@ const Index = () => {
                 <h2 className="text-3xl font-bold mb-4 font-dancing text-foreground">Your Treasure</h2>
                 <div className="bg-gradient-secondary p-6 rounded-2xl text-center mb-6 shadow-warm">
                   <Gem className="w-12 h-12 text-white mx-auto mb-4" />
-                  <p className="text-4xl font-bold text-white font-poppins">100</p>
+                  <p className="text-4xl font-bold text-white font-poppins">{coinBalance}</p>
                   <p className="text-white/80 font-poppins">Available Coins</p>
                 </div>
               </div>

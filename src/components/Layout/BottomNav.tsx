@@ -1,4 +1,4 @@
-import { Home, Video, Coins, MessageCircle, User } from "lucide-react";
+import { Home, Video, Coins, MessageCircle, User, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BottomNavProps {
@@ -9,6 +9,7 @@ interface BottomNavProps {
 const navItems = [
   { id: "home", icon: Home, label: "Home" },
   { id: "match", icon: Video, label: "Match" },
+  { id: "voice", icon: Phone, label: "Voice" },
   { id: "coins", icon: Coins, label: "Coins" },
   { id: "chat", icon: MessageCircle, label: "Chat" },
   { id: "profile", icon: User, label: "Profile" },
