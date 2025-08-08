@@ -49,7 +49,7 @@ export function VideoCallScreen({ onEndCall, onReconnect, onReport, onBlock }: V
   };
 
   return (
-    <div className="fixed inset-0 bg-black z-50">
+    <div className="fixed inset-0 bg-black z-50 safe-area-top safe-area-bottom">
       {/* Video Areas */}
       <div className="relative h-full flex flex-col">
         {/* Remote Video */}
@@ -57,43 +57,43 @@ export function VideoCallScreen({ onEndCall, onReconnect, onReport, onBlock }: V
           {!isConnected ? (
             <div className="text-center text-white">
               <div className="animate-spin w-12 h-12 border-4 border-white/30 border-t-white rounded-full mx-auto mb-4"></div>
-              <p>Connecting...</p>
+              <p className="font-poppins">Connecting...</p>
             </div>
           ) : (
             <div className="text-center text-white">
               <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center mb-4 mx-auto">
                 <Heart className="w-16 h-16 text-white animate-float" />
               </div>
-              <p className="text-lg font-semibold">Anonymous User</p>
-              <p className="text-white/80">Delhi, India</p>
+              <p className="text-lg font-semibold font-poppins">Anonymous User</p>
+              <p className="text-white/80 font-poppins">Delhi, India</p>
             </div>
           )}
         </div>
 
         {/* Local Video */}
-        <div className="absolute top-4 right-4 w-24 h-32 bg-gray-800 rounded-lg overflow-hidden border-2 border-white/30">
+        <div className="absolute top-8 right-4 w-24 h-32 bg-gray-800 rounded-xl overflow-hidden border-2 border-white/30">
           <div className="h-full bg-gradient-to-br from-primary/40 to-secondary/40 flex items-center justify-center">
             <Camera className="w-8 h-8 text-white" />
           </div>
         </div>
 
         {/* Call Duration */}
-        <div className="absolute top-4 left-4">
-          <Card className="bg-black/50 border-white/20">
+        <div className="absolute top-8 left-4">
+          <Card className="bg-black/50 border-white/20 rounded-xl border-0">
             <div className="px-3 py-2">
-              <p className="text-white font-mono text-lg">{formatTime(callDuration)}</p>
+              <p className="text-white font-mono text-lg font-poppins">{formatTime(callDuration)}</p>
             </div>
           </Card>
         </div>
 
         {/* Controls */}
-        <div className="absolute bottom-8 left-0 right-0 px-4">
+        <div className="absolute bottom-12 left-0 right-0 px-4">
           <div className="flex items-center justify-center space-x-4">
             <Button
               onClick={() => setIsMuted(!isMuted)}
               variant={isMuted ? "destructive" : "outline"}
               size="icon"
-              className="w-12 h-12 rounded-full bg-white/20 border-white/30 text-white hover:bg-white/30"
+              className="w-14 h-14 rounded-full bg-white/20 border-white/30 text-white hover:bg-white/30"
             >
               {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
             </Button>
@@ -102,7 +102,7 @@ export function VideoCallScreen({ onEndCall, onReconnect, onReport, onBlock }: V
               onClick={() => setIsCameraOff(!isCameraOff)}
               variant={isCameraOff ? "destructive" : "outline"}
               size="icon"
-              className="w-12 h-12 rounded-full bg-white/20 border-white/30 text-white hover:bg-white/30"
+              className="w-14 h-14 rounded-full bg-white/20 border-white/30 text-white hover:bg-white/30"
             >
               {isCameraOff ? <CameraOff className="w-5 h-5" /> : <Camera className="w-5 h-5" />}
             </Button>
@@ -111,7 +111,7 @@ export function VideoCallScreen({ onEndCall, onReconnect, onReport, onBlock }: V
               onClick={onEndCall}
               variant="destructive"
               size="icon"
-              className="w-16 h-16 rounded-full animate-pulse-warm"
+              className="w-18 h-18 rounded-full animate-pulse-warm shadow-warm"
             >
               <PhoneOff className="w-6 h-6" />
             </Button>
@@ -120,7 +120,7 @@ export function VideoCallScreen({ onEndCall, onReconnect, onReport, onBlock }: V
               onClick={onReport}
               variant="outline"
               size="icon"
-              className="w-12 h-12 rounded-full bg-white/20 border-white/30 text-white hover:bg-white/30"
+              className="w-14 h-14 rounded-full bg-white/20 border-white/30 text-white hover:bg-white/30"
             >
               <Flag className="w-5 h-5" />
             </Button>
@@ -129,7 +129,7 @@ export function VideoCallScreen({ onEndCall, onReconnect, onReport, onBlock }: V
               onClick={onReconnect}
               variant="outline"
               size="icon"
-              className="w-12 h-12 rounded-full bg-white/20 border-white/30 text-white hover:bg-white/30"
+              className="w-14 h-14 rounded-full bg-white/20 border-white/30 text-white hover:bg-white/30"
             >
               <RotateCcw className="w-5 h-5" />
             </Button>

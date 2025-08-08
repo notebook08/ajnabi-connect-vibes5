@@ -33,14 +33,14 @@ export function ChatDetailScreen({ chat, onBack, onSend }: ChatDetailScreenProps
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pt-12">
-      <header className="px-4 py-3 flex items-center gap-3 border-b bg-card/70 backdrop-blur-md sticky top-0 z-10">
+    <div className="min-h-screen bg-background flex flex-col pt-16 safe-area-top safe-area-bottom">
+      <header className="px-4 py-3 flex items-center gap-3 border-b bg-card/95 backdrop-blur-md sticky top-16 z-10">
         <Button variant="ghost" size="icon" onClick={onBack} className="rounded-full">
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h2 className="font-semibold leading-tight">{chat.name}</h2>
-          <p className="text-xs text-muted-foreground">online</p>
+          <h2 className="font-semibold leading-tight font-poppins">{chat.name}</h2>
+          <p className="text-xs text-muted-foreground font-poppins">online</p>
         </div>
       </header>
 
@@ -54,25 +54,25 @@ export function ChatDetailScreen({ chat, onBack, onSend }: ChatDetailScreenProps
                   : "bg-muted text-foreground rounded-bl-sm"
               }`}
             >
-              <p>{m.text}</p>
-              <p className="mt-1 text-[10px] opacity-70 text-right">{m.time}</p>
+              <p className="font-poppins">{m.text}</p>
+              <p className="mt-1 text-[10px] opacity-70 text-right font-poppins">{m.time}</p>
             </div>
           </div>
         ))}
       </main>
 
-      <footer className="p-3 border-t bg-card/70 backdrop-blur-md sticky bottom-0">
+      <footer className="p-3 border-t bg-card/95 backdrop-blur-md sticky bottom-0">
         <div className="flex items-center gap-2">
           <Input
             placeholder="Type a message"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="h-11 rounded-full"
+            className="h-12 rounded-xl font-poppins"
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSend();
             }}
           />
-          <Button onClick={handleSend} variant="gradient" className="h-11 px-5 rounded-full">
+          <Button onClick={handleSend} variant="gradient" className="h-12 px-5 rounded-xl font-poppins font-semibold">
             Send
           </Button>
         </div>

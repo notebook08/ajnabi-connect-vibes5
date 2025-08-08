@@ -116,52 +116,52 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
   };
 
   return (
-    <div className="min-h-screen bg-gradient-primary p-4 overflow-y-auto">
+    <div className="min-h-screen bg-gradient-primary p-4 overflow-y-auto safe-area-top safe-area-bottom">
       <div className="max-w-md mx-auto pt-8 pb-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Heart className="w-12 h-12 text-white animate-float" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome to AjnabiCam</h1>
-          <p className="text-white/80">Let's set up your profile</p>
+          <h1 className="text-3xl font-bold text-white mb-2 font-dancing">Welcome to AjnabiCam</h1>
+          <p className="text-white/80 font-poppins">Let's set up your profile</p>
         </div>
 
-        <Card className="shadow-card mb-6">
+        <Card className="shadow-card mb-6 rounded-2xl border-0">
           <CardHeader>
-            <CardTitle>Your Username</CardTitle>
+            <CardTitle className="font-poppins">Your Username</CardTitle>
           </CardHeader>
           <CardContent>
             <Input
               placeholder="Enter your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="text-lg"
+              className="text-lg h-12 rounded-xl font-poppins"
             />
           </CardContent>
         </Card>
 
-        <Card className="shadow-card mb-6">
+        <Card className="shadow-card mb-6 rounded-2xl border-0">
           <CardHeader>
-            <CardTitle>Add Photos (1-4)</CardTitle>
+            <CardTitle className="font-poppins">Add Photos (1-4)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4 mb-4">
               {photos.map((photo, index) => (
-                <div key={index} className="relative aspect-square rounded-lg overflow-hidden">
+                <div key={index} className="relative aspect-square rounded-xl overflow-hidden">
                   <img src={photo} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
                   <button
                     onClick={() => removePhoto(index)}
-                    className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1"
+                    className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 shadow-card"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
               ))}
               {photos.length < 4 && (
-                <label className="aspect-square border-2 border-dashed border-muted-foreground rounded-lg flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
+                <label className="aspect-square border-2 border-dashed border-muted-foreground rounded-xl flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
                   <div className="text-center">
                     <Camera className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Add Photo</p>
+                    <p className="text-sm text-muted-foreground font-poppins">Add Photo</p>
                   </div>
                   <input
                     type="file"
@@ -173,33 +173,33 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
                 </label>
               )}
             </div>
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="text-sm text-muted-foreground text-center font-poppins">
               {photos.length}/4 photos added
             </p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-card mb-6">
+        <Card className="shadow-card mb-6 rounded-2xl border-0">
           <CardHeader>
-            <CardTitle>About You</CardTitle>
+            <CardTitle className="font-poppins">About You</CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea
               placeholder="Write something about yourself..."
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="min-h-[100px] resize-none"
+              className="min-h-[100px] resize-none rounded-xl font-poppins"
               maxLength={500}
             />
-            <p className="text-sm text-muted-foreground text-right mt-2">
+            <p className="text-sm text-muted-foreground text-right mt-2 font-poppins">
               {bio.length}/500 characters
             </p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-card mb-8">
+        <Card className="shadow-card mb-8 rounded-2xl border-0">
           <CardHeader>
-            <CardTitle>Your Interests</CardTitle>
+            <CardTitle className="font-poppins">Your Interests</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
@@ -207,7 +207,7 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
                 <Badge
                   key={interest}
                   variant={selectedInterests.includes(interest) ? "default" : "outline"}
-                  className="cursor-pointer transition-all hover:scale-105"
+                  className="cursor-pointer transition-all hover:scale-105 font-poppins"
                   onClick={() => toggleInterest(interest)}
                 >
                   {interest}
@@ -215,7 +215,7 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
                 </Badge>
               ))}
             </div>
-            <p className="text-sm text-muted-foreground mt-4">
+            <p className="text-sm text-muted-foreground mt-4 font-poppins">
               {selectedInterests.length} interests selected
             </p>
           </CardContent>
@@ -223,7 +223,7 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
 
         <Button
           onClick={handleSubmit}
-          className="w-full"
+          className="w-full h-14 rounded-xl font-poppins font-semibold text-lg"
           variant="gradient"
           size="lg"
         >

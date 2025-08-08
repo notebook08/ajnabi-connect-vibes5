@@ -26,19 +26,19 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4 safe-area-top safe-area-bottom">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Heart className="w-12 h-12 text-white animate-float" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">AjnabiCam</h1>
-          <p className="text-white/80">Connect. Chat. Care.</p>
+          <h1 className="text-3xl font-bold text-white mb-2 font-dancing">AjnabiCam</h1>
+          <p className="text-white/80 font-poppins">Connect. Chat. Care.</p>
         </div>
 
-        <Card className="shadow-card">
+        <Card className="shadow-card rounded-2xl border-0">
           <CardHeader>
-            <CardTitle className="text-center">
+            <CardTitle className="text-center font-poppins text-lg">
               {step === "phone" ? "Enter your phone number" : "Verify OTP"}
             </CardTitle>
           </CardHeader>
@@ -52,13 +52,13 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                     placeholder="Enter 10-digit mobile number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                    className="pl-10"
+                    className="pl-10 h-12 rounded-xl font-poppins"
                   />
                 </div>
                 <Button 
                   onClick={handlePhoneSubmit}
                   disabled={phone.length !== 10}
-                  className="w-full"
+                  className="w-full h-12 rounded-xl font-poppins font-semibold"
                   variant="gradient"
                 >
                   Send OTP <ArrowRight className="w-4 h-4 ml-2" />
@@ -72,16 +72,16 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                     placeholder="Enter 6-digit OTP"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                    className="text-center text-lg tracking-widest"
+                    className="text-center text-lg tracking-widest h-12 rounded-xl font-poppins"
                   />
-                  <p className="text-sm text-muted-foreground mt-2 text-center">
+                  <p className="text-sm text-muted-foreground mt-2 text-center font-poppins">
                     OTP sent to +91 {phone}
                   </p>
                 </div>
                 <Button 
                   onClick={handleOtpSubmit}
                   disabled={otp.length !== 6}
-                  className="w-full"
+                  className="w-full h-12 rounded-xl font-poppins font-semibold"
                   variant="gradient"
                 >
                   Verify & Continue
@@ -89,7 +89,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                 <Button 
                   onClick={() => setStep("phone")}
                   variant="outline"
-                  className="w-full"
+                  className="w-full h-12 rounded-xl font-poppins"
                 >
                   Change Number
                 </Button>

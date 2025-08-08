@@ -20,7 +20,7 @@ export function ProfileScreen({ profile, onEdit }: ProfileScreenProps) {
   const { username, photos, bio, interests, age = 20 } = profile;
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-20 safe-area-top safe-area-bottom">
       <div className="relative">
         {/* Main Photo */}
         <div className="relative h-96 overflow-hidden rounded-b-3xl">
@@ -35,8 +35,8 @@ export function ProfileScreen({ profile, onEdit }: ProfileScreenProps) {
           
           {/* User Info Overlay */}
           <div className="absolute bottom-6 left-6 text-white">
-            <h1 className="text-3xl font-bold mb-1">{username}, {age}</h1>
-            <div className="flex items-center gap-4 text-sm">
+            <h1 className="text-3xl font-bold mb-1 font-poppins">{username}, {age}</h1>
+            <div className="flex items-center gap-4 text-sm font-poppins">
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
                 <span>2 km away</span>
@@ -54,7 +54,7 @@ export function ProfileScreen({ profile, onEdit }: ProfileScreenProps) {
               onClick={onEdit}
               variant="outline"
               size="sm"
-              className="absolute top-6 right-6 bg-white/20 border-white/30 text-white backdrop-blur-sm"
+              className="absolute top-6 right-6 bg-white/20 border-white/30 text-white backdrop-blur-sm font-poppins h-10 px-4 rounded-xl"
             >
               <Edit className="w-4 h-4 mr-2" />
               Edit
@@ -67,7 +67,7 @@ export function ProfileScreen({ profile, onEdit }: ProfileScreenProps) {
           <div className="px-6 mt-6">
             <div className="grid grid-cols-3 gap-2">
               {photos.slice(1).map((photo, index) => (
-                <div key={index} className="aspect-square rounded-lg overflow-hidden">
+                <div key={index} className="aspect-square rounded-xl overflow-hidden">
                   <img 
                     src={photo} 
                     alt={`${username} photo ${index + 2}`}
@@ -80,31 +80,31 @@ export function ProfileScreen({ profile, onEdit }: ProfileScreenProps) {
         )}
 
         {/* Bio Section */}
-        <Card className="mx-6 mt-6 shadow-card">
+        <Card className="mx-6 mt-6 shadow-card rounded-2xl border-0">
           <CardContent className="p-6">
-            <h2 className="text-lg font-semibold mb-3">Bio</h2>
-            <p className="text-foreground leading-relaxed">{bio}</p>
+            <h2 className="text-lg font-semibold mb-3 font-poppins">Bio</h2>
+            <p className="text-foreground leading-relaxed font-poppins">{bio}</p>
           </CardContent>
         </Card>
 
         {/* About Me Tags */}
-        <Card className="mx-6 mt-4 shadow-card">
+        <Card className="mx-6 mt-4 shadow-card rounded-2xl border-0">
           <CardContent className="p-6">
-            <h2 className="text-lg font-semibold mb-3">About Me</h2>
+            <h2 className="text-lg font-semibold mb-3 font-poppins">About Me</h2>
             <div className="grid grid-cols-3 gap-2 mb-4">
-              <Badge variant="outline" className="justify-center py-2">
+              <Badge variant="outline" className="justify-center py-2 font-poppins">
                 👩 Woman
               </Badge>
-              <Badge variant="outline" className="justify-center py-2">
+              <Badge variant="outline" className="justify-center py-2 font-poppins">
                 🎵 Musicians
               </Badge>
-              <Badge variant="outline" className="justify-center py-2">
+              <Badge variant="outline" className="justify-center py-2 font-poppins">
                 ♉ Taurus
               </Badge>
-              <Badge variant="outline" className="justify-center py-2">
+              <Badge variant="outline" className="justify-center py-2 font-poppins">
                 -- Never
               </Badge>
-              <Badge variant="outline" className="justify-center py-2">
+              <Badge variant="outline" className="justify-center py-2 font-poppins">
                 🍺 Sometimes
               </Badge>
             </div>
@@ -112,15 +112,15 @@ export function ProfileScreen({ profile, onEdit }: ProfileScreenProps) {
         </Card>
 
         {/* Interests Section */}
-        <Card className="mx-6 mt-4 mb-6 shadow-card">
+        <Card className="mx-6 mt-4 mb-6 shadow-card rounded-2xl border-0">
           <CardContent className="p-6">
-            <h2 className="text-lg font-semibold mb-3">Interest</h2>
+            <h2 className="text-lg font-semibold mb-3 font-poppins">Interest</h2>
             <div className="flex flex-wrap gap-2">
               {interests.map((interest, index) => (
                 <Badge 
                   key={index}
                   variant="default"
-                  className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+                  className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 font-poppins"
                 >
                   {interest}
                 </Badge>
@@ -135,14 +135,14 @@ export function ProfileScreen({ profile, onEdit }: ProfileScreenProps) {
             <Button
               variant="outline"
               size="lg"
-              className="rounded-full w-16 h-16 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+              className="rounded-full w-16 h-16 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground border-2"
             >
               ✕
             </Button>
             <Button
               variant="default"
               size="lg"
-              className="rounded-full w-16 h-16 bg-gradient-primary border-0 text-white"
+              className="rounded-full w-16 h-16 bg-gradient-primary border-0 text-white shadow-warm"
             >
               <Heart className="w-6 h-6 fill-current" />
             </Button>

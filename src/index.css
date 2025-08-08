@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 20 14% 98%;
+    --background: 0 0% 100%;
     --foreground: 340 12% 15%;
 
     --card: 0 0% 100%;
@@ -23,7 +23,7 @@ All colors MUST be HSL.
     --secondary: 15 75% 60%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 20 14% 96%;
+    --muted: 0 0% 96%;
     --muted-foreground: 340 12% 45%;
 
     --accent: 15 85% 65%;
@@ -32,8 +32,8 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 20 20% 88%;
-    --input: 20 20% 92%;
+    --border: 0 0% 90%;
+    --input: 0 0% 95%;
     --ring: 340 75% 55%;
 
     --coin-gold: 45 90% 55%;
@@ -111,5 +111,27 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Mobile-first responsive utilities */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Smooth scrolling for mobile */
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Touch-friendly tap targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
   }
 }

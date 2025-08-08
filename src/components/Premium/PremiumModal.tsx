@@ -110,7 +110,8 @@ export function PremiumModal({ isOpen, onClose, onSubscribe }: PremiumModalProps
           </div>
 
           <div className="text-center text-xs text-muted-foreground">
-            ⚡ Limited time offer - Only 500 spots left at these prices!
+            <p className="font-poppins">⚡ Limited time offer - Only 500 spots left at these prices!</p>
+            <p className="text-[10px] mt-2 font-poppins">Razorpay ID: rzp_live_h3TuNA7JPL56Dh</p>
           </div>
         </div>
       </DialogContent>

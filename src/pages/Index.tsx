@@ -226,11 +226,11 @@ const Index = () => {
         )}
         
         {activeTab === "coins" && (
-          <div className="min-h-screen bg-background pb-24 px-4 pt-12">
+          <div className="min-h-screen bg-background pb-24 px-4 pt-16 safe-area-top safe-area-bottom">
             <div className="max-w-lg mx-auto">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold mb-4 font-dancing text-foreground">Your Treasure</h2>
-                <div className="bg-gradient-secondary p-6 rounded-2xl text-center mb-6">
+                <div className="bg-gradient-secondary p-6 rounded-2xl text-center mb-6 shadow-warm">
                   <Gem className="w-12 h-12 text-white mx-auto mb-4" />
                   <p className="text-4xl font-bold text-white font-poppins">100</p>
                   <p className="text-white/80 font-poppins">Available Coins</p>
@@ -238,7 +238,7 @@ const Index = () => {
               </div>
               <Button 
                 onClick={handleBuyCoins}
-                className="w-full h-14 font-poppins font-semibold text-lg"
+                className="w-full h-14 font-poppins font-semibold text-lg rounded-xl"
                 variant="gradient"
               >
                 <Gem className="w-6 h-6 mr-3" />

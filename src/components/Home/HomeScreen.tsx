@@ -15,9 +15,9 @@ export function HomeScreen({ onStartMatch, onBuyCoins, onUpgradePremium }: HomeS
   const [coinBalance] = useState(100);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background safe-area-top">
       {/* Header with App Name and Treasure Chest */}
-      <div className="relative bg-gradient-primary pt-12 pb-8 px-4 rounded-b-3xl shadow-warm">
+      <div className="relative bg-gradient-primary pt-16 pb-8 px-4 rounded-b-3xl shadow-warm">
         <div className="flex items-center justify-between mb-4">
           <div className="flex-1">
             <h1 className="font-dancing text-4xl font-bold text-white mb-1">
@@ -29,19 +29,19 @@ export function HomeScreen({ onStartMatch, onBuyCoins, onUpgradePremium }: HomeS
             onClick={onBuyCoins}
             variant="outline"
             size="sm"
-            className="bg-white/20 border-white/30 text-white hover:bg-white/30 p-3 rounded-full"
+            className="bg-white/20 border-white/30 text-white hover:bg-white/30 p-3 rounded-full min-h-12 min-w-12"
           >
             <Gem className="w-5 h-5" />
           </Button>
         </div>
       </div>
 
-      <div className="px-4 -mt-6 space-y-6 pb-24">
+      <div className="px-4 -mt-6 space-y-6 pb-24 safe-area-bottom">
         {/* Coin Balance */}
         <CoinBalance balance={coinBalance} onBuyCoins={onBuyCoins} />
 
         {/* Premium Banner */}
-        <Card className="bg-gradient-premium shadow-card border-none rounded-2xl overflow-hidden">
+        <Card className="bg-gradient-premium shadow-card border-0 rounded-2xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -55,7 +55,7 @@ export function HomeScreen({ onStartMatch, onBuyCoins, onUpgradePremium }: HomeS
                 onClick={onUpgradePremium}
                 variant="outline" 
                 size="sm"
-                className="bg-white/20 text-white border-white/30 hover:bg-white/30 font-poppins"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 font-poppins h-10 px-4 rounded-xl"
               >
                 Upgrade
               </Button>
@@ -64,7 +64,7 @@ export function HomeScreen({ onStartMatch, onBuyCoins, onUpgradePremium }: HomeS
         </Card>
 
         {/* Video Chat Section */}
-        <Card className="shadow-card rounded-2xl overflow-hidden">
+        <Card className="shadow-card rounded-2xl overflow-hidden border-0">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 overflow-hidden rounded-xl">
               <img 
@@ -81,7 +81,7 @@ export function HomeScreen({ onStartMatch, onBuyCoins, onUpgradePremium }: HomeS
           <CardContent className="space-y-4">
             <Button 
               onClick={onStartMatch}
-              className="w-full h-14 font-poppins font-semibold text-lg"
+              className="w-full h-14 font-poppins font-semibold text-lg rounded-xl"
               variant="gradient"
               size="lg"
             >
@@ -98,17 +98,17 @@ export function HomeScreen({ onStartMatch, onBuyCoins, onUpgradePremium }: HomeS
         </Card>
 
         {/* Limited Time Offer */}
-        <Card className="border-2 border-primary shadow-warm rounded-2xl">
+        <Card className="border-2 border-primary shadow-warm rounded-2xl border-primary/20 bg-primary/5">
           <CardContent className="p-4">
             <div className="flex items-start space-x-3">
               <AlertCircle className="w-5 h-5 text-primary mt-0.5" />
               <div className="flex-1">
                 <h4 className="font-semibold text-foreground font-poppins">Limited Time Offer!</h4>
                 <p className="text-sm text-muted-foreground font-poppins">
-                  Only 500 premium spots left at ₹29/day. Secure payments via Razorpay.
+                  Only 500 premium spots left at ₹29/day.
                 </p>
               </div>
-              <Button onClick={onUpgradePremium} variant="outline" size="sm" className="font-poppins">
+              <Button onClick={onUpgradePremium} variant="outline" size="sm" className="font-poppins h-10 px-4 rounded-xl">
                 Upgrade
               </Button>
             </div>

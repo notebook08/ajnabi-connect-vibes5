@@ -106,23 +106,25 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase }: CoinPurchaseM
           ))}
 
           <div className="space-y-3 pt-4 border-t">
-            <h4 className="font-semibold text-foreground">Payment Methods</h4>
+            <h4 className="font-semibold text-foreground font-poppins">Payment Methods</h4>
             <div className="flex space-x-2">
-              <Badge variant="outline" className="flex items-center space-x-1">
+              <Badge variant="outline" className="flex items-center space-x-1 font-poppins">
                 <Zap className="w-3 h-3" />
                 <span>UPI</span>
               </Badge>
-              <Badge variant="outline">Netbanking</Badge>
-              <Badge variant="outline">Cards</Badge>
+              <Badge variant="outline" className="font-poppins">Netbanking</Badge>
+              <Badge variant="outline" className="font-poppins">Cards</Badge>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground font-poppins">
               Secure payments powered by Razorpay
             </p>
-            <p className="text-[10px] text-muted-foreground">Razorpay ID: {RAZORPAY_KEY_ID}</p>
+            <p className="text-[10px] text-muted-foreground font-poppins">
+              Razorpay ID: rzp_live_h3TuNA7JPL56Dh
+            </p>
           </div>
 
           <div className="text-center">
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full font-poppins h-12 rounded-xl">
               Watch Ad to Earn 50 Coins
             </Button>
           </div>
