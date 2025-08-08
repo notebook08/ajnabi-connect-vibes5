@@ -4,7 +4,7 @@ import { OnboardingScreen } from "@/components/Onboarding/OnboardingScreen";
 import { ProfileScreen } from "@/components/Profile/ProfileScreen";
 import { HomeScreen } from "@/components/Home/HomeScreen";
 import { VideoCallScreen } from "@/components/VideoChat/VideoCallScreen";
-import { PostCallDecisionScreen } from "@/components/VideoChat/PostCallDecisionScreen";
+import { PostCallProfileScreen } from "@/components/VideoChat/PostCallProfileScreen";
 import { MatchScreen } from "@/components/Match/MatchScreen";
 import { ChatListScreen, ChatPreview } from "@/components/Chat/ChatListScreen";
 import { ChatDetailScreen, ChatData, Message } from "@/components/Chat/ChatDetailScreen";
@@ -34,6 +34,27 @@ const Index = () => {
   const [isPremium, setIsPremium] = useState(false);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  
+  // Mock profile data for post-call screen
+  const mockCallPartnerProfile = {
+    username: "Shafa Asadel",
+    age: 20,
+    photos: [
+      "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg",
+      "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
+      "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg"
+    ],
+    bio: "Music enthusiast, always on the lookout for new tunes and ready to share playlists. Let's discover new sounds and enjoy the rhythm of life! ❤️",
+    distance: "2 km away",
+    commonInterests: 4,
+    aboutMe: {
+      gender: "Woman",
+      religion: "Muslims",
+      drinking: "Sometimes",
+      smoking: "Never"
+    },
+    interests: ["🎵 Pop Punk", "☕ Coffee", "🥊 Boxing", "🎮 Fifa Mobile", "⚽ Real Madrid"]
+  };
   
   // Mock data
   const [chats] = useState<ChatPreview[]>([
@@ -112,8 +133,8 @@ const Index = () => {
 
   if (currentScreen === "post-call") {
     return (
-      <PostCallDecisionScreen
-        profile={{ username: "Anonymous User", photo: undefined }}
+      <PostCallProfileScreen
+        profile={mockCallPartnerProfile}
         onReject={() => {
           setCurrentScreen("home");
           toast({

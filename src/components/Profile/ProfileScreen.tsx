@@ -41,45 +41,65 @@ export function ProfileScreen({ profile, onEdit }: ProfileScreenProps) {
         {/* Photo Grid */}
         <Card className="shadow-card rounded-2xl border-0 overflow-hidden">
           <CardContent className="p-0">
-            <div className="grid grid-cols-2 gap-1">
-              {photos.slice(0, 4).map((photo, index) => (
-                <div 
-                  key={index} 
-                  className={`relative ${index === 0 ? 'col-span-2 aspect-[4/3]' : 'aspect-square'}`}
-                >
-                  <img 
-                    src={photo} 
-                    alt={`${username} photo ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                  {index === 0 && (
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  )}
-                  {index === 0 && (
-                    <div className="absolute bottom-4 left-4 text-white">
-                      <h2 className="text-2xl font-bold mb-1 font-poppins">{username}, {age}</h2>
-                      <div className="flex items-center gap-4 text-sm font-poppins">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>2 km away</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Zap className="w-4 h-4" />
-                          <span>Recently Active</span>
-                        </div>
+            {/* Scrollable Photo Section */}
+            <div className="relative">
+              <div 
+                className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {photos.map((photo, index) => (
+                  <div key={index} className="w-full flex-shrink-0 snap-start relative">
+                    <div className="aspect-[4/3] bg-gradient-to-br from-primary/20 to-secondary/20">
+                      <img 
+                        src={photo} 
+                        alt={`${username} photo ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Gradient overlay for text readability on first photo */}
+                      {index === 0 && (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                          <div className="absolute bottom-4 left-4 text-white">
+                            <h2 className="text-2xl font-bold mb-1 font-poppins">{username}, {age}</h2>
+                            <div className="flex items-center gap-4 text-sm font-poppins">
+                              <div className="flex items-center gap-1">
+                                <MapPin className="w-4 h-4" />
+                                <span>2 km away</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Zap className="w-4 h-4" />
+                                <span>Recently Active</span>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Add Photo Button as last slide */}
+                {photos.length < 6 && (
+                  <div className="w-full flex-shrink-0 snap-start">
+                    <div className="aspect-[4/3] bg-muted/50 flex items-center justify-center border-2 border-dashed border-muted-foreground/30">
+                      <div className="text-center">
+                        <Camera className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground font-poppins">Add Photo</p>
                       </div>
                     </div>
-                  )}
-                </div>
-              ))}
-              
-              {/* Add Photo Button */}
-              {photos.length < 4 && (
-                <div className="aspect-square bg-muted/50 flex items-center justify-center border-2 border-dashed border-muted-foreground/30 rounded-lg">
-                  <div className="text-center">
-                    <Camera className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground font-poppins">Add Photo</p>
                   </div>
+                )}
+              </div>
+              
+              {/* Photo indicators */}
+              {photos.length > 1 && (
+                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                  {photos.map((_, index) => (
+                    <div
+                      key={index}
+                      className="h-1 w-8 bg-white/50 rounded-full"
+                    />
+                  ))}
                 </div>
               )}
             </div>
