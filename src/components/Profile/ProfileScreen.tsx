@@ -1,7 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ImageCropModal } from "@/components/Onboarding/ImageCropModal";
 import { MapPin, Zap, Heart, Edit, Camera, Plus, ArrowLeft, Gem, Eye, Unlock } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserProfile {
   username: string;
@@ -14,13 +16,60 @@ interface UserProfile {
 interface ProfileScreenProps {
   profile: UserProfile;
   onEdit?: () => void;
+  onUpdateProfile?: (updatedProfile: UserProfile) => void;
   onBack?: () => void;
   onBuyCoins?: () => void;
   onViewBlurredProfiles?: () => void;
 }
 
-export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins, onViewBlurredProfiles }: ProfileScreenProps) {
+export function ProfileScreen({ profile, onEdit, onUpdateProfile, onBack, onBuyCoins, onViewBlurredProfiles }: ProfileScreenProps) {
   const { username, photos, bio, interests, age = 20 } = profile;
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [pendingImageUrl, setPendingImageUrl] = useState<string>("");
+  const { toast } = useToast();
+
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && photos.length < 6) {
+      const file = files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          setPendingImageUrl(result);
+          setShowCropModal(true);
+        };
+        reader.readAsDataURL(file);
+      }
+    } else if (photos.length >= 6) {
+      toast({
+        title: "Maximum photos reached",
+        description: "You can upload a maximum of 6 photos.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleCropComplete = (croppedImageUrl: string) => {
+    const updatedProfile = {
+      ...profile,
+      photos: [...photos, croppedImageUrl]
+    };
+    
+    onUpdateProfile?.(updatedProfile);
+    setPendingImageUrl("");
+    setShowCropModal(false);
+    
+    toast({
+      title: "Photo added successfully!",
+      description: "Your new photo has been added to your profile.",
+    });
+  };
+
+  const handleCropCancel = () => {
+    setPendingImageUrl("");
+    setShowCropModal(false);
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24 safe-area-top safe-area-bottom">
@@ -155,12 +204,21 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins, onViewBlurr
                 {/* Add Photo Button as last slide */}
                 {photos.length < 6 && (
                   <div className="w-full flex-shrink-0 snap-start">
-                    <div className="aspect-[4/3] bg-muted/50 flex items-center justify-center border-2 border-dashed border-muted-foreground/30">
+                    <label className="aspect-[4/3] bg-muted/50 flex items-center justify-center border-2 border-dashed border-muted-foreground/30 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors">
                       <div className="text-center">
                         <Camera className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                         <p className="text-sm text-muted-foreground font-poppins">Add Photo</p>
+                        <p className="text-xs text-muted-foreground/70 font-poppins mt-1">
+                          Crop & adjust after upload
+                        </p>
                       </div>
-                    </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
+                        className="hidden"
+                      />
+                    </label>
                   </div>
                 )}
               </div>
@@ -245,6 +303,14 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins, onViewBlurr
           </CardContent>
         </Card>
       </div>
+      
+      {/* Image Crop Modal */}
+      <ImageCropModal
+        isOpen={showCropModal}
+        onClose={handleCropCancel}
+        onCropComplete={handleCropComplete}
+        imageUrl={pendingImageUrl}
+      />
     </div>
   );
 }

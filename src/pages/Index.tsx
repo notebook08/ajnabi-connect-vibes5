@@ -479,6 +479,7 @@ const Index = () => {
           <ProfileScreen 
             profile={userProfile}
             onEdit={() => setIsEditingProfile(true)}
+            onUpdateProfile={(updatedProfile) => setUserProfile(updatedProfile)}
             onBuyCoins={handleBuyCoins}
             onViewBlurredProfiles={() => setCurrentScreen("blurred-profiles")}
           />

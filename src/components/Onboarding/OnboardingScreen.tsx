@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Plus, X, Heart, ArrowRight, Sparkles, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ImageCropModal } from "./ImageCropModal";
 
 interface UserProfile {
   username: string;
@@ -37,20 +38,25 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
   const [selectedInterests, setSelectedInterests] = useState<string[]>(initialProfile?.interests ?? []);
   const [matchPreference, setMatchPreference] = useState<"anyone" | "men" | "women">(initialProfile?.matchPreference ?? "anyone");
   const [gender, setGender] = useState<"male" | "female" | "other">(initialProfile?.gender ?? "male");
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [pendingImageUrl, setPendingImageUrl] = useState<string>("");
   const { toast } = useToast();
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && photos.length < 6) {
       const newPhotos = Array.from(files).slice(0, 6 - photos.length);
-      newPhotos.forEach((file) => {
+      // Process only the first file for cropping
+      const file = newPhotos[0];
+      if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
           const result = e.target?.result as string;
-          setPhotos(prev => [...prev, result]);
+          setPendingImageUrl(result);
+          setShowCropModal(true);
         };
         reader.readAsDataURL(file);
-      });
+      }
     } else if (photos.length >= 6) {
       toast({
         title: "Maximum photos reached",
@@ -60,8 +66,30 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
     }
   };
 
+  const handleCropComplete = (croppedImageUrl: string) => {
+    setPhotos(prev => [...prev, croppedImageUrl]);
+    setPendingImageUrl("");
+    setShowCropModal(false);
+    
+    toast({
+      title: "Photo added successfully!",
+      description: "Your photo has been cropped and added to your profile.",
+    });
+  };
+
+  const handleCropCancel = () => {
+    setPendingImageUrl("");
+    setShowCropModal(false);
+  };
+
   const removePhoto = (index: number) => {
     setPhotos(prev => prev.filter((_, i) => i !== index));
+    
+    // Clean up blob URLs to prevent memory leaks
+    const photoUrl = photos[index];
+    if (photoUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(photoUrl);
+    }
   };
 
   const toggleInterest = (interest: string) => {
@@ -233,13 +261,15 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
                     <div className="text-center">
                       <Plus className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-primary" />
                       <p className="text-xs sm:text-sm text-primary font-poppins font-medium">Add Photo</p>
+                      <p className="text-[10px] sm:text-xs text-primary/70 font-poppins mt-1">
+                        Crop & adjust after upload
+                      </p>
                     </div>
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handlePhotoUpload}
                       className="hidden"
-                      multiple
                     />
                   </label>
                 )}
@@ -354,6 +384,14 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
       
       {/* Bottom Safe Area */}
       <div className="safe-area-bottom bg-gradient-primary" />
+      
+      {/* Image Crop Modal */}
+      <ImageCropModal
+        isOpen={showCropModal}
+        onClose={handleCropCancel}
+        onCropComplete={handleCropComplete}
+        imageUrl={pendingImageUrl}
+      />
     </div>
   );
 }
