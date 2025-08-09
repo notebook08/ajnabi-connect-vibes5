@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ReactionButton } from "../VideoChat/ReactionButton";
+import { ReactionEffect } from "../VideoChat/ReactionEffect";
+import { useToast } from "@/hooks/use-toast";
 import { 
   PhoneOff, 
   Mic, 
@@ -12,7 +15,8 @@ import {
   ArrowLeft,
   Volume2,
   VolumeX,
-  Clock
+  Clock,
+  Sparkles
 } from "lucide-react";
 
 interface VoiceCallActiveScreenProps {
@@ -21,9 +25,19 @@ interface VoiceCallActiveScreenProps {
   onReport: () => void;
   onBlock: () => void;
   onBack?: () => void;
+  coinBalance?: number;
+  onSpendCoins?: (amount: number) => void;
 }
 
-export function VoiceCallActiveScreen({ onEndCall, onReconnect, onReport, onBlock, onBack }: VoiceCallActiveScreenProps) {
+export function VoiceCallActiveScreen({ 
+  onEndCall, 
+  onReconnect, 
+  onReport, 
+  onBlock, 
+  onBack,
+  coinBalance = 100,
+  onSpendCoins
+}: VoiceCallActiveScreenProps) {
   const [callDuration, setCallDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [isSpeakerOn, setIsSpeakerOn] = useState(false);
@@ -32,7 +46,18 @@ export function VoiceCallActiveScreen({ onEndCall, onReconnect, onReport, onBloc
   const [userWantsToContinue, setUserWantsToContinue] = useState<boolean | null>(null);
   const [partnerWantsToContinue, setPartnerWantsToContinue] = useState<boolean | null>(null);
   const [waitingForPartner, setWaitingForPartner] = useState(false);
+  const [activeReactions, setActiveReactions] = useState<Array<{ id: string; reaction: string }>>([]);
+  const [showReactions, setShowReactions] = useState(false);
+  const { toast } = useToast();
 
+  const reactions = [
+    { emoji: "🎵", label: "Music", cost: 1 },
+    { emoji: "👏", label: "Clap", cost: 1 },
+    { emoji: "💖", label: "Heart", cost: 1 },
+    { emoji: "😂", label: "Laugh", cost: 1 },
+    { emoji: "🔥", label: "Fire", cost: 2 },
+    { emoji: "✨", label: "Sparkle", cost: 2 },
+  ];
   useEffect(() => {
     // Simulate connection
     const timer = setTimeout(() => setIsConnected(true), 2000);
@@ -101,9 +126,47 @@ export function VoiceCallActiveScreen({ onEndCall, onReconnect, onReport, onBloc
     setUserWantsToContinue(wantsToContinue);
   };
 
+  const handleReaction = (reaction: string, cost: number) => {
+    if (coinBalance < cost) {
+      toast({
+        title: "Not enough coins",
+        description: `You need ${cost} coins to send this reaction.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Spend coins
+    onSpendCoins?.(cost);
+    
+    // Add reaction effect
+    const reactionId = Date.now().toString();
+    setActiveReactions(prev => [...prev, { id: reactionId, reaction }]);
+    
+    // Show success toast
+    toast({
+      title: "Reaction sent! ✨",
+      description: `${reaction} sent for ${cost} coins`,
+    });
+  };
+
+  const handleReactionComplete = (reactionId: string) => {
+    setActiveReactions(prev => prev.filter(r => r.id !== reactionId));
+  };
+
   return (
     <>
       <div className="fixed inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 z-50 safe-area-top safe-area-bottom">
+        {/* Reaction Effects */}
+        {activeReactions.map(({ id, reaction }) => (
+          <ReactionEffect
+            key={id}
+            id={id}
+            reaction={reaction}
+            onComplete={handleReactionComplete}
+          />
+        ))}
+        
         {/* Voice Call Interface */}
         <div className="relative h-full flex flex-col">
           {/* Call Duration and Back Button */}
@@ -127,6 +190,37 @@ export function VoiceCallActiveScreen({ onEndCall, onReconnect, onReport, onBloc
               </div>
             </Card>
           </div>
+
+          {/* Reaction Panel */}
+          {isConnected && (
+            <div className="absolute top-20 sm:top-24 md:top-28 right-3 sm:right-4 md:right-6">
+              <div className="flex flex-col items-end gap-2">
+                <Button
+                  onClick={() => setShowReactions(!showReactions)}
+                  variant="outline"
+                  size="icon"
+                  className="w-12 h-12 rounded-full bg-black/50 border-white/30 text-white hover:bg-black/70"
+                >
+                  <Sparkles className="w-5 h-5" />
+                </Button>
+                
+                {showReactions && (
+                  <div className="flex flex-col gap-2 animate-slide-up">
+                    {reactions.map((reaction) => (
+                      <ReactionButton
+                        key={reaction.emoji}
+                        emoji={reaction.emoji}
+                        label={reaction.label}
+                        cost={reaction.cost}
+                        coinBalance={coinBalance}
+                        onReact={handleReaction}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Main Content Area */}
           <div className="flex-1 flex items-center justify-center p-4">

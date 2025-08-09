@@ -158,6 +158,10 @@ const Index = () => {
             description: "You won't be matched with this user again.",
           });
         }}
+        coinBalance={coinBalance}
+        onSpendCoins={(amount) => {
+          setCoinBalance(prev => Math.max(0, prev - amount));
+        }}
       />
     );
   }
@@ -189,6 +193,10 @@ const Index = () => {
             title: "User blocked",
             description: "You won't be matched with this user again.",
           });
+        }}
+        coinBalance={coinBalance}
+        onSpendCoins={(amount) => {
+          setCoinBalance(prev => Math.max(0, prev - amount));
         }}
       />
     );
