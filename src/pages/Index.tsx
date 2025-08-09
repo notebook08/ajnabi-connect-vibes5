@@ -13,7 +13,11 @@ import { CoinPurchaseModal } from "@/components/Coins/CoinPurchaseModal";
 import { VoiceCallScreen } from "@/components/VoiceCall/VoiceCallScreen";
 import { VoiceCallActiveScreen } from "@/components/VoiceCall/VoiceCallActiveScreen";
 import { SpinWheelScreen } from "@/components/SpinWheel/SpinWheelScreen";
+import { LoginStreakModal } from "@/components/Rewards/LoginStreakModal";
+import { MysteryBoxModal } from "@/components/Rewards/MysteryBoxModal";
 import { BottomNav } from "@/components/Layout/BottomNav";
+import { useLoginStreak } from "@/hooks/useLoginStreak";
+import { useMysteryBox } from "@/hooks/useMysteryBox";
 import { useToast } from "@/hooks/use-toast";
 import { Video, Gem, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -38,6 +42,17 @@ const Index = () => {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [coinBalance, setCoinBalance] = useState(100);
+  const [showStreakModal, setShowStreakModal] = useState(false);
+  
+  // Login streak and mystery box hooks
+  const { streakData, claimReward } = useLoginStreak();
+  const { 
+    showMysteryBox, 
+    currentReward, 
+    triggerMysteryBox, 
+    openMysteryBox, 
+    closeMysteryBox 
+  } = useMysteryBox();
   
   // Mock profile data for post-call screen
   const mockCallPartnerProfile = {
@@ -194,6 +209,10 @@ const Index = () => {
         }}
       />
     );
+    // Trigger mystery box chance after ending call
+    setTimeout(() => {
+      triggerMysteryBox();
+    }, 1000);
   }
 
   const handleStartMatch = () => {
@@ -231,6 +250,37 @@ const Index = () => {
       title: "Welcome to Premium!",
       description: "You now have access to all premium features including unlimited voice calls.",
     });
+  };
+
+  const handleStreakRewardClaim = (day: number, reward: { type: 'coins' | 'premium'; amount?: number }) => {
+    claimReward(day);
+    
+    if (reward.type === 'coins' && reward.amount) {
+      setCoinBalance(prev => prev + reward.amount!);
+      toast({
+        title: "Streak Reward Claimed!",
+        description: `You earned ${reward.amount} coins for your ${day}-day streak!`,
+      });
+    } else if (reward.type === 'premium') {
+      setIsPremium(true);
+      toast({
+        title: "Premium Boost Activated!",
+        description: "You've unlocked premium features for reaching a 30-day streak!",
+      });
+    }
+  };
+
+  const handleMysteryBoxReward = () => {
+    if (currentReward) {
+      if (currentReward.type === 'coins' && currentReward.amount) {
+        setCoinBalance(prev => prev + currentReward.amount!);
+      }
+      
+      toast({
+        title: "Mystery Box Opened! 🎉",
+        description: currentReward.description,
+      });
+    }
   };
 
   const handleOpenSpinWheel = () => {
@@ -362,10 +412,37 @@ const Index = () => {
             onBuyCoins={handleBuyCoins}
           />
         )}
+        
+        {activeTab === "streak" && (
+          <div className="min-h-screen bg-background pb-24 px-4 pt-16 safe-area-top safe-area-bottom">
+            <div className="max-w-lg mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-4 font-dancing text-foreground">Login Streak</h2>
+                <div className="bg-gradient-primary p-6 rounded-2xl text-center mb-6 shadow-warm">
+                  <Flame className="w-12 h-12 text-white mx-auto mb-4 animate-float" />
+                  <p className="text-4xl font-bold text-white font-poppins">{streakData.currentStreak}</p>
+                  <p className="text-white/80 font-poppins">Day Streak</p>
+                </div>
+              </div>
+              <Button 
+                onClick={() => setShowStreakModal(true)}
+                className="w-full h-14 font-poppins font-semibold text-lg rounded-xl"
+                variant="gradient"
+              >
+                <Flame className="w-6 h-6 mr-3" />
+                View Streak Rewards
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom Navigation */}
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <BottomNav 
+        activeTab={activeTab} 
+        onTabChange={setActiveTab} 
+        streakCount={streakData.currentStreak}
+      />
 
       {/* Modals */}
       <PremiumModal
@@ -378,6 +455,24 @@ const Index = () => {
         isOpen={showCoinModal}
         onClose={() => setShowCoinModal(false)}
         onPurchase={handleCoinPurchase}
+      />
+      
+      <LoginStreakModal
+        isOpen={showStreakModal}
+        onClose={() => setShowStreakModal(false)}
+        currentStreak={streakData.currentStreak}
+        claimedDays={streakData.claimedDays}
+        onClaimReward={handleStreakRewardClaim}
+      />
+      
+      <MysteryBoxModal
+        isOpen={showMysteryBox}
+        onClose={() => {
+          handleMysteryBoxReward();
+          closeMysteryBox();
+        }}
+        onOpenBox={openMysteryBox}
+        reward={currentReward}
       />
     </div>
   );
