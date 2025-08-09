@@ -15,11 +15,13 @@ import { VoiceCallActiveScreen } from "@/components/VoiceCall/VoiceCallActiveScr
 import { SpinWheelScreen } from "@/components/SpinWheel/SpinWheelScreen";
 import { LoginStreakModal } from "@/components/Rewards/LoginStreakModal";
 import { MysteryBoxModal } from "@/components/Rewards/MysteryBoxModal";
+import { BlurredProfilesScreen } from "@/components/Profile/BlurredProfilesScreen";
 import { BottomNav } from "@/components/Layout/BottomNav";
 import { useLoginStreak } from "@/hooks/useLoginStreak";
 import { useMysteryBox } from "@/hooks/useMysteryBox";
+import { useBlurredProfiles } from "@/hooks/useBlurredProfiles";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Gem, Phone } from "lucide-react";
+import { Video, Gem, Phone, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-bg.jpg";
 
@@ -34,7 +36,7 @@ interface UserProfile {
 const Index = () => {
   const [appState, setAppState] = useState<"splash" | "onboarding" | "main" | "spin-wheel">("splash");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [currentScreen, setCurrentScreen] = useState<"home" | "call" | "voice-call" | "post-call" | "chat-detail">("home");
+  const [currentScreen, setCurrentScreen] = useState<"home" | "call" | "voice-call" | "post-call" | "chat-detail" | "blurred-profiles">("home");
   const [activeTab, setActiveTab] = useState("home");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showCoinModal, setShowCoinModal] = useState(false);
@@ -46,6 +48,7 @@ const Index = () => {
   
   // Login streak and mystery box hooks
   const { streakData, claimReward } = useLoginStreak();
+  const { profiles: blurredProfiles, unlockProfile } = useBlurredProfiles();
   const { 
     showMysteryBox, 
     currentReward, 
@@ -215,6 +218,24 @@ const Index = () => {
         onSend={(text) => {
           // Message sent logic here
         }}
+      />
+    );
+  }
+
+  if (currentScreen === "blurred-profiles") {
+    return (
+      <BlurredProfilesScreen
+        profiles={blurredProfiles}
+        coinBalance={coinBalance}
+        onBack={() => {
+          setCurrentScreen("home");
+          setActiveTab("profile");
+        }}
+        onUnlockProfile={(profileId, cost) => {
+          unlockProfile(profileId);
+          setCoinBalance(prev => prev - cost);
+        }}
+        onBuyCoins={handleBuyCoins}
       />
     );
   }
@@ -414,6 +435,7 @@ const Index = () => {
             profile={userProfile}
             onEdit={() => setIsEditingProfile(true)}
             onBuyCoins={handleBuyCoins}
+            onViewBlurredProfiles={() => setCurrentScreen("blurred-profiles")}
           />
         )}
         
@@ -446,6 +468,7 @@ const Index = () => {
         activeTab={activeTab} 
         onTabChange={setActiveTab} 
         streakCount={streakData.currentStreak}
+        hasNewProfileActivity={blurredProfiles.some(p => !p.isUnlocked)}
       />
 
       {/* Modals */}

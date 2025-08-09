@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Zap, Heart, Edit, Camera, Plus, ArrowLeft, Gem } from "lucide-react";
+import { MapPin, Zap, Heart, Edit, Camera, Plus, ArrowLeft, Gem, Eye, Unlock } from "lucide-react";
 
 interface UserProfile {
   username: string;
@@ -16,9 +16,10 @@ interface ProfileScreenProps {
   onEdit?: () => void;
   onBack?: () => void;
   onBuyCoins?: () => void;
+  onViewBlurredProfiles?: () => void;
 }
 
-export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileScreenProps) {
+export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins, onViewBlurredProfiles }: ProfileScreenProps) {
   const { username, photos, bio, interests, age = 20 } = profile;
 
   return (
@@ -62,6 +63,53 @@ export function ProfileScreen({ profile, onEdit, onBack, onBuyCoins }: ProfileSc
           </div>
         </div>
       </div>
+        {/* Profile Unlocks Section */}
+        {onViewBlurredProfiles && (
+          <Card className="shadow-card rounded-2xl border-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 bg-gradient-premium rounded-full">
+                    <Unlock className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold font-poppins">Profile Unlocks</h3>
+                    <p className="text-sm text-muted-foreground font-poppins">
+                      See who liked or viewed your profile
+                    </p>
+                  </div>
+                </div>
+                <Button 
+                  onClick={onViewBlurredProfiles}
+                  variant="gradient" 
+                  className="font-poppins h-12 px-6 rounded-xl"
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  View
+                </Button>
+              </div>
+              
+              {/* Preview stats */}
+              <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-purple-200">
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Heart className="w-4 h-4 text-red-500" />
+                    <span className="text-lg font-bold font-poppins">3</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground font-poppins">Liked You</p>
+                </div>
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Eye className="w-4 h-4 text-blue-500" />
+                    <span className="text-lg font-bold font-poppins">2</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground font-poppins">Viewed You</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
 
       <div className="px-4 space-y-6 pt-4">
         {/* Photo Grid */}

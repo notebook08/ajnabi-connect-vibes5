@@ -1,11 +1,11 @@
-import { Home, Video, Coins, MessageCircle, User, Phone } from "lucide-react";
-import { Flame } from "lucide-react";
+import { Home, Video, Coins, MessageCircle, User, Phone, Flame, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BottomNavProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   streakCount?: number;
+  hasNewProfileActivity?: boolean;
 }
 
 const navItems = [
@@ -18,7 +18,7 @@ const navItems = [
   { id: "profile", icon: User, label: "Profile" },
 ];
 
-export function BottomNav({ activeTab, onTabChange, streakCount = 0 }: BottomNavProps) {
+export function BottomNav({ activeTab, onTabChange, streakCount = 0, hasNewProfileActivity = false }: BottomNavProps) {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-card/98 backdrop-blur-xl border-t border-border z-50">
       <div className="flex items-center justify-around py-2 sm:py-3 px-2 sm:px-4 max-w-lg mx-auto">
@@ -42,6 +42,11 @@ export function BottomNav({ activeTab, onTabChange, streakCount = 0 }: BottomNav
               {item.id === "streak" && streakCount > 0 && (
                 <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-primary rounded-full flex items-center justify-center">
                   <span className="text-[8px] sm:text-[10px] font-bold text-white">{streakCount}</span>
+                </div>
+              )}
+              {item.id === "profile" && hasNewProfileActivity && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full animate-pulse" />
                 </div>
               )}
             </button>
