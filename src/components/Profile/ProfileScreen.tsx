@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -112,196 +113,198 @@ export function ProfileScreen({ profile, onEdit, onUpdateProfile, onBack, onBuyC
           </div>
         </div>
       </div>
-        {/* Profile Unlocks Section */}
-        {onViewBlurredProfiles && (
-          <Card className="shadow-card rounded-2xl border-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-3 bg-gradient-premium rounded-full">
-                    <Unlock className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold font-poppins">Profile Unlocks</h3>
-                    <p className="text-sm text-muted-foreground font-poppins">
-                      See who liked or viewed your profile
-                    </p>
-                  </div>
-                </div>
-                <Button 
-                  onClick={onViewBlurredProfiles}
-                  variant="gradient" 
-                  className="font-poppins h-12 px-6 rounded-xl"
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  View
-                </Button>
-              </div>
-              
-              {/* Preview stats */}
-              <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-purple-200">
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <Heart className="w-4 h-4 text-red-500" />
-                    <span className="text-lg font-bold font-poppins">3</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground font-poppins">Liked You</p>
-                </div>
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <Eye className="w-4 h-4 text-blue-500" />
-                    <span className="text-lg font-bold font-poppins">2</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground font-poppins">Viewed You</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
-
-      <div className="px-4 space-y-6 pt-4">
-        {/* Photo Grid */}
-        <Card className="shadow-card rounded-2xl border-0 overflow-hidden">
-          <CardContent className="p-0">
-            {/* Scrollable Photo Section */}
-            <div className="relative">
-              <div 
-                className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {photos.map((photo, index) => (
-                  <div key={index} className="w-full flex-shrink-0 snap-start relative">
-                    <div className="aspect-[4/3] bg-gradient-to-br from-primary/20 to-secondary/20">
-                      <img 
-                        src={photo} 
-                        alt={`${username} photo ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      {/* Gradient overlay for text readability on first photo */}
-                      {index === 0 && (
-                        <>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                          <div className="absolute bottom-4 left-4 text-white">
-                            <h2 className="text-2xl font-bold mb-1 font-poppins">{username}, {age}</h2>
-                            <div className="flex items-center gap-4 text-sm font-poppins">
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-4 h-4" />
-                                <span>2 km away</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Zap className="w-4 h-4" />
-                                <span>Recently Active</span>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      )}
+      <div className="px-4 -mt-6 pb-24 space-y-6">
+        <div className="max-w-4xl mx-auto">
+          {/* Profile Unlocks Section */}
+          {onViewBlurredProfiles && (
+            <Card className="shadow-card rounded-2xl border-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-200">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-3 bg-gradient-premium rounded-full">
+                      <Unlock className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold font-poppins">Profile Unlocks</h3>
+                      <p className="text-sm text-muted-foreground font-poppins">
+                        See who liked or viewed your profile
+                      </p>
                     </div>
                   </div>
-                ))}
+                  <Button 
+                    onClick={onViewBlurredProfiles}
+                    variant="gradient" 
+                    className="font-poppins h-12 px-6 rounded-xl"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    View
+                  </Button>
+                </div>
                 
-                {/* Add Photo Button as last slide */}
-                {photos.length < 6 && (
-                  <div className="w-full flex-shrink-0 snap-start">
-                    <label className="aspect-[4/3] bg-muted/50 flex items-center justify-center border-2 border-dashed border-muted-foreground/30 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors">
-                      <div className="text-center">
-                        <Camera className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground font-poppins">Add Photo</p>
-                        <p className="text-xs text-muted-foreground/70 font-poppins mt-1">
-                          Crop & adjust after upload
-                        </p>
+                {/* Preview stats */}
+                <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-purple-200">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <Heart className="w-4 h-4 text-red-500" />
+                      <span className="text-lg font-bold font-poppins">3</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground font-poppins">Liked You</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <Eye className="w-4 h-4 text-blue-500" />
+                      <span className="text-lg font-bold font-poppins">2</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground font-poppins">Viewed You</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Photo Grid */}
+          <Card className="shadow-card rounded-2xl border-0 overflow-hidden">
+            <CardContent className="p-0">
+              {/* Scrollable Photo Section */}
+              <div className="relative">
+                <div 
+                  className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {photos.map((photo, index) => (
+                    <div key={index} className="w-full flex-shrink-0 snap-start relative">
+                      <div className="aspect-[4/3] bg-gradient-to-br from-primary/20 to-secondary/20">
+                        <img 
+                          src={photo} 
+                          alt={`${username} photo ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        {/* Gradient overlay for text readability on first photo */}
+                        {index === 0 && (
+                          <>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                            <div className="absolute bottom-4 left-4 text-white">
+                              <h2 className="text-2xl font-bold mb-1 font-poppins">{username}, {age}</h2>
+                              <div className="flex items-center gap-4 text-sm font-poppins">
+                                <div className="flex items-center gap-1">
+                                  <MapPin className="w-4 h-4" />
+                                  <span>2 km away</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Zap className="w-4 h-4" />
+                                  <span>Recently Active</span>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handlePhotoUpload}
-                        className="hidden"
+                    </div>
+                  ))}
+                  
+                  {/* Add Photo Button as last slide */}
+                  {photos.length < 6 && (
+                    <div className="w-full flex-shrink-0 snap-start">
+                      <label className="aspect-[4/3] bg-muted/50 flex items-center justify-center border-2 border-dashed border-muted-foreground/30 cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors">
+                        <div className="text-center">
+                          <Camera className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                          <p className="text-sm text-muted-foreground font-poppins">Add Photo</p>
+                          <p className="text-xs text-muted-foreground/70 font-poppins mt-1">
+                            Crop & adjust after upload
+                          </p>
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePhotoUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Photo indicators */}
+                {photos.length > 1 && (
+                  <div className="absolute top-4 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                    {photos.map((_, index) => (
+                      <div
+                        key={index}
+                        className="h-1 w-8 bg-white/50 rounded-full"
                       />
-                    </label>
+                    ))}
                   </div>
                 )}
               </div>
-              
-              {/* Photo indicators */}
-              {photos.length > 1 && (
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                  {photos.map((_, index) => (
-                    <div
-                      key={index}
-                      className="h-1 w-8 bg-white/50 rounded-full"
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Bio Section */}
-        <Card className="shadow-card rounded-2xl border-0">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold font-poppins">About Me</h3>
-              <Button variant="ghost" size="sm" onClick={onEdit}>
-                <Edit className="w-4 h-4" />
-              </Button>
-            </div>
-            <p className="text-foreground leading-relaxed font-poppins">{bio}</p>
-          </CardContent>
-        </Card>
+          {/* Bio Section */}
+          <Card className="shadow-card rounded-2xl border-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold font-poppins">About Me</h3>
+                <Button variant="ghost" size="sm" onClick={onEdit}>
+                  <Edit className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-foreground leading-relaxed font-poppins">{bio}</p>
+            </CardContent>
+          </Card>
 
-        {/* Lifestyle Tags */}
-        <Card className="shadow-card rounded-2xl border-0">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold font-poppins">Lifestyle</h3>
-              <Button variant="ghost" size="sm" onClick={onEdit}>
-                <Edit className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Badge variant="outline" className="justify-center py-3 font-poppins">
-                🚭 Non-smoker
-              </Badge>
-              <Badge variant="outline" className="justify-center py-3 font-poppins">
-                🍷 Social Drinker
-              </Badge>
-              <Badge variant="outline" className="justify-center py-3 font-poppins">
-                🏃‍♀️ Active
-              </Badge>
-              <Badge variant="outline" className="justify-center py-3 font-poppins">
-                🐕 Dog Lover
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Interests Section */}
-        <Card className="shadow-card rounded-2xl border-0">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold font-poppins">My Interests</h3>
-              <Button variant="ghost" size="sm" onClick={onEdit}>
-                <Edit className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {interests.map((interest, index) => (
-                <Badge 
-                  key={index}
-                  variant="default"
-                  className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 font-poppins px-4 py-2"
-                >
-                  {interest}
+          {/* Lifestyle Tags */}
+          <Card className="shadow-card rounded-2xl border-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold font-poppins">Lifestyle</h3>
+                <Button variant="ghost" size="sm" onClick={onEdit}>
+                  <Edit className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Badge variant="outline" className="justify-center py-3 font-poppins">
+                  🚭 Non-smoker
                 </Badge>
-              ))}
-              <Button variant="outline" size="sm" className="rounded-full" onClick={onEdit}>
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                <Badge variant="outline" className="justify-center py-3 font-poppins">
+                  🍷 Social Drinker
+                </Badge>
+                <Badge variant="outline" className="justify-center py-3 font-poppins">
+                  🏃‍♀️ Active
+                </Badge>
+                <Badge variant="outline" className="justify-center py-3 font-poppins">
+                  🐕 Dog Lover
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Interests Section */}
+          <Card className="shadow-card rounded-2xl border-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold font-poppins">My Interests</h3>
+                <Button variant="ghost" size="sm" onClick={onEdit}>
+                  <Edit className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {interests.map((interest, index) => (
+                  <Badge 
+                    key={index}
+                    variant="default"
+                    className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 font-poppins px-4 py-2"
+                  >
+                    {interest}
+                  </Badge>
+                ))}
+                <Button variant="outline" size="sm" className="rounded-full" onClick={onEdit}>
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
       
       {/* Image Crop Modal */}
