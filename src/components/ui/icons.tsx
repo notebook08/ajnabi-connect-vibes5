@@ -1,4 +1,4 @@
-import { LucideProps } from "lucide-react";
+import { LucideCrop as LucideProps } from "lucide-react";
 
 export const Treasure = (props: LucideProps) => (
   <svg
