@@ -12,6 +12,7 @@ import { PremiumModal } from "@/components/Premium/PremiumModal";
 import { CoinPurchaseModal } from "@/components/Coins/CoinPurchaseModal";
 import { VoiceCallScreen } from "@/components/VoiceCall/VoiceCallScreen";
 import { VoiceCallActiveScreen } from "@/components/VoiceCall/VoiceCallActiveScreen";
+import { SpinWheelScreen } from "@/components/SpinWheel/SpinWheelScreen";
 import { BottomNav } from "@/components/Layout/BottomNav";
 import { useToast } from "@/hooks/use-toast";
 import { Video, Gem, Phone } from "lucide-react";
@@ -27,7 +28,7 @@ interface UserProfile {
 }
 
 const Index = () => {
-  const [appState, setAppState] = useState<"splash" | "onboarding" | "main">("splash");
+  const [appState, setAppState] = useState<"splash" | "onboarding" | "main" | "spin-wheel">("splash");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [currentScreen, setCurrentScreen] = useState<"home" | "call" | "voice-call" | "post-call" | "chat-detail">("home");
   const [activeTab, setActiveTab] = useState("home");
@@ -232,6 +233,18 @@ const Index = () => {
     });
   };
 
+  const handleOpenSpinWheel = () => {
+    setAppState("spin-wheel");
+  };
+
+  const handleSpinWheelBack = () => {
+    setAppState("main");
+  };
+
+  const handleCoinsEarned = (amount: number) => {
+    setCoinBalance(prev => prev + amount);
+  };
+
   const handleSpendCoins = (amount: number) => {
     setCoinBalance(prev => Math.max(0, prev - amount));
     toast({
@@ -239,6 +252,15 @@ const Index = () => {
       description: `${amount} coins used for voice call.`,
     });
   };
+
+  if (appState === "spin-wheel") {
+    return (
+      <SpinWheelScreen
+        onBack={handleSpinWheelBack}
+        onCoinsEarned={handleCoinsEarned}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -259,6 +281,7 @@ const Index = () => {
             onStartMatch={handleStartMatch}
             onBuyCoins={handleBuyCoins}
             onUpgradePremium={handleUpgradePremium}
+            onOpenSpinWheel={handleOpenSpinWheel}
             matchPreference={userProfile?.matchPreference || "anyone"}
             onChangePreference={(pref) => {
               if (userProfile) {

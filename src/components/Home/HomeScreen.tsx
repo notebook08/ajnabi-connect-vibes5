@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Video, Crown, AlertCircle, Gem, Filter, Bell } from "lucide-react";
+import { Treasure } from "@/components/ui/icons";
 import { CoinBalance } from "./CoinBalance";
 import videoChatIllustration from "@/assets/video-chat-illustration.jpg";
 
@@ -9,6 +10,7 @@ interface HomeScreenProps {
   onStartMatch: () => void;
   onBuyCoins: () => void;
   onUpgradePremium: () => void;
+  onOpenSpinWheel: () => void;
   matchPreference: "anyone" | "men" | "women";
   onChangePreference: (pref: "anyone" | "men" | "women") => void;
   isPremium: boolean;
@@ -19,6 +21,7 @@ export function HomeScreen({
   onStartMatch, 
   onBuyCoins, 
   onUpgradePremium, 
+  onOpenSpinWheel,
   matchPreference, 
   onChangePreference, 
   isPremium, 
@@ -78,6 +81,14 @@ export function HomeScreen({
               className="text-white hover:bg-white/20 rounded-full w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12"
             >
               <Bell className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+            </Button>
+            <Button 
+              onClick={onOpenSpinWheel}
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20 rounded-full w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 animate-pulse-warm"
+            >
+              <Treasure className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
             </Button>
             <Button 
               onClick={onBuyCoins}
