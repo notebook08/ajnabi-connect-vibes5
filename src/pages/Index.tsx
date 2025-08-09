@@ -21,6 +21,7 @@ import { useLoginStreak } from "@/hooks/useLoginStreak";
 import { useMysteryBox } from "@/hooks/useMysteryBox";
 import { useBlurredProfiles } from "@/hooks/useBlurredProfiles";
 import { useToast } from "@/hooks/use-toast";
+import { useMatching } from "@/hooks/useMatching";
 import { Video, Gem, Phone, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-bg.jpg";
@@ -57,6 +58,13 @@ const Index = () => {
     openMysteryBox, 
     closeMysteryBox 
   } = useMysteryBox();
+  
+  // Matching hook
+  const matching = useMatching({
+    userGender: userProfile?.gender || 'male',
+    userId: 'user-' + Date.now(),
+    isPremium
+  });
   
   // Mock profile data for post-call screen
   const mockCallPartnerProfile = {
@@ -242,11 +250,39 @@ const Index = () => {
   }
 
   const handleStartMatch = () => {
-    setCurrentScreen("call");
+    if (userProfile) {
+      // Show matching explanation toast
+      const explanation = matching.getMatchingExplanation();
+      toast({
+        title: explanation.title,
+        description: explanation.description,
+      });
+      
+      // Start the matching process
+      matching.startMatching(userProfile.matchPreference).then((result) => {
+        if (result) {
+          setCurrentScreen("call");
+        }
+      });
+    }
   };
 
   const handleStartVoiceCall = () => {
-    setCurrentScreen("voice-call");
+    if (userProfile) {
+      // Show matching explanation toast
+      const explanation = matching.getMatchingExplanation();
+      toast({
+        title: explanation.title + " (Voice)",
+        description: explanation.description,
+      });
+      
+      // Start the matching process
+      matching.startMatching(userProfile.matchPreference).then((result) => {
+        if (result) {
+          setCurrentScreen("voice-call");
+        }
+      });
+    }
   };
 
   const handleBuyCoins = () => {

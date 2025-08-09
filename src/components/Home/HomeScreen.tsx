@@ -151,7 +151,9 @@ export function HomeScreen({
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center gap-2 mb-2 sm:mb-3">
                   <Filter className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
-                  <h4 className="font-semibold text-xs sm:text-sm md:text-base font-poppins">Who do you want to meet?</h4>
+                  <h4 className="font-semibold text-xs sm:text-sm md:text-base font-poppins">
+                    {isPremium ? "Who do you want to meet?" : "Match Preference (Premium Feature)"}
+                  </h4>
                 </div>
                 <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
                   <PreferenceButton value="anyone" label="Everyone" emoji="🌟" />
@@ -165,7 +167,7 @@ export function HomeScreen({
                       <div className="flex-1 min-w-0">
                         <p className="text-xs sm:text-sm font-medium font-poppins">Premium Feature</p>
                         <p className="text-[10px] sm:text-xs text-muted-foreground font-poppins">
-                          Filter by gender with Premium
+                          Free users are matched randomly. Upgrade to choose your preferred gender.
                         </p>
                       </div>
                       <Button 
@@ -179,6 +181,19 @@ export function HomeScreen({
                     </div>
                   </div>
                 )}
+                {!isPremium && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl p-2 sm:p-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-500 rounded-full flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs sm:text-sm font-medium font-poppins text-blue-800">Free User Matching</p>
+                        <p className="text-[10px] sm:text-xs text-blue-600 font-poppins">
+                          You'll be matched with random users of any gender for diverse conversations.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               
               <Button 
@@ -188,7 +203,7 @@ export function HomeScreen({
                 size="lg"
               >
                 <Video className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 mr-2 sm:mr-3" />
-                Find Someone to Chat
+                {isPremium ? "Find Someone to Chat" : "Find Random Match"}
               </Button>
               
               <div className="text-center space-y-1 sm:space-y-2">

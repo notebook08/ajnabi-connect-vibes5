@@ -179,7 +179,7 @@ export function VoiceCallScreen({
             <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 sm:p-6">
               <CardTitle className="font-poppins text-base sm:text-lg md:text-xl flex items-center gap-2">
                 <Filter className="w-4 h-4 sm:w-5 sm:h-5" />
-                Who do you want to talk to?
+                {isPremium ? "Who do you want to talk to?" : "Voice Match Preference (Premium)"}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
@@ -195,7 +195,7 @@ export function VoiceCallScreen({
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium font-poppins">Premium Feature</p>
                       <p className="text-xs text-muted-foreground font-poppins">
-                        Filter by gender with Premium
+                        Voice calls are matched randomly for free users. Premium users can choose.
                       </p>
                     </div>
                     <Button 
@@ -206,6 +206,19 @@ export function VoiceCallScreen({
                     >
                       Upgrade
                     </Button>
+                  </div>
+                </div>
+              )}
+              {!isPremium && (
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-3 sm:p-4 mt-3">
+                  <div className="text-center">
+                    <div className="flex justify-center items-center gap-2 mb-2">
+                      <Phone className="w-5 h-5 text-purple-600" />
+                      <span className="text-sm font-medium text-purple-800 font-poppins">Random Voice Matching</span>
+                    </div>
+                    <p className="text-xs text-purple-600 font-poppins">
+                      Connect with anyone for authentic voice conversations
+                    </p>
                   </div>
                 </div>
               )}
@@ -251,7 +264,7 @@ export function VoiceCallScreen({
                 size="lg"
               >
                 <Phone className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" />
-                {isPremium ? "Start Voice Chat" : `Start Voice Chat (20 coins)`}
+                {isPremium ? "Start Targeted Voice Chat" : `Start Random Voice Chat (20 coins)`}
               </Button>
               
               {!canMakeCall && (
@@ -268,7 +281,7 @@ export function VoiceCallScreen({
                 <div className="w-1 h-1 bg-muted-foreground rounded-full" />
                 <div className="flex items-center gap-1">
                   <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm">Voice Only</span>
+                  <span className="text-xs sm:text-sm">{isPremium ? "Targeted Voice" : "Random Voice"}</span>
                 </div>
               </div>
             </CardContent>

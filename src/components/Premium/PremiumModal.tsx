@@ -19,10 +19,10 @@ interface PremiumModalProps {
 }
 
 const premiumFeatures = [
-  { icon: Zap, text: "No ads forever" },
-  { icon: Heart, text: "Unlimited profile unlocks" },
-  { icon: MessageCircle, text: "Priority matching" },
-  { icon: Sparkles, text: "Chat assistant (Beta)" },
+  { icon: Zap, text: "Choose gender preferences" },
+  { icon: Heart, text: "Targeted matching system" },
+  { icon: MessageCircle, text: "Priority in matching queue" },
+  { icon: Sparkles, text: "Advanced filtering options" },
 ];
 
 const plans = [
@@ -52,10 +52,28 @@ export function PremiumModal({ isOpen, onClose, onSubscribe }: PremiumModalProps
               Upgrade to Premium
             </DialogTitle>
           </DialogHeader>
-          <p className="text-white/90">Unlock all features & enjoy unlimited connections</p>
+          <p className="text-white/90">Choose who you want to meet & get better matches</p>
         </div>
 
         <div className="p-6 space-y-6">
+          {/* Gender Preference Highlight */}
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-200">
+            <div className="text-center">
+              <div className="flex justify-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xl">👨</span>
+                </div>
+                <div className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xl">👩</span>
+                </div>
+              </div>
+              <h4 className="font-semibold text-gray-800 font-poppins mb-1">Gender-Based Matching</h4>
+              <p className="text-sm text-gray-600 font-poppins">
+                Choose to match with men, women, or everyone based on your preference
+              </p>
+            </div>
+          </div>
+
           {/* Features */}
           <div className="space-y-3">
             {premiumFeatures.map((feature, index) => {
@@ -110,7 +128,7 @@ export function PremiumModal({ isOpen, onClose, onSubscribe }: PremiumModalProps
           </div>
 
           <div className="text-center text-xs text-muted-foreground">
-            <p className="font-poppins">⚡ Limited time offer - Only 500 spots left at these prices!</p>
+            <p className="font-poppins">⚡ Upgrade now to choose your ideal matches!</p>
             <p className="text-[10px] mt-2 font-poppins">Razorpay ID: rzp_live_h3TuNA7JPL56Dh</p>
           </div>
         </div>

@@ -94,7 +94,7 @@ export function MatchScreen({
             <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 sm:p-6">
               <CardTitle className="font-poppins text-base sm:text-lg md:text-xl flex items-center gap-2">
                 <Filter className="w-4 h-4 sm:w-5 sm:h-5" />
-                Who do you want to meet?
+                {isPremium ? "Who do you want to meet?" : "Match Preference (Premium Only)"}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
@@ -110,7 +110,7 @@ export function MatchScreen({
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium font-poppins">Premium Feature</p>
                       <p className="text-xs text-muted-foreground font-poppins">
-                        Filter by gender with Premium
+                        Free users get random matches. Premium users can choose gender preference.
                       </p>
                     </div>
                     <Button 
@@ -121,6 +121,21 @@ export function MatchScreen({
                     >
                       Upgrade
                     </Button>
+                  </div>
+                </div>
+              )}
+              {!isPremium && (
+                <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl p-3 sm:p-4 mt-3">
+                  <div className="text-center">
+                    <div className="flex justify-center gap-2 mb-2">
+                      <span className="text-2xl">👨</span>
+                      <span className="text-lg">+</span>
+                      <span className="text-2xl">👩</span>
+                    </div>
+                    <p className="text-sm font-medium font-poppins text-blue-800">Random Matching Active</p>
+                    <p className="text-xs text-blue-600 font-poppins">
+                      Meet diverse people from all backgrounds and genders
+                    </p>
                   </div>
                 </div>
               )}
@@ -165,7 +180,7 @@ export function MatchScreen({
                 size="lg"
               >
                 <Video className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" />
-                Start Matching
+                {isPremium ? "Start Targeted Matching" : "Start Random Matching"}
               </Button>
               
               <div className="flex items-center justify-center gap-3 sm:gap-4 text-sm text-muted-foreground font-poppins">
@@ -176,7 +191,7 @@ export function MatchScreen({
                 <div className="w-1 h-1 bg-muted-foreground rounded-full" />
                 <div className="flex items-center gap-1">
                   <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm">Safe & Secure</span>
+                  <span className="text-xs sm:text-sm">{isPremium ? "Targeted" : "Random"}</span>
                 </div>
               </div>
             </CardContent>
