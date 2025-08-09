@@ -12,7 +12,6 @@ const navItems = [
   { id: "home", icon: Home, label: "Home" },
   { id: "match", icon: Video, label: "Match" },
   { id: "voice", icon: Phone, label: "Voice" },
-  { id: "streak", icon: Flame, label: "Streak" },
   { id: "coins", icon: Coins, label: "Coins" },
   { id: "chat", icon: MessageCircle, label: "Chat" },
   { id: "profile", icon: User, label: "Profile" },
@@ -39,11 +38,6 @@ export function BottomNav({ activeTab, onTabChange, streakCount = 0, hasNewProfi
             >
               <Icon className={cn("w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1", isActive && "animate-pulse-warm")} />
               <span className="text-[10px] sm:text-xs font-medium font-poppins">{item.label}</span>
-              {item.id === "streak" && streakCount > 0 && (
-                <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-primary rounded-full flex items-center justify-center">
-                  <span className="text-[8px] sm:text-[10px] font-bold text-white">{streakCount}</span>
-                </div>
-              )}
               {item.id === "profile" && hasNewProfileActivity && (
                 <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full flex items-center justify-center">
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full animate-pulse" />

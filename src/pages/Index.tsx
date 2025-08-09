@@ -22,6 +22,7 @@ import { useMysteryBox } from "@/hooks/useMysteryBox";
 import { useBlurredProfiles } from "@/hooks/useBlurredProfiles";
 import { useToast } from "@/hooks/use-toast";
 import { useMatching } from "@/hooks/useMatching";
+import { CoinsScreen } from "@/components/Coins/CoinsScreen";
 import { Video, Gem, Phone, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-bg.jpg";
@@ -442,26 +443,13 @@ const Index = () => {
         )}
         
         {activeTab === "coins" && (
-          <div className="min-h-screen bg-background pb-24 px-4 pt-16 safe-area-top safe-area-bottom">
-            <div className="max-w-lg mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4 font-dancing text-foreground">Your Treasure</h2>
-                <div className="bg-gradient-secondary p-6 rounded-2xl text-center mb-6 shadow-warm">
-                  <Gem className="w-12 h-12 text-white mx-auto mb-4" />
-                  <p className="text-4xl font-bold text-white font-poppins">{coinBalance}</p>
-                  <p className="text-white/80 font-poppins">Available Coins</p>
-                </div>
-              </div>
-              <Button 
-                onClick={handleBuyCoins}
-                className="w-full h-14 font-poppins font-semibold text-lg rounded-xl"
-                variant="gradient"
-              >
-                <Gem className="w-6 h-6 mr-3" />
-                Buy More Coins
-              </Button>
-            </div>
-          </div>
+          <CoinsScreen
+            coinBalance={coinBalance}
+            streakData={streakData}
+            onBuyCoins={handleBuyCoins}
+            onOpenStreakModal={() => setShowStreakModal(true)}
+            onOpenSpinWheel={handleOpenSpinWheel}
+          />
         )}
         
         {activeTab === "chat" && (
@@ -484,36 +472,12 @@ const Index = () => {
             onViewBlurredProfiles={() => setCurrentScreen("blurred-profiles")}
           />
         )}
-        
-        {activeTab === "streak" && (
-          <div className="min-h-screen bg-background pb-24 px-4 pt-16 safe-area-top safe-area-bottom">
-            <div className="max-w-lg mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4 font-dancing text-foreground">Login Streak</h2>
-                <div className="bg-gradient-primary p-6 rounded-2xl text-center mb-6 shadow-warm">
-                  <Flame className="w-12 h-12 text-white mx-auto mb-4 animate-float" />
-                  <p className="text-4xl font-bold text-white font-poppins">{streakData.currentStreak}</p>
-                  <p className="text-white/80 font-poppins">Day Streak</p>
-                </div>
-              </div>
-              <Button 
-                onClick={() => setShowStreakModal(true)}
-                className="w-full h-14 font-poppins font-semibold text-lg rounded-xl"
-                variant="gradient"
-              >
-                <Flame className="w-6 h-6 mr-3" />
-                View Streak Rewards
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Bottom Navigation */}
       <BottomNav 
         activeTab={activeTab} 
         onTabChange={setActiveTab} 
-        streakCount={streakData.currentStreak}
         hasNewProfileActivity={blurredProfiles.some(p => !p.isUnlocked)}
       />
 
