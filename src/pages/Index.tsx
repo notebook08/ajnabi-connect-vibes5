@@ -31,6 +31,7 @@ interface UserProfile {
   bio: string;
   interests: string[];
   matchPreference: "anyone" | "men" | "women";
+  gender: "male" | "female" | "other";
 }
 
 const Index = () => {
