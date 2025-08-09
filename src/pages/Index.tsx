@@ -123,6 +123,10 @@ const Index = () => {
       <VideoCallScreen
         onEndCall={() => {
           setCurrentScreen("post-call");
+          // Trigger mystery box chance after ending call
+          setTimeout(() => {
+            triggerMysteryBox();
+          }, 1000);
         }}
         onReconnect={() => {
           toast({
@@ -151,6 +155,10 @@ const Index = () => {
       <VoiceCallActiveScreen
         onEndCall={() => {
           setCurrentScreen("post-call");
+          // Trigger mystery box chance after ending call
+          setTimeout(() => {
+            triggerMysteryBox();
+          }, 1000);
         }}
         onReconnect={() => {
           toast({
@@ -209,10 +217,6 @@ const Index = () => {
         }}
       />
     );
-    // Trigger mystery box chance after ending call
-    setTimeout(() => {
-      triggerMysteryBox();
-    }, 1000);
   }
 
   const handleStartMatch = () => {
