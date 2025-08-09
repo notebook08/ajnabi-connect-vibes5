@@ -6,13 +6,13 @@ import { getAnalytics } from 'firebase/analytics';
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: "AIzaSyA9fW-wyvGISBLzwlJwYcW9oS7x7F3DZYQ",
+  authDomain: "ajnabicam---random-video-chat.firebaseapp.com",
+  projectId: "ajnabicam---random-video-chat",
+  storageBucket: "ajnabicam---random-video-chat.firebasestorage.app",
+  messagingSenderId: "820384668482",
+  appId: "1:820384668482:web:57fb3a2923c0b00807c6db",
+  measurementId: "G-GR8E4KWNEY"
 };
 
 // Initialize Firebase
