@@ -14,17 +14,25 @@ interface LoginStreakData {
 interface CoinsScreenProps {
   coinBalance: number;
   streakData: LoginStreakData;
+  hasUnlimitedCalls?: boolean;
+  unlimitedCallsExpiry?: Date | null;
+  autoRenewEnabled?: boolean;
   onBuyCoins: () => void;
   onOpenStreakModal: () => void;
   onOpenSpinWheel: () => void;
+  onManageSubscription?: () => void;
 }
 
 export function CoinsScreen({ 
   coinBalance, 
   streakData, 
+  hasUnlimitedCalls = false,
+  unlimitedCallsExpiry,
+  autoRenewEnabled = false,
   onBuyCoins, 
   onOpenStreakModal, 
-  onOpenSpinWheel 
+  onOpenSpinWheel,
+  onManageSubscription
 }: CoinsScreenProps) {
   const getStreakReward = () => {
     if (streakData.currentStreak >= 30) return { coins: 100, type: "legendary" };
@@ -52,6 +60,50 @@ export function CoinsScreen({
 
       <main className="pb-24 px-4 -mt-6 safe-area-bottom">
         <div className="max-w-lg mx-auto space-y-6">
+          {/* Unlimited Calls Subscription Status */}
+          {hasUnlimitedCalls && unlimitedCallsExpiry && (
+            <Card className="shadow-card rounded-2xl border-0 overflow-hidden border-l-4 border-l-primary">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-3 bg-primary/10 rounded-full">
+                      <Phone className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold font-poppins">Unlimited Calls</h3>
+                      <p className="text-sm text-muted-foreground font-poppins">
+                        Active until {unlimitedCallsExpiry.toLocaleDateString()} at {unlimitedCallsExpiry.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge className="bg-primary text-white font-poppins">Active</Badge>
+                </div>
+                
+                {autoRenewEnabled && (
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4">
+                    <div className="flex items-center gap-2">
+                      <RefreshCw className="w-4 h-4 text-green-600" />
+                      <p className="text-sm font-medium text-green-800 font-poppins">Auto-renew enabled</p>
+                    </div>
+                    <p className="text-xs text-green-600 font-poppins mt-1">
+                      Will automatically renew for ₹19 every 24 hours
+                    </p>
+                  </div>
+                )}
+                
+                {onManageSubscription && (
+                  <Button 
+                    onClick={onManageSubscription}
+                    variant="outline"
+                    className="w-full h-10 font-poppins rounded-xl"
+                  >
+                    Manage Subscription
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           {/* Coin Balance Card */}
           <Card className="shadow-card rounded-2xl border-0 overflow-hidden">
             <CardContent className="p-0">
@@ -300,7 +352,7 @@ export function CoinsScreen({
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
-                  <p>Make voice calls (20 coins per call for free users)</p>
+                  <p>Make voice calls (20 coins per call or ₹19/day unlimited)</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />

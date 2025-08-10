@@ -46,6 +46,9 @@ const Index = () => {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showCoinModal, setShowCoinModal] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [hasUnlimitedCalls, setHasUnlimitedCalls] = useState(false);
+  const [unlimitedCallsExpiry, setUnlimitedCallsExpiry] = useState<Date | null>(null);
+  const [autoRenewEnabled, setAutoRenewEnabled] = useState(false);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [coinBalance, setCoinBalance] = useState(100);
@@ -182,6 +185,24 @@ const Index = () => {
     });
   };
 
+  const handleSubscription = (plan: string, autoRenew: boolean) => {
+    setShowCoinModal(false);
+    
+    if (plan === 'daily-unlimited') {
+      setHasUnlimitedCalls(true);
+      setAutoRenewEnabled(autoRenew);
+      
+      // Set expiry to 24 hours from now
+      const expiry = new Date();
+      expiry.setHours(expiry.getHours() + 24);
+      setUnlimitedCallsExpiry(expiry);
+      
+      toast({
+        title: "Unlimited Calls Activated! 🎉",
+        description: `You now have unlimited voice calls for 24 hours. ${autoRenew ? 'Auto-renew is enabled.' : ''}`,
+      });
+    }
+  };
   const handlePremiumSubscribe = (plan: string) => {
     setIsPremium(true);
     setShowPremiumModal(false);
@@ -421,6 +442,7 @@ const Index = () => {
                       }
                     }}
                     isPremium={isPremium}
+                    hasUnlimitedCalls={hasUnlimitedCalls}
                     onRequestUpgrade={() => setShowPremiumModal(true)}
                   />
                 )}
@@ -442,6 +464,7 @@ const Index = () => {
                   <VoiceCallScreen
                     onStartCall={handleStartVoiceCall}
                     isPremium={isPremium}
+                    hasUnlimitedCalls={hasUnlimitedCalls}
                     coinBalance={coinBalance}
                     matchPreference={userProfile.matchPreference}
                     onChangePreference={(pref) => {
@@ -457,9 +480,18 @@ const Index = () => {
                   <CoinsScreen
                     coinBalance={coinBalance}
                     streakData={streakData}
+                    hasUnlimitedCalls={hasUnlimitedCalls}
+                    unlimitedCallsExpiry={unlimitedCallsExpiry}
+                    autoRenewEnabled={autoRenewEnabled}
                     onBuyCoins={handleBuyCoins}
                     onOpenStreakModal={() => setShowStreakModal(true)}
                     onOpenSpinWheel={handleOpenSpinWheel}
+                    onManageSubscription={() => {
+                      toast({
+                        title: "Subscription Management",
+                        description: "You can cancel auto-renew anytime in your account settings.",
+                      });
+                    }}
                   />
                 )}
                 
@@ -507,6 +539,7 @@ const Index = () => {
         isOpen={showCoinModal}
         onClose={() => setShowCoinModal(false)}
         onPurchase={handleCoinPurchase}
+        onSubscribe={handleSubscription}
       />
       
       <LoginStreakModal

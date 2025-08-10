@@ -2,13 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Coins, X, Zap, CreditCard } from "lucide-react";
+import { Coins, X, Zap, CreditCard, Crown, Phone, RefreshCw } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { RAZORPAY_KEY_ID } from "@/config/payments";
 
 interface CoinPurchaseModalProps {
   isOpen: boolean;
   onClose: () => void;
   onPurchase: (pack: string) => void;
+  onSubscribe?: (plan: string, autoRenew: boolean) => void;
 }
 
 const coinPacks = [
@@ -38,7 +40,13 @@ const coinPacks = [
   },
 ];
 
-export function CoinPurchaseModal({ isOpen, onClose, onPurchase }: CoinPurchaseModalProps) {
+export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe }: CoinPurchaseModalProps) {
+  const [autoRenewEnabled, setAutoRenewEnabled] = useState(false);
+
+  const handleSubscribe = () => {
+    onSubscribe?.('daily-unlimited', autoRenewEnabled);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md p-0 overflow-hidden">
@@ -62,6 +70,96 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase }: CoinPurchaseM
         </div>
 
         <div className="p-6 space-y-4">
+          {/* Daily Subscription Option */}
+          <Card className="border-2 border-primary shadow-warm bg-gradient-to-r from-primary/5 to-secondary/5">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    <Phone className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-bold text-lg">Unlimited Calls</span>
+                      <Badge className="bg-primary text-white text-xs">
+                        Best Deal
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-green-600 font-medium">24 hours unlimited access</p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <span className="text-lg font-bold text-primary">₹19</span>
+                      <span className="text-sm text-muted-foreground">per day</span>
+                    </div>
+                  </div>
+                </div>
+                <Crown className="w-8 h-8 text-primary animate-float" />
+              </div>
+              
+              {/* Features */}
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  <span>Unlimited voice calls for 24 hours</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  <span>No time limits on conversations</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  <span>Priority matching queue</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  <span>Premium reactions included</span>
+                </div>
+              </div>
+
+              {/* Auto-renew option */}
+              <div className="bg-white/50 rounded-xl p-3 mb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 text-primary" />
+                    <div>
+                      <p className="text-sm font-medium">Auto-renew daily</p>
+                      <p className="text-xs text-muted-foreground">Cancel anytime in settings</p>
+                    </div>
+                  </div>
+                  <Switch
+                    checked={autoRenewEnabled}
+                    onCheckedChange={setAutoRenewEnabled}
+                  />
+                </div>
+                {autoRenewEnabled && (
+                  <div className="mt-2 p-2 bg-green-50 rounded-lg">
+                    <p className="text-xs text-green-700">
+                      ✓ Your subscription will automatically renew every 24 hours
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <Button 
+                onClick={handleSubscribe}
+                className="w-full h-12 font-poppins font-semibold rounded-xl"
+                variant="gradient"
+              >
+                <Crown className="w-5 h-5 mr-2" />
+                Subscribe for ₹19/day
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Separator */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or buy coins</span>
+            </div>
+          </div>
+
           {coinPacks.map((pack) => (
             <Card 
               key={pack.id} 

@@ -14,6 +14,7 @@ interface HomeScreenProps {
   matchPreference: "anyone" | "men" | "women";
   onChangePreference: (pref: "anyone" | "men" | "women") => void;
   isPremium: boolean;
+  hasUnlimitedCalls?: boolean;
   onRequestUpgrade: () => void;
 }
 
@@ -25,6 +26,7 @@ export default function HomeScreen({
   matchPreference,
   onChangePreference,
   isPremium,
+  hasUnlimitedCalls = false,
   onRequestUpgrade,
 }: HomeScreenProps) {
   const [coinBalance] = useState(100);
@@ -106,12 +108,18 @@ export default function HomeScreen({
                 
                 <Button
                   onClick={() => {/* Navigate to voice tab */}}
-                  className="h-16 sm:h-20 md:h-24 rounded-xl sm:rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform border-0 shadow-warm"
+                  className={`h-16 sm:h-20 md:h-24 rounded-xl sm:rounded-2xl text-white hover:scale-105 transition-transform border-0 shadow-warm ${
+                    hasUnlimitedCalls 
+                      ? "bg-gradient-to-r from-green-500 to-emerald-500" 
+                      : "bg-gradient-to-r from-purple-500 to-pink-500"
+                  }`}
                 >
                   <div className="flex flex-col items-center justify-center space-y-1 sm:space-y-2">
                     <Phone className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
                     <div className="text-sm sm:text-base md:text-lg font-bold font-poppins">Voice Only</div>
-                    <div className="text-xs sm:text-sm opacity-90 font-poppins">Audio chat</div>
+                    <div className="text-xs sm:text-sm opacity-90 font-poppins">
+                      {hasUnlimitedCalls ? "Unlimited" : "Audio chat"}
+                    </div>
                   </div>
                 </Button>
               </div>
@@ -167,28 +175,34 @@ export default function HomeScreen({
             {isPremium ? "Start Targeted Matching" : "Start Random Matching"}
           </Button>
 
-          {/* Voice Chat Promotion */}
+          {/* Voice Chat Promotion or Status */}
           <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 border-l-4 border-l-premium">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="p-2 sm:p-3 bg-premium/10 rounded-full flex-shrink-0">
-                    <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-premium" />
+                    {hasUnlimitedCalls ? (
+                      <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                    ) : (
+                      <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-premium" />
+                    )}
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-semibold font-poppins text-sm sm:text-base">Daily Spin Wheel</h4>
+                    <h4 className="font-semibold font-poppins text-sm sm:text-base">
+                      {hasUnlimitedCalls ? "Unlimited Voice Calls" : "Daily Spin Wheel"}
+                    </h4>
                     <p className="text-xs sm:text-sm text-muted-foreground font-poppins">
-                      Win coins and rewards every day
+                      {hasUnlimitedCalls ? "Talk as long as you want" : "Win coins and rewards every day"}
                     </p>
                   </div>
                 </div>
                 <Button 
-                  onClick={onOpenSpinWheel} 
+                  onClick={hasUnlimitedCalls ? onBuyCoins : onOpenSpinWheel} 
                   variant="outline" 
                   size="sm"
                   className="font-poppins flex-shrink-0"
                 >
-                  Spin Now
+                  {hasUnlimitedCalls ? "Manage" : "Spin Now"}
                 </Button>
               </div>
             </CardContent>

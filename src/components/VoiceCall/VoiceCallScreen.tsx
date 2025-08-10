@@ -7,6 +7,7 @@ import { Phone, Users, Zap, Heart, Crown, Filter, MapPin, ArrowLeft, Gem, Mic, M
 interface VoiceCallScreenProps {
   onStartCall: () => void;
   isPremium: boolean;
+  hasUnlimitedCalls?: boolean;
   coinBalance: number;
   matchPreference: "anyone" | "men" | "women";
   onChangePreference: (pref: "anyone" | "men" | "women") => void;
@@ -19,6 +20,7 @@ interface VoiceCallScreenProps {
 export function VoiceCallScreen({
   onStartCall,
   isPremium,
+  hasUnlimitedCalls = false,
   coinBalance,
   matchPreference,
   onChangePreference,
@@ -27,10 +29,10 @@ export function VoiceCallScreen({
   onBuyCoins,
   onSpendCoins,
 }: VoiceCallScreenProps) {
-  const canMakeCall = isPremium || coinBalance >= 20;
+  const canMakeCall = isPremium || hasUnlimitedCalls || coinBalance >= 20;
 
   const handleStartCall = () => {
-    if (isPremium) {
+    if (isPremium || hasUnlimitedCalls) {
       onStartCall();
     } else if (coinBalance >= 20) {
       onSpendCoins(20);
@@ -117,7 +119,20 @@ export function VoiceCallScreen({
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
-              {isPremium ? (
+              {hasUnlimitedCalls ? (
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-3 sm:p-4">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium font-poppins text-primary">Unlimited Calls Active</p>
+                      <p className="text-xs text-muted-foreground font-poppins">
+                        No limits on voice calls for 24 hours
+                      </p>
+                    </div>
+                    <Badge className="bg-primary text-white font-poppins flex-shrink-0">Active</Badge>
+                  </div>
+                </div>
+              ) : isPremium ? (
                 <div className="bg-premium/10 border border-premium/20 rounded-xl p-3 sm:p-4">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-premium flex-shrink-0" />
@@ -246,7 +261,9 @@ export function VoiceCallScreen({
                 size="lg"
               >
                 <Phone className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" />
-                {isPremium ? "Start Targeted Voice Chat" : `Start Random Voice Chat (20 coins)`}
+                {hasUnlimitedCalls ? "Start Unlimited Voice Chat" : 
+                 isPremium ? "Start Targeted Voice Chat" : 
+                 `Start Random Voice Chat (20 coins)`}
               </Button>
               
               {!canMakeCall && (
@@ -263,7 +280,11 @@ export function VoiceCallScreen({
                 <div className="w-1 h-1 bg-muted-foreground rounded-full" />
                 <div className="flex items-center gap-1">
                   <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm">{isPremium ? "Targeted Voice" : "Random Voice"}</span>
+                  <span className="text-xs sm:text-sm">
+                    {hasUnlimitedCalls ? "Unlimited Voice" : 
+                     isPremium ? "Targeted Voice" : 
+                     "Random Voice"}
+                  </span>
                 </div>
               </div>
             </CardContent>
