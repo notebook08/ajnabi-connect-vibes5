@@ -12,7 +12,6 @@ const navItems = [
   { id: "home", icon: Home, label: "Home" },
   { id: "match", icon: Video, label: "Match" },
   { id: "voice", icon: Phone, label: "Voice" },
-  { id: "coins", icon: Coins, label: "Coins" },
   { id: "chat", icon: MessageCircle, label: "Chat" },
   { id: "profile", icon: User, label: "Profile" },
 ];
