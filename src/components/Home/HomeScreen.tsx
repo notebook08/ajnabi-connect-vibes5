@@ -65,27 +65,27 @@ export default function HomeScreen({
   return (
     <div className="min-h-screen bg-background pb-16 sm:pb-20 md:pb-24 safe-area-top safe-area-bottom">
       {/* Header with gradient background */}
-      <div className="bg-gradient-primary pt-12 sm:pt-16 pb-6 sm:pb-8 px-3 sm:px-4 md:px-6 rounded-b-3xl shadow-warm">
+      <div className="bg-gradient-primary pt-12 sm:pt-14 pb-4 sm:pb-5 px-3 sm:px-4 md:px-6 rounded-b-3xl shadow-warm">
         {/* Coin Header */}
         <div className="flex justify-end gap-3 mb-4">
           <div className="w-40">
             <div 
-              className="bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl px-4 py-3 cursor-pointer hover:scale-105 transition-transform shadow-warm"
+              className="bg-gradient-to-r from-purple-400 to-pink-500 rounded-xl px-3 py-2 cursor-pointer hover:scale-105 transition-transform shadow-card"
               onClick={() => window.location.hash = '#recent-activity'}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="p-1.5 bg-white/20 rounded-full">
-                    <Eye className="w-4 h-4 text-white" />
+                  <div className="p-1 bg-white/20 rounded-full">
+                    <Eye className="w-3 h-3 text-white" />
                   </div>
                   <div>
-                    <p className="text-white/80 text-xs font-poppins font-medium">Activity</p>
-                    <p className="text-white text-sm font-bold font-poppins">5 new</p>
+                    <p className="text-white/80 text-[10px] font-poppins font-medium">Activity</p>
+                    <p className="text-white text-xs font-bold font-poppins">5 new</p>
                   </div>
                 </div>
                 <Button 
                   size="sm"
-                  className="bg-yellow-400 hover:bg-yellow-500 text-purple-800 font-poppins font-semibold h-6 px-2 rounded-lg border-0 shadow-none text-xs"
+                  className="bg-yellow-400 hover:bg-yellow-500 text-purple-800 font-poppins font-semibold h-5 px-2 rounded-md border-0 shadow-none text-[10px]"
                   onClick={(e) => {
                     e.stopPropagation();
                     window.location.hash = '#recent-activity';
@@ -105,9 +105,9 @@ export default function HomeScreen({
         </div>
         
         <div className="text-center text-white">
-          <Video className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto mb-3 sm:mb-4 animate-float" />
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 font-dancing">AjnabiCam</h1>
-          <p className="text-white/90 font-poppins text-sm sm:text-base md:text-lg">Connect. Chat. Care.</p>
+          <Video className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 mx-auto mb-2 sm:mb-3 animate-float" />
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 font-dancing">AjnabiCam</h1>
+          <p className="text-white/90 font-poppins text-xs sm:text-sm md:text-base">Connect. Chat. Care.</p>
         </div>
       </div>
 
