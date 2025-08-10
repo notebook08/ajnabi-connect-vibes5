@@ -119,6 +119,9 @@ const Index = () => {
       if (window.location.hash === '#coins') {
         setActiveTab('coins');
         window.location.hash = '';
+      } else if (window.location.hash === '#recent-activity') {
+        setCurrentScreen('blurred-profiles');
+        window.location.hash = '';
       }
     };
 

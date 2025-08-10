@@ -67,8 +67,36 @@ export default function HomeScreen({
       {/* Header with gradient background */}
       <div className="bg-gradient-primary pt-12 sm:pt-16 pb-6 sm:pb-8 px-3 sm:px-4 md:px-6 rounded-b-3xl shadow-warm">
         {/* Coin Header */}
-        <div className="flex justify-end mb-4">
-          <div className="w-48">
+        <div className="flex justify-end gap-3 mb-4">
+          <div className="w-40">
+            <div 
+              className="bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl px-4 py-3 cursor-pointer hover:scale-105 transition-transform shadow-warm"
+              onClick={() => window.location.hash = '#recent-activity'}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 bg-white/20 rounded-full">
+                    <Eye className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white/80 text-xs font-poppins font-medium">Activity</p>
+                    <p className="text-white text-sm font-bold font-poppins">5 new</p>
+                  </div>
+                </div>
+                <Button 
+                  size="sm"
+                  className="bg-yellow-400 hover:bg-yellow-500 text-purple-800 font-poppins font-semibold h-6 px-2 rounded-lg border-0 shadow-none text-xs"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.location.hash = '#recent-activity';
+                  }}
+                >
+                  View
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="w-40">
             <CoinHeader 
               balance={coinBalance} 
               onOpenCoins={() => window.location.hash = '#coins'} 
