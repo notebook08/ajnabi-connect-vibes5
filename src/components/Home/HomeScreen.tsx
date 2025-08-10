@@ -84,23 +84,40 @@ export default function HomeScreen({
       <div className="px-3 sm:px-4 md:px-6 -mt-4 sm:-mt-6 space-y-4 sm:space-y-6">
         <div className="max-w-4xl mx-auto w-full space-y-4 sm:space-y-6">
           {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 bg-gradient-secondary text-white cursor-pointer hover:scale-105 transition-transform" onClick={onStartMatch}>
-              <CardContent className="p-4 sm:p-6 text-center">
-                <Video className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2 animate-float" />
-                <div className="text-lg sm:text-xl font-bold font-poppins">Video Chat</div>
-                <div className="text-xs sm:text-sm opacity-90 font-poppins">Start matching</div>
-              </CardContent>
-            </Card>
-            
-            <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 bg-gradient-premium text-white cursor-pointer hover:scale-105 transition-transform" onClick={onOpenSpinWheel}>
-              <CardContent className="p-4 sm:p-6 text-center">
-                <Gift className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2 animate-pulse" />
-                <div className="text-lg sm:text-xl font-bold font-poppins">Daily Spin</div>
-                <div className="text-xs sm:text-sm opacity-90 font-poppins">Win rewards</div>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Chat Mode Selection */}
+          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 sm:p-6">
+              <CardTitle className="font-poppins text-base sm:text-lg md:text-xl flex items-center gap-2">
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
+                Chat Mode
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <Button
+                  onClick={onStartMatch}
+                  className="h-16 sm:h-20 md:h-24 rounded-xl sm:rounded-2xl bg-gradient-secondary text-white hover:scale-105 transition-transform border-0 shadow-warm"
+                >
+                  <div className="flex flex-col items-center justify-center space-y-1 sm:space-y-2">
+                    <Video className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
+                    <div className="text-sm sm:text-base md:text-lg font-bold font-poppins">Video Call</div>
+                    <div className="text-xs sm:text-sm opacity-90 font-poppins">Start matching</div>
+                  </div>
+                </Button>
+                
+                <Button
+                  onClick={() => {/* Navigate to voice tab */}}
+                  className="h-16 sm:h-20 md:h-24 rounded-xl sm:rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform border-0 shadow-warm"
+                >
+                  <div className="flex flex-col items-center justify-center space-y-1 sm:space-y-2">
+                    <Phone className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
+                    <div className="text-sm sm:text-base md:text-lg font-bold font-poppins">Voice Only</div>
+                    <div className="text-xs sm:text-sm opacity-90 font-poppins">Audio chat</div>
+                  </div>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Match Preferences Card */}
           <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
@@ -140,83 +157,40 @@ export default function HomeScreen({
             </CardContent>
           </Card>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 bg-gradient-secondary text-white">
-              <CardContent className="p-3 sm:p-4 text-center">
-                <Users className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2" />
-                <div className="text-xl sm:text-2xl font-bold font-poppins">2.4K</div>
-                <div className="text-xs sm:text-sm opacity-90 font-poppins">People Online</div>
-              </CardContent>
-            </Card>
-            <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 bg-gradient-premium text-white">
-              <CardContent className="p-3 sm:p-4 text-center">
-                <MapPin className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2" />
-                <div className="text-xl sm:text-2xl font-bold font-poppins">5km</div>
-                <div className="text-xs sm:text-sm opacity-90 font-poppins">Search Radius</div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Action Card */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
-            <CardContent className="p-6 sm:p-8 text-center">
-              <div className="mb-4 sm:mb-6">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 animate-pulse-warm">
-                  <Heart className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white" />
-                </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 font-poppins">Ready to Connect?</h3>
-                <p className="text-muted-foreground font-poppins text-sm sm:text-base">
-                  Start a video chat with someone new and make meaningful connections
-                </p>
-              </div>
-              
-              <Button 
-                onClick={onStartMatch}
-                className="w-full h-12 sm:h-14 md:h-16 font-poppins font-bold text-lg sm:text-xl rounded-xl sm:rounded-2xl mb-3 sm:mb-4"
-                variant="gradient"
-                size="lg"
-              >
-                <Video className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" />
-                {isPremium ? "Start Targeted Matching" : "Start Random Matching"}
-              </Button>
-              
-              <div className="flex items-center justify-center gap-3 sm:gap-4 text-sm text-muted-foreground font-poppins">
-                <div className="flex items-center gap-1">
-                  <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm">Instant Connect</span>
-                </div>
-                <div className="w-1 h-1 bg-muted-foreground rounded-full" />
-                <div className="flex items-center gap-1">
-                  <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm">{isPremium ? "Targeted" : "Random"}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Main Action Button */}
+          <Button 
+            onClick={onStartMatch}
+            className="w-full h-12 sm:h-14 md:h-16 font-poppins font-bold text-lg sm:text-xl rounded-xl sm:rounded-2xl"
+            variant="gradient"
+            size="lg"
+          >
+            <Video className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" />
+            {isPremium ? "Start Targeted Matching" : "Start Random Matching"}
+          </Button>
 
           {/* Voice Chat Promotion */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 border-l-4 border-l-secondary">
+          {/* Daily Spin Promotion */}
+          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 border-l-4 border-l-premium">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="p-2 sm:p-3 bg-secondary/10 rounded-full flex-shrink-0">
-                    <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
+                  <div className="p-2 sm:p-3 bg-premium/10 rounded-full flex-shrink-0">
+                    <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-premium" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-semibold font-poppins text-sm sm:text-base">Try Voice Chat</h4>
+                    <h4 className="font-semibold font-poppins text-sm sm:text-base">Daily Spin Wheel</h4>
                     <p className="text-xs sm:text-sm text-muted-foreground font-poppins">
-                      Connect through voice-only conversations
+                      Win coins and rewards every day
                     </p>
                   </div>
                 </div>
                 <Button 
-                  onClick={() => {/* Navigate to voice tab */}} 
+                  onClick={onOpenSpinWheel} 
                   variant="outline" 
                   size="sm"
                   className="font-poppins flex-shrink-0"
                 >
-                  Try Now
+                  Spin Now
                 </Button>
               </div>
             </CardContent>
