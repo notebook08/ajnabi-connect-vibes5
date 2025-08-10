@@ -238,6 +238,25 @@ All colors MUST be HSL.
     animation: fire 2.5s ease-out forwards;
   }
 
+  /* Additional animations for the new design */
+  @keyframes gentle-bounce {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+  }
+
+  .animate-gentle-bounce {
+    animation: gentle-bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes soft-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(168, 85, 247, 0.6); }
+  }
+
+  .animate-soft-glow {
+    animation: soft-glow 3s ease-in-out infinite;
+  }
+
   /* React Image Crop Styles */
   .ReactCrop {
     display: inline-block;

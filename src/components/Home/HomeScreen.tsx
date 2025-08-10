@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CoinBalance } from "./CoinBalance";
-import { CoinHeader } from "./CoinHeader";
 import { Video, Users, Zap, Heart, Crown, Filter, MapPin, Gem, Phone, Flame, Gift, Eye } from "lucide-react";
 
 interface HomeScreenProps {
@@ -41,21 +39,19 @@ export default function HomeScreen({
     return (
       <button
         onClick={() => (locked ? onRequestUpgrade() : onChangePreference(value))}
-        className={`relative flex-1 h-16 sm:h-18 md:h-20 lg:h-24 rounded-xl sm:rounded-2xl border-2 text-sm font-medium transition-all duration-300 overflow-hidden
+        className={`relative flex-1 h-12 rounded-2xl border-2 text-sm font-medium transition-all duration-300 overflow-hidden
            ${isActive 
              ? "bg-gradient-primary text-white border-transparent shadow-warm scale-105" 
-             : "bg-background text-foreground border-border hover:border-primary/50 hover:bg-primary/5"
+             : "bg-white text-foreground border-border hover:border-primary/50 hover:bg-primary/5"
            }
            ${locked ? "opacity-60" : ""}`}
         aria-disabled={locked}
       >
-        <div className="flex flex-col items-center justify-center h-full space-y-1 sm:space-y-2">
-          <span className="text-xl sm:text-2xl md:text-3xl">{emoji}</span>
-          <span className="font-poppins font-semibold text-xs sm:text-sm md:text-base">{label}</span>
+        <div className="flex items-center justify-center h-full space-x-2">
+          <span className="text-lg">{emoji}</span>
+          <span className="font-poppins font-semibold">{label}</span>
           {locked && (
-            <div className="absolute top-1 right-1 sm:top-2 sm:right-2">
-              <Crown className="w-3 h-3 sm:w-4 sm:h-4 text-premium" />
-            </div>
+            <Crown className="w-4 h-4 text-premium" />
           )}
         </div>
       </button>
@@ -63,179 +59,162 @@ export default function HomeScreen({
   };
 
   return (
-    <div className="min-h-screen bg-background pb-16 sm:pb-20 md:pb-24 safe-area-top safe-area-bottom">
-      {/* Header with gradient background */}
-      <div className="bg-gradient-primary pt-12 sm:pt-14 pb-4 sm:pb-5 px-3 sm:px-4 md:px-6 rounded-b-3xl shadow-warm">
-        {/* Coin Header */}
-        <div className="flex justify-end gap-3 mb-4">
-          <div className="w-40">
-            <div 
-              className="bg-gradient-to-r from-purple-400 to-pink-500 rounded-xl px-3 py-2 cursor-pointer hover:scale-105 transition-transform shadow-card"
-              onClick={() => window.location.hash = '#recent-activity'}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-1 bg-white/20 rounded-full">
-                    <Eye className="w-3 h-3 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-white/80 text-[10px] font-poppins font-medium">Activity</p>
-                    <p className="text-white text-xs font-bold font-poppins">5 new</p>
-                  </div>
-                </div>
-                <Button 
-                  size="sm"
-                  className="bg-yellow-400 hover:bg-yellow-500 text-purple-800 font-poppins font-semibold h-5 px-2 rounded-md border-0 shadow-none text-[10px]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.location.hash = '#recent-activity';
-                  }}
-                >
-                  View
-                </Button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-20 safe-area-top safe-area-bottom">
+      {/* Top Bar */}
+      <div className="pt-12 px-6 pb-4">
+        <div className="flex justify-end gap-3">
+          {/* Activity Button */}
+          <button 
+            className="bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-card hover:shadow-warm transition-all duration-300 hover:scale-105"
+            onClick={() => window.location.hash = '#recent-activity'}
+          >
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-purple-100 rounded-full">
+                <Eye className="w-4 h-4 text-purple-600" />
+              </div>
+              <div className="text-left">
+                <p className="text-purple-600 text-xs font-medium font-poppins">Activity</p>
+                <p className="text-purple-800 text-sm font-bold font-poppins">5 new</p>
               </div>
             </div>
-          </div>
-          <div className="w-40">
-            <CoinHeader 
-              balance={coinBalance} 
-              onOpenCoins={() => window.location.hash = '#coins'} 
-            />
-          </div>
-        </div>
-        
-        <div className="text-center text-white">
-          <Video className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 mx-auto mb-2 sm:mb-3 animate-float" />
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 font-dancing">AjnabiCam</h1>
-          <p className="text-white/90 font-poppins text-xs sm:text-sm md:text-base">Connect. Chat. Care.</p>
+          </button>
+          
+          {/* Coins Button */}
+          <button 
+            className="bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-card hover:shadow-warm transition-all duration-300 hover:scale-105"
+            onClick={() => window.location.hash = '#coins'}
+          >
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-orange-100 rounded-full">
+                <Gem className="w-4 h-4 text-orange-600" />
+              </div>
+              <div className="text-left">
+                <p className="text-orange-600 text-xs font-medium font-poppins">Coins</p>
+                <p className="text-orange-800 text-sm font-bold font-poppins">{coinBalance}</p>
+              </div>
+            </div>
+          </button>
         </div>
       </div>
 
-      <div className="px-3 sm:px-4 md:px-6 -mt-4 sm:-mt-6 space-y-4 sm:space-y-6">
-        <div className="max-w-4xl mx-auto w-full space-y-4 sm:space-y-6">
-          {/* Quick Actions */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 sm:p-6">
-              <CardTitle className="font-poppins text-base sm:text-lg md:text-xl flex items-center gap-2">
-                <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
-                Chat Mode
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <Button
-                  onClick={onStartMatch}
-                  className="h-16 sm:h-20 md:h-24 rounded-xl sm:rounded-2xl bg-gradient-secondary text-white hover:scale-105 transition-transform border-0 shadow-warm"
-                >
-                  <div className="flex flex-col items-center justify-center space-y-1 sm:space-y-2">
-                    <Video className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
-                    <div className="text-sm sm:text-base md:text-lg font-bold font-poppins">Video Call</div>
-                    <div className="text-xs sm:text-sm opacity-90 font-poppins">Start matching</div>
-                  </div>
-                </Button>
-                
-                <Button
-                  onClick={() => {/* Navigate to voice tab */}}
-                  className={`h-16 sm:h-20 md:h-24 rounded-xl sm:rounded-2xl text-white hover:scale-105 transition-transform border-0 shadow-warm ${
-                    hasUnlimitedCalls 
-                      ? "bg-gradient-to-r from-green-500 to-emerald-500" 
-                      : "bg-gradient-to-r from-purple-500 to-pink-500"
-                  }`}
-                >
-                  <div className="flex flex-col items-center justify-center space-y-1 sm:space-y-2">
-                    <Phone className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
-                    <div className="text-sm sm:text-base md:text-lg font-bold font-poppins">Voice Only</div>
-                    <div className="text-xs sm:text-sm opacity-90 font-poppins">
-                      {hasUnlimitedCalls ? "Unlimited" : "Audio chat"}
-                    </div>
-                  </div>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Match Preferences Card */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 sm:p-6">
-              <CardTitle className="font-poppins text-base sm:text-lg md:text-xl flex items-center gap-2">
-                <Filter className="w-4 h-4 sm:w-5 sm:h-5" />
-                {isPremium ? "Who do you want to meet?" : "Match Preference (Premium Only)"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                <PreferenceButton value="anyone" label="Everyone" emoji="🌟" />
-                <PreferenceButton value="men" label="Men" emoji="👨" />
-                <PreferenceButton value="women" label="Women" emoji="👩" />
-              </div>
-              {!isPremium && (
-                <div className="bg-premium/10 border border-premium/20 rounded-xl p-3 sm:p-4">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-premium flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium font-poppins">Premium Feature</p>
-                      <p className="text-xs text-muted-foreground font-poppins">
-                        Free users get random matches. Premium users can choose gender preference.
-                      </p>
-                    </div>
-                    <Button 
-                      onClick={onRequestUpgrade} 
-                      variant="outline" 
-                      size="sm"
-                      className="border-premium text-premium hover:bg-premium hover:text-white font-poppins flex-shrink-0"
-                    >
-                      Upgrade
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Main Action Button */}
-          <Button 
-            onClick={onStartMatch}
-            className="w-full h-12 sm:h-14 md:h-16 font-poppins font-bold text-lg sm:text-xl rounded-xl sm:rounded-2xl"
-            variant="gradient"
-            size="lg"
-          >
-            <Video className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" />
-            {isPremium ? "Start Targeted Matching" : "Start Random Matching"}
-          </Button>
-
-          {/* Voice Chat Promotion or Status */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 border-l-4 border-l-premium">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="p-2 sm:p-3 bg-premium/10 rounded-full flex-shrink-0">
-                    {hasUnlimitedCalls ? (
-                      <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                    ) : (
-                      <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-premium" />
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="font-semibold font-poppins text-sm sm:text-base">
-                      {hasUnlimitedCalls ? "Unlimited Voice Calls" : "Daily Spin Wheel"}
-                    </h4>
-                    <p className="text-xs sm:text-sm text-muted-foreground font-poppins">
-                      {hasUnlimitedCalls ? "Talk as long as you want" : "Win coins and rewards every day"}
-                    </p>
-                  </div>
-                </div>
-                <Button 
-                  onClick={hasUnlimitedCalls ? onBuyCoins : onOpenSpinWheel} 
-                  variant="outline" 
-                  size="sm"
-                  className="font-poppins flex-shrink-0"
-                >
-                  {hasUnlimitedCalls ? "Manage" : "Spin Now"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Logo & Tagline */}
+      <div className="text-center px-6 mb-12">
+        <div className="w-16 h-16 bg-gradient-primary rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-warm">
+          <Video className="w-8 h-8 text-white" />
         </div>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2 font-dancing">AjnabiCam</h1>
+        <p className="text-gray-600 font-poppins text-base font-medium">Connect. Chat. Care.</p>
+      </div>
+
+      <div className="px-6 space-y-8 max-w-md mx-auto">
+        {/* Primary Actions */}
+        <div className="space-y-4">
+          <Button
+            onClick={onStartMatch}
+            className="w-full h-16 rounded-3xl bg-gradient-secondary text-white hover:scale-105 transition-all duration-300 border-0 shadow-warm"
+          >
+            <div className="flex items-center justify-center space-x-3">
+              <Video className="w-7 h-7" />
+              <div className="text-left">
+                <div className="text-lg font-bold font-poppins">Video Call</div>
+                <div className="text-sm opacity-90 font-poppins">Face-to-face conversations</div>
+              </div>
+            </div>
+          </Button>
+          
+          <Button
+            onClick={() => {/* Navigate to voice tab */}}
+            className={`w-full h-16 rounded-3xl text-white hover:scale-105 transition-all duration-300 border-0 shadow-warm ${
+              hasUnlimitedCalls 
+                ? "bg-gradient-to-r from-green-500 to-emerald-500" 
+                : "bg-gradient-to-r from-purple-500 to-pink-500"
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-3">
+              <Phone className="w-7 h-7" />
+              <div className="text-left">
+                <div className="text-lg font-bold font-poppins">Voice Only</div>
+                <div className="text-sm opacity-90 font-poppins">
+                  {hasUnlimitedCalls ? "Unlimited access" : "Audio conversations"}
+                </div>
+              </div>
+            </div>
+          </Button>
+        </div>
+
+        {/* Match Preferences */}
+        <Card className="shadow-card rounded-3xl border-0 overflow-hidden bg-white/80 backdrop-blur-md">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Filter className="w-5 h-5 text-primary" />
+              <h3 className="font-poppins text-lg font-semibold text-gray-800">Match Preference</h3>
+            </div>
+            
+            <div className="flex items-center gap-2 mb-4">
+              <PreferenceButton value="anyone" label="Everyone" emoji="🌟" />
+              <PreferenceButton value="men" label="Men" emoji="👨" />
+              <PreferenceButton value="women" label="Women" emoji="👩" />
+            </div>
+            
+            {!isPremium && (
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <Crown className="w-5 h-5 text-premium flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium font-poppins text-purple-800">Premium Feature</p>
+                      <p className="text-xs text-purple-600 font-poppins">Choose your preferred gender</p>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={onRequestUpgrade} 
+                    size="sm"
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-poppins rounded-xl flex-shrink-0"
+                  >
+                    Upgrade
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Main CTA Button */}
+        <Button 
+          onClick={onStartMatch}
+          className="w-full h-16 font-poppins font-bold text-xl rounded-3xl shadow-warm"
+          variant="gradient"
+          size="lg"
+        >
+          <Video className="w-7 h-7 mr-3" />
+          {isPremium ? "Start Targeted Matching" : "Start Random Matching"}
+        </Button>
+
+        {/* Daily Spin Wheel */}
+        <Card 
+          className="shadow-card rounded-3xl border-0 overflow-hidden bg-white/80 backdrop-blur-md cursor-pointer hover:scale-105 transition-all duration-300 animate-float"
+          onClick={onOpenSpinWheel}
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-premium rounded-2xl shadow-warm">
+                  <Gift className="w-6 h-6 text-white animate-pulse" />
+                </div>
+                <div>
+                  <h4 className="font-semibold font-poppins text-gray-800">Daily Spin Wheel</h4>
+                  <p className="text-sm text-gray-600 font-poppins">Win coins and rewards</p>
+                </div>
+              </div>
+              <Button 
+                size="sm"
+                className="bg-gradient-secondary text-white font-poppins rounded-2xl shadow-card hover:shadow-warm"
+              >
+                Spin Now
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
