@@ -150,64 +150,6 @@ export function HomeScreen({
               <div className="mx-auto mb-3 sm:mb-4 overflow-hidden rounded-lg sm:rounded-xl">
                 <img 
                   src={videoChatIllustration} 
-                  alt="Video Chat" 
-                  className="w-full h-24 sm:h-32 md:h-48 lg:h-56 object-cover"
-                />
-              </div>
-              <CardTitle className="font-poppins text-base sm:text-lg md:text-xl lg:text-2xl">Start Video Chat</CardTitle>
-              <p className="text-muted-foreground text-xs sm:text-sm md:text-base font-poppins">
-                Connect with someone new and have meaningful conversations
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-3 sm:space-y-4 md:space-y-6 p-3 sm:p-4 md:p-6">
-              {/* Match Preferences */}
-              <div className="space-y-2 sm:space-y-3">
-                <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                  <Filter className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
-                  <h4 className="font-semibold text-xs sm:text-sm md:text-base font-poppins">
-                    {isPremium ? "Who do you want to meet?" : "Match Preference (Premium Feature)"}
-                  </h4>
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
-                  <PreferenceButton value="anyone" label="Everyone" emoji="🌟" />
-                  <PreferenceButton value="men" label="Men" emoji="👨" />
-                  <PreferenceButton value="women" label="Women" emoji="👩" />
-                </div>
-                {!isPremium && (
-                  <div className="bg-premium/10 border border-premium/20 rounded-lg sm:rounded-xl p-2 sm:p-3">
-                    <div className="flex items-center gap-2">
-                      <Crown className="w-3 h-3 sm:w-4 sm:h-4 text-premium flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-medium font-poppins">Premium Feature</p>
-                        <p className="text-[10px] sm:text-xs text-muted-foreground font-poppins">
-                          Free users are matched randomly. Upgrade to choose your preferred gender.
-                        </p>
-                      </div>
-                      <Button 
-                        onClick={onRequestUpgrade} 
-                        variant="outline" 
-                        size="sm"
-                        className="border-premium text-premium hover:bg-premium hover:text-white font-poppins h-6 sm:h-7 md:h-8 px-2 sm:px-3 text-[10px] sm:text-xs flex-shrink-0"
-                      >
-                        Upgrade
-                      </Button>
-                    </div>
-                  </div>
-                )}
-                {!isPremium && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl p-2 sm:p-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-500 rounded-full flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-medium font-poppins text-blue-800">Free User Matching</p>
-                        <p className="text-[10px] sm:text-xs text-blue-600 font-poppins">
-                          You'll be matched with random users of any gender for diverse conversations.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
               
               <Button 
                 onClick={onStartMatch}
@@ -223,6 +165,29 @@ export function HomeScreen({
                 <p className="text-xs sm:text-sm text-muted-foreground font-poppins">
                   💡 Tip: After 3 chats, watch an ad to earn 50 coins!
                 </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Limited Time Offer */}
+          <Card className="border-2 border-primary shadow-warm rounded-xl sm:rounded-2xl border-primary/20 bg-primary/5">
+            <CardContent className="p-3 sm:p-4 md:p-6">
+              <div className="flex items-start space-x-2 sm:space-x-3">
+                <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary mt-0.5 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-foreground font-poppins text-sm sm:text-base">Limited Time Offer!</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground font-poppins">
+                    Only 500 premium spots left at ₹29/day.
+                  </p>
+                </div>
+                <Button 
+                  onClick={onUpgradePremium} 
+                  variant="outline" 
+                  size="sm" 
+                  className="font-poppins h-7 sm:h-8 md:h-10 px-2 sm:px-3 md:px-4 rounded-lg sm:rounded-xl text-xs sm:text-sm flex-shrink-0"
+                >
+                  Upgrade
+                </Button>
               </div>
             </CardContent>
           </Card>
