@@ -178,40 +178,7 @@ export function MatchScreen({
               </div>
             </CardContent>
           </Card>
-
-          {/* Recent Activity */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0">
-            <CardContent className="p-4 sm:p-6">
-              <h4 className="font-semibold mb-3 sm:mb-4 font-poppins text-sm sm:text-base">Recent Activity</h4>
-              <div className="space-y-2 sm:space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold text-xs sm:text-sm">S</span>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-medium font-poppins text-xs sm:text-sm">Sarah liked your profile</p>
-                      <p className="text-xs text-muted-foreground font-poppins">2 hours ago</p>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="font-poppins text-xs flex-shrink-0">New</Badge>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-secondary rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold text-xs sm:text-sm">M</span>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-medium font-poppins text-xs sm:text-sm">You matched with Mike</p>
-                      <p className="text-xs text-muted-foreground font-poppins">1 day ago</p>
-                    </div>
-                  </div>
-                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+         
         </div>
       </div>
     </div>
