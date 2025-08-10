@@ -38,6 +38,7 @@ interface UserProfile {
 }
 
 const Index = () => {
+  // ALL HOOKS MUST BE CALLED AT THE TOP - NO CONDITIONAL HOOKS
   const [appState, setAppState] = useState<"splash" | "onboarding" | "main" | "spin-wheel">("splash");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [currentScreen, setCurrentScreen] = useState<"home" | "call" | "voice-call" | "post-call" | "chat-detail" | "blurred-profiles">("home");
@@ -68,7 +69,9 @@ const Index = () => {
     isPremium
   });
   
-  // Mock profile data for post-call screen
+  const { toast } = useToast();
+  
+  // Mock data - these can stay here as they're not hooks
   const mockCallPartnerProfile = {
     username: "Shafa Asadel",
     age: 20,
@@ -89,7 +92,6 @@ const Index = () => {
     interests: ["🎵 Pop Punk", "☕ Coffee", "🥊 Boxing", "🎮 Fifa Mobile", "⚽ Real Madrid"]
   };
   
-  // Mock data
   const [chats] = useState<ChatPreview[]>([
     { id: "1", name: "Sarah", lastMessage: "Hey there! 👋", time: "2m", unread: 2 },
     { id: "2", name: "Mike", lastMessage: "Nice talking to you!", time: "1h" },
@@ -107,158 +109,23 @@ const Index = () => {
       ]
     }
   });
-  
-  const { toast } = useToast();
 
-  if (appState === "splash") {
-    return <SplashScreen onComplete={() => setAppState("onboarding")} />;
-  }
+  // Handle coin balance click to navigate to coins tab
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#coins') {
+        setActiveTab('coins');
+        window.location.hash = '';
+      }
+    };
 
-  if (appState === "onboarding" || isEditingProfile) {
-    return (
-      <OnboardingScreen
-        initialProfile={isEditingProfile ? userProfile : undefined}
-        isPremium={isPremium}
-        onRequestUpgrade={() => setShowPremiumModal(true)}
-        onComplete={(profile) => {
-          setUserProfile(profile);
-          if (isEditingProfile) {
-            setIsEditingProfile(false);
-          } else {
-            setAppState("main");
-          }
-        }}
-      />
-    );
-  }
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange(); // Check on mount
 
-  if (currentScreen === "call") {
-    return (
-      <VideoCallScreen
-        onEndCall={() => {
-          setCurrentScreen("post-call");
-          // Trigger mystery box chance after ending call
-          setTimeout(() => {
-            triggerMysteryBox();
-          }, 1000);
-        }}
-        onReconnect={() => {
-          toast({
-            title: "Reconnecting...",
-            description: "Looking for your previous chat partner.",
-          });
-        }}
-        onReport={() => {
-          toast({
-            title: "Report submitted",
-            description: "Thank you for keeping our community safe.",
-          });
-        }}
-        onBlock={() => {
-          toast({
-            title: "User blocked",
-            description: "You won't be matched with this user again.",
-          });
-        }}
-        coinBalance={coinBalance}
-        onSpendCoins={(amount) => {
-          setCoinBalance(prev => Math.max(0, prev - amount));
-        }}
-      />
-    );
-  }
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
-  if (currentScreen === "voice-call") {
-    return (
-      <VoiceCallActiveScreen
-        onEndCall={() => {
-          setCurrentScreen("post-call");
-          // Trigger mystery box chance after ending call
-          setTimeout(() => {
-            triggerMysteryBox();
-          }, 1000);
-        }}
-        onReconnect={() => {
-          toast({
-            title: "Reconnecting...",
-            description: "Looking for your previous chat partner.",
-          });
-        }}
-        onReport={() => {
-          toast({
-            title: "Report submitted",
-            description: "Thank you for keeping our community safe.",
-          });
-        }}
-        onBlock={() => {
-          toast({
-            title: "User blocked",
-            description: "You won't be matched with this user again.",
-          });
-        }}
-        coinBalance={coinBalance}
-        onSpendCoins={(amount) => {
-          setCoinBalance(prev => Math.max(0, prev - amount));
-        }}
-      />
-    );
-  }
-
-  if (currentScreen === "post-call") {
-    return (
-      <PostCallProfileScreen
-        profile={mockCallPartnerProfile}
-        onReject={() => {
-          setCurrentScreen("home");
-        }}
-        onAccept={() => {
-          setCurrentScreen("home");
-          setActiveTab("chat");
-        }}
-      />
-    );
-  }
-
-  if (currentScreen === "chat-detail" && activeChatId) {
-    const chat = chatData[activeChatId];
-    if (!chat) {
-      setCurrentScreen("home");
-      setActiveTab("chat");
-      return null;
-    }
-    
-    return (
-      <ChatDetailScreen
-        chat={chat}
-        onBack={() => {
-          setCurrentScreen("home");
-          setActiveTab("chat");
-        }}
-        onSend={(text) => {
-          // Message sent logic here
-        }}
-      />
-    );
-  }
-
-  if (currentScreen === "blurred-profiles") {
-    return (
-      <BlurredProfilesScreen
-        profiles={blurredProfiles}
-        coinBalance={coinBalance}
-        onBack={() => {
-          setCurrentScreen("home");
-          setActiveTab("profile");
-        }}
-        onUnlockProfile={(profileId, cost) => {
-          unlockProfile(profileId);
-          setCoinBalance(prev => prev - cost);
-        }}
-        onBuyCoins={handleBuyCoins}
-      />
-    );
-  }
-
+  // Event handlers
   const handleStartMatch = () => {
     if (userProfile) {
       // Show matching explanation toast
@@ -359,21 +226,6 @@ const Index = () => {
     setAppState("spin-wheel");
   };
 
-  // Handle coin balance click to navigate to coins tab
-  useEffect(() => {
-    const handleHashChange = () => {
-      if (window.location.hash === '#coins') {
-        setActiveTab('coins');
-        window.location.hash = '';
-      }
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-    handleHashChange(); // Check on mount
-
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
   const handleSpinWheelBack = () => {
     setAppState("main");
   };
@@ -390,114 +242,261 @@ const Index = () => {
     });
   };
 
-  if (appState === "spin-wheel") {
-    return (
-      <SpinWheelScreen
-        onBack={handleSpinWheelBack}
-        onCoinsEarned={handleCoinsEarned}
-      />
-    );
-  }
-
+  // SINGLE RETURN STATEMENT WITH CONDITIONAL RENDERING
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Background */}
-      <div 
-        className="fixed inset-0 opacity-5 pointer-events-none"
-        style={{
-          backgroundImage: `url(${heroBackground})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-      
-      {/* Main Content */}
-      <div className="relative z-10">
-        {activeTab === "home" && (
-          <HomeScreen
-            onStartMatch={handleStartMatch}
-            onBuyCoins={handleBuyCoins}
-            onUpgradePremium={handleUpgradePremium}
-            onOpenSpinWheel={handleOpenSpinWheel}
-            matchPreference={userProfile?.matchPreference || "anyone"}
-            onChangePreference={(pref) => {
-              if (userProfile) {
-                setUserProfile({...userProfile, matchPreference: pref});
-              }
-            }}
-            isPremium={isPremium}
-            onRequestUpgrade={() => setShowPremiumModal(true)}
-          />
-        )}
-        
-        {activeTab === "match" && userProfile && (
-          <MatchScreen
-            onStartMatch={handleStartMatch}
-            isPremium={isPremium}
-            matchPreference={userProfile.matchPreference}
-            onChangePreference={(pref) => {
-              setUserProfile({...userProfile, matchPreference: pref});
-            }}
-            onRequestUpgrade={() => setShowPremiumModal(true)}
-            onBuyCoins={handleBuyCoins}
-          />
-        )}
-        
-        {activeTab === "voice" && userProfile && (
-          <VoiceCallScreen
-            onStartCall={handleStartVoiceCall}
-            isPremium={isPremium}
-            coinBalance={coinBalance}
-            matchPreference={userProfile.matchPreference}
-            onChangePreference={(pref) => {
-              setUserProfile({...userProfile, matchPreference: pref});
-            }}
-            onRequestUpgrade={() => setShowPremiumModal(true)}
-            onBuyCoins={handleBuyCoins}
-            onSpendCoins={handleSpendCoins}
-          />
-        )}
-        
-        {activeTab === "coins" && (
-          <CoinsScreen
-            coinBalance={coinBalance}
-            streakData={streakData}
-            onBuyCoins={handleBuyCoins}
-            onOpenStreakModal={() => setShowStreakModal(true)}
-            onOpenSpinWheel={handleOpenSpinWheel}
-          />
-        )}
-        
-        {activeTab === "chat" && (
-          <ChatListScreen
-            chats={chats}
-            onOpenChat={(chatId) => {
-              setActiveChatId(chatId);
-              setCurrentScreen("chat-detail");
-            }}
-            onBuyCoins={handleBuyCoins}
-          />
-        )}
-        
-        {activeTab === "profile" && userProfile && (
-          <ProfileScreen 
-            profile={userProfile}
-            onEdit={() => setIsEditingProfile(true)}
-            onUpdateProfile={(updatedProfile) => setUserProfile(updatedProfile)}
-            onBuyCoins={handleBuyCoins}
-            onViewBlurredProfiles={() => setCurrentScreen("blurred-profiles")}
-          />
-        )}
-      </div>
+      {/* Conditional rendering based on app state */}
+      {appState === "splash" && (
+        <SplashScreen onComplete={() => setAppState("onboarding")} />
+      )}
 
-      {/* Bottom Navigation */}
-      <BottomNav 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab} 
-        hasNewProfileActivity={blurredProfiles.some(p => !p.isUnlocked)}
-      />
+      {(appState === "onboarding" || isEditingProfile) && (
+        <OnboardingScreen
+          initialProfile={isEditingProfile ? userProfile : undefined}
+          isPremium={isPremium}
+          onRequestUpgrade={() => setShowPremiumModal(true)}
+          onComplete={(profile) => {
+            setUserProfile(profile);
+            if (isEditingProfile) {
+              setIsEditingProfile(false);
+            } else {
+              setAppState("main");
+            }
+          }}
+        />
+      )}
 
-      {/* Modals */}
+      {appState === "spin-wheel" && (
+        <SpinWheelScreen
+          onBack={handleSpinWheelBack}
+          onCoinsEarned={handleCoinsEarned}
+        />
+      )}
+
+      {appState === "main" && (
+        <>
+          {currentScreen === "call" && (
+            <VideoCallScreen
+              onEndCall={() => {
+                setCurrentScreen("post-call");
+                // Trigger mystery box chance after ending call
+                setTimeout(() => {
+                  triggerMysteryBox();
+                }, 1000);
+              }}
+              onReconnect={() => {
+                toast({
+                  title: "Reconnecting...",
+                  description: "Looking for your previous chat partner.",
+                });
+              }}
+              onReport={() => {
+                toast({
+                  title: "Report submitted",
+                  description: "Thank you for keeping our community safe.",
+                });
+              }}
+              onBlock={() => {
+                toast({
+                  title: "User blocked",
+                  description: "You won't be matched with this user again.",
+                });
+              }}
+              coinBalance={coinBalance}
+              onSpendCoins={(amount) => {
+                setCoinBalance(prev => Math.max(0, prev - amount));
+              }}
+            />
+          )}
+
+          {currentScreen === "voice-call" && (
+            <VoiceCallActiveScreen
+              onEndCall={() => {
+                setCurrentScreen("post-call");
+                // Trigger mystery box chance after ending call
+                setTimeout(() => {
+                  triggerMysteryBox();
+                }, 1000);
+              }}
+              onReconnect={() => {
+                toast({
+                  title: "Reconnecting...",
+                  description: "Looking for your previous chat partner.",
+                });
+              }}
+              onReport={() => {
+                toast({
+                  title: "Report submitted",
+                  description: "Thank you for keeping our community safe.",
+                });
+              }}
+              onBlock={() => {
+                toast({
+                  title: "User blocked",
+                  description: "You won't be matched with this user again.",
+                });
+              }}
+              coinBalance={coinBalance}
+              onSpendCoins={(amount) => {
+                setCoinBalance(prev => Math.max(0, prev - amount));
+              }}
+            />
+          )}
+
+          {currentScreen === "post-call" && (
+            <PostCallProfileScreen
+              profile={mockCallPartnerProfile}
+              onReject={() => {
+                setCurrentScreen("home");
+              }}
+              onAccept={() => {
+                setCurrentScreen("home");
+                setActiveTab("chat");
+              }}
+            />
+          )}
+
+          {currentScreen === "chat-detail" && activeChatId && (() => {
+            const chat = chatData[activeChatId];
+            if (!chat) {
+              setCurrentScreen("home");
+              setActiveTab("chat");
+              return null;
+            }
+            
+            return (
+              <ChatDetailScreen
+                chat={chat}
+                onBack={() => {
+                  setCurrentScreen("home");
+                  setActiveTab("chat");
+                }}
+                onSend={(text) => {
+                  // Message sent logic here
+                }}
+              />
+            );
+          })()}
+
+          {currentScreen === "blurred-profiles" && (
+            <BlurredProfilesScreen
+              profiles={blurredProfiles}
+              coinBalance={coinBalance}
+              onBack={() => {
+                setCurrentScreen("home");
+                setActiveTab("profile");
+              }}
+              onUnlockProfile={(profileId, cost) => {
+                unlockProfile(profileId);
+                setCoinBalance(prev => prev - cost);
+              }}
+              onBuyCoins={handleBuyCoins}
+            />
+          )}
+
+          {currentScreen === "home" && (
+            <>
+              {/* Hero Background */}
+              <div 
+                className="fixed inset-0 opacity-5 pointer-events-none"
+                style={{
+                  backgroundImage: `url(${heroBackground})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+              
+              {/* Main Content */}
+              <div className="relative z-10">
+                {activeTab === "home" && (
+                  <HomeScreen
+                    onStartMatch={handleStartMatch}
+                    onBuyCoins={handleBuyCoins}
+                    onUpgradePremium={handleUpgradePremium}
+                    onOpenSpinWheel={handleOpenSpinWheel}
+                    matchPreference={userProfile?.matchPreference || "anyone"}
+                    onChangePreference={(pref) => {
+                      if (userProfile) {
+                        setUserProfile({...userProfile, matchPreference: pref});
+                      }
+                    }}
+                    isPremium={isPremium}
+                    onRequestUpgrade={() => setShowPremiumModal(true)}
+                  />
+                )}
+                
+                {activeTab === "match" && userProfile && (
+                  <MatchScreen
+                    onStartMatch={handleStartMatch}
+                    isPremium={isPremium}
+                    matchPreference={userProfile.matchPreference}
+                    onChangePreference={(pref) => {
+                      setUserProfile({...userProfile, matchPreference: pref});
+                    }}
+                    onRequestUpgrade={() => setShowPremiumModal(true)}
+                    onBuyCoins={handleBuyCoins}
+                  />
+                )}
+                
+                {activeTab === "voice" && userProfile && (
+                  <VoiceCallScreen
+                    onStartCall={handleStartVoiceCall}
+                    isPremium={isPremium}
+                    coinBalance={coinBalance}
+                    matchPreference={userProfile.matchPreference}
+                    onChangePreference={(pref) => {
+                      setUserProfile({...userProfile, matchPreference: pref});
+                    }}
+                    onRequestUpgrade={() => setShowPremiumModal(true)}
+                    onBuyCoins={handleBuyCoins}
+                    onSpendCoins={handleSpendCoins}
+                  />
+                )}
+                
+                {activeTab === "coins" && (
+                  <CoinsScreen
+                    coinBalance={coinBalance}
+                    streakData={streakData}
+                    onBuyCoins={handleBuyCoins}
+                    onOpenStreakModal={() => setShowStreakModal(true)}
+                    onOpenSpinWheel={handleOpenSpinWheel}
+                  />
+                )}
+                
+                {activeTab === "chat" && (
+                  <ChatListScreen
+                    chats={chats}
+                    onOpenChat={(chatId) => {
+                      setActiveChatId(chatId);
+                      setCurrentScreen("chat-detail");
+                    }}
+                    onBuyCoins={handleBuyCoins}
+                  />
+                )}
+                
+                {activeTab === "profile" && userProfile && (
+                  <ProfileScreen 
+                    profile={userProfile}
+                    onEdit={() => setIsEditingProfile(true)}
+                    onUpdateProfile={(updatedProfile) => setUserProfile(updatedProfile)}
+                    onBuyCoins={handleBuyCoins}
+                    onViewBlurredProfiles={() => setCurrentScreen("blurred-profiles")}
+                  />
+                )}
+              </div>
+
+              {/* Bottom Navigation */}
+              <BottomNav 
+                activeTab={activeTab} 
+                onTabChange={setActiveTab} 
+                hasNewProfileActivity={blurredProfiles.some(p => !p.isUnlocked)}
+              />
+            </>
+          )}
+        </>
+      )}
+
+      {/* Modals - These should always be rendered */}
       <PremiumModal
         isOpen={showPremiumModal}
         onClose={() => setShowPremiumModal(false)}
