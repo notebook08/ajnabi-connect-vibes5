@@ -147,13 +147,6 @@ export function MatchScreen({
             <CardContent className="p-6 sm:p-8 text-center">
               <div className="mb-4 sm:mb-6">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 animate-pulse-warm">
-                  <Heart className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white" />
-                </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 font-poppins">Ready to Connect?</h3>
-                <p className="text-muted-foreground font-poppins text-sm sm:text-base">
-                  Start a video chat with someone new and make meaningful connections
-                </p>
-              </div>
               
               <Button 
                 onClick={onStartMatch}
