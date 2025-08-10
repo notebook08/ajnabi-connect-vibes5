@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SplashScreen } from "@/components/Onboarding/SplashScreen";
 import { OnboardingScreen } from "@/components/Onboarding/OnboardingScreen";
 import { ProfileScreen } from "@/components/Profile/ProfileScreen";
-import { HomeScreen } from "@/components/Home/HomeScreen";
+import HomeScreen from "@/components/Home/HomeScreen";
 import { VideoCallScreen } from "@/components/VideoChat/VideoCallScreen";
 import { PostCallProfileScreen } from "@/components/VideoChat/PostCallProfileScreen";
 import { MatchScreen } from "@/components/Match/MatchScreen";
