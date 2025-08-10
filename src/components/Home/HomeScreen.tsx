@@ -84,7 +84,6 @@ export default function HomeScreen({
       <div className="px-3 sm:px-4 md:px-6 -mt-4 sm:-mt-6 space-y-4 sm:space-y-6">
         <div className="max-w-4xl mx-auto w-full space-y-4 sm:space-y-6">
           {/* Quick Actions */}
-          {/* Chat Mode Selection */}
           <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 sm:p-6">
               <CardTitle className="font-poppins text-base sm:text-lg md:text-xl flex items-center gap-2">
@@ -169,7 +168,6 @@ export default function HomeScreen({
           </Button>
 
           {/* Voice Chat Promotion */}
-          {/* Daily Spin Promotion */}
           <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 border-l-4 border-l-premium">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">

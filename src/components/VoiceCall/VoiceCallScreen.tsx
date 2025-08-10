@@ -225,24 +225,6 @@ export function VoiceCallScreen({
             </CardContent>
           </Card>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 bg-gradient-secondary text-white">
-              <CardContent className="p-3 sm:p-4 text-center">
-                <Users className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2" />
-                <div className="text-xl sm:text-2xl font-bold font-poppins">1.8K</div>
-                <div className="text-xs sm:text-sm opacity-90 font-poppins">Voice Active</div>
-              </CardContent>
-            </Card>
-            <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 bg-gradient-premium text-white">
-              <CardContent className="p-3 sm:p-4 text-center">
-                <Mic className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2" />
-                <div className="text-xl sm:text-2xl font-bold font-poppins">Audio</div>
-                <div className="text-xs sm:text-sm opacity-90 font-poppins">Only Mode</div>
-              </CardContent>
-            </Card>
-          </div>
-
           {/* Start Call Button */}
           <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
             <CardContent className="p-6 sm:p-8 text-center">
