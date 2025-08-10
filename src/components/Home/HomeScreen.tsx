@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CoinBalance } from "./CoinBalance";
+import { CoinHeader } from "./CoinHeader";
 import { Video, Users, Zap, Heart, Crown, Filter, MapPin, Gem, Phone, Flame, Gift } from "lucide-react";
 
 interface HomeScreenProps {
@@ -63,6 +64,16 @@ export default function HomeScreen({
     <div className="min-h-screen bg-background pb-16 sm:pb-20 md:pb-24 safe-area-top safe-area-bottom">
       {/* Header with gradient background */}
       <div className="bg-gradient-primary pt-12 sm:pt-16 pb-6 sm:pb-8 px-3 sm:px-4 md:px-6 rounded-b-3xl shadow-warm">
+        {/* Coin Header */}
+        <div className="flex justify-end mb-4">
+          <div className="w-48">
+            <CoinHeader 
+              balance={coinBalance} 
+              onOpenCoins={() => window.location.hash = '#coins'} 
+            />
+          </div>
+        </div>
+        
         <div className="text-center text-white">
           <Video className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto mb-3 sm:mb-4 animate-float" />
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 font-dancing">AjnabiCam</h1>
@@ -72,9 +83,6 @@ export default function HomeScreen({
 
       <div className="px-3 sm:px-4 md:px-6 -mt-4 sm:-mt-6 space-y-4 sm:space-y-6">
         <div className="max-w-4xl mx-auto w-full space-y-4 sm:space-y-6">
-          {/* Coin Balance */}
-          <CoinBalance balance={coinBalance} onBuyCoins={onBuyCoins} />
-
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 bg-gradient-secondary text-white cursor-pointer hover:scale-105 transition-transform" onClick={onStartMatch}>
