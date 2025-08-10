@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CoinBalance } from "./CoinBalance";
 import { CoinHeader } from "./CoinHeader";
-import { Video, Users, Zap, Heart, Crown, Filter, MapPin, Gem, Phone, Flame, Gift } from "lucide-react";
+import { Video, Users, Zap, Heart, Crown, Filter, MapPin, Gem, Phone, Flame, Gift, Eye } from "lucide-react";
 
 interface HomeScreenProps {
   onStartMatch: () => void;
