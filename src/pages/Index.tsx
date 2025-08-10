@@ -25,6 +25,7 @@ import { useMatching } from "@/hooks/useMatching";
 import { CoinsScreen } from "@/components/Coins/CoinsScreen";
 import { Video, Gem, Phone, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import heroBackground from "@/assets/hero-bg.jpg";
 
 interface UserProfile {
@@ -357,6 +358,21 @@ const Index = () => {
   const handleOpenSpinWheel = () => {
     setAppState("spin-wheel");
   };
+
+  // Handle coin balance click to navigate to coins tab
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#coins') {
+        setActiveTab('coins');
+        window.location.hash = '';
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange(); // Check on mount
+
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const handleSpinWheelBack = () => {
     setAppState("main");

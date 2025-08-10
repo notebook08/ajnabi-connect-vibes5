@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Video, Crown, AlertCircle, Gem, Filter, Bell } from "lucide-react";
+import { Video, Crown, AlertCircle, Gem, Filter, Bell, Coins } from "lucide-react";
 import { Treasure } from "@/components/ui/icons";
-import { CoinBalance } from "./CoinBalance";
 import videoChatIllustration from "@/assets/video-chat-illustration.jpg";
 
 interface HomeScreenProps {
@@ -90,14 +89,31 @@ export function HomeScreen({
             >
               <Treasure className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
             </Button>
-            <Button 
-              onClick={onBuyCoins}
-              variant="outline"
-              size="sm"
-              className="bg-white/20 border-white/30 text-white hover:bg-white/30 p-2 sm:p-3 rounded-full min-h-8 min-w-8 sm:min-h-10 sm:min-w-10 md:min-h-12 md:min-w-12"
+            
+            {/* Coin Balance Display */}
+            <div 
+              onClick={() => window.location.hash = '#coins'}
+              className="bg-gradient-to-r from-orange-400 to-orange-500 rounded-full px-3 sm:px-4 py-2 sm:py-2.5 flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform shadow-lg"
             >
-              <Gem className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
-            </Button>
+              <div className="p-1 bg-white/20 rounded-full">
+                <Coins className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+              </div>
+              <div className="text-white">
+                <p className="text-[10px] sm:text-xs font-medium font-poppins leading-none">Your Coins</p>
+                <p className="text-sm sm:text-base font-bold font-poppins leading-none">{coinBalance}</p>
+              </div>
+              <Button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onBuyCoins();
+                }}
+                variant="outline"
+                size="sm"
+                className="bg-white/20 border-white/30 text-white hover:bg-white/30 h-6 sm:h-7 px-2 sm:px-3 text-xs font-poppins rounded-lg"
+              >
+                + Buy
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -105,9 +121,6 @@ export function HomeScreen({
       {/* Main Content - Responsive container */}
       <div className="px-3 sm:px-4 md:px-6 lg:px-8 -mt-3 sm:-mt-4 md:-mt-6 space-y-3 sm:space-y-4 md:space-y-6 pb-16 sm:pb-20 md:pb-24 safe-area-bottom">
         <div className="max-w-4xl mx-auto w-full">
-          {/* Coin Balance */}
-          <CoinBalance balance={coinBalance} onBuyCoins={onBuyCoins} />
-
           {/* Premium Banner */}
           <Card className="bg-gradient-premium shadow-card border-0 rounded-xl sm:rounded-2xl overflow-hidden">
             <CardContent className="p-3 sm:p-4 md:p-6">
