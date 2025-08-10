@@ -179,22 +179,6 @@ export function MatchScreen({
             </CardContent>
           </Card>
 
-          {/* Tips Card */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 border-l-4 border-l-primary">
-            <CardContent className="p-4 sm:p-6">
-              <h4 className="font-semibold mb-2 sm:mb-3 font-poppins flex items-center gap-2 text-sm sm:text-base">
-                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                Pro Tips for Better Matches
-              </h4>
-              <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground font-poppins">
-                <p>• Be yourself and smile during video calls</p>
-                <p>• Ask interesting questions to break the ice</p>
-                <p>• Keep conversations positive and fun</p>
-                <p>• Respect others and report inappropriate behavior</p>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Recent Activity */}
           <Card className="shadow-card rounded-xl sm:rounded-2xl border-0">
             <CardContent className="p-4 sm:p-6">
