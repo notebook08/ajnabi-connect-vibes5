@@ -147,6 +147,9 @@ export function MatchScreen({
             <CardContent className="p-6 sm:p-8 text-center">
               <div className="mb-4 sm:mb-6">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 animate-pulse-warm">
+                  <Video className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white" />
+                </div>
+              </div>
               
               <Button 
                 onClick={onStartMatch}
