@@ -157,7 +157,7 @@ export default function HomeScreen({
         <div className="space-y-4">
           <Button
             onClick={() => {/* Navigate to voice tab */}}
-            className={`w-full h-16 rounded-3xl text-white hover:scale-105 transition-all duration-300 border-0 shadow-warm ${
+            className={`w-full h-12 rounded-3xl text-white hover:scale-105 transition-all duration-300 border-0 shadow-warm ${
               hasUnlimitedCalls 
                 ? "bg-gradient-to-r from-green-500 to-emerald-500" 
                 : "bg-gradient-to-r from-purple-500 to-pink-500"
