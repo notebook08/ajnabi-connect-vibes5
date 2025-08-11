@@ -10,7 +10,8 @@ import {
   MessageCircle, 
   ArrowLeft,
   Sparkles,
-  X
+  X,
+  Loader2
 } from "lucide-react";
 import { PaymentService } from "@/services/paymentService";
 import { PREMIUM_PLANS } from "@/config/payments";
@@ -35,6 +36,7 @@ const premiumFeatures = [
 
 export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenProps) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processingPlan, setProcessingPlan] = useState<string | null>(null);
   const { toast } = useToast();
 
   const plans = [
@@ -45,9 +47,10 @@ export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenPr
   ];
 
   const handlePremiumPurchase = async (planId: string) => {
-    if (isProcessing) return;
+    if (isProcessing || processingPlan) return;
     
     setIsProcessing(true);
+    setProcessingPlan(planId);
     
     try {
       const result = await PaymentService.subscribeToPremium(
@@ -56,27 +59,29 @@ export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenPr
       );
       
       if (result.success) {
+        // Only activate premium after successful payment
         onSubscribe(planId);
         const plan = plans.find(p => p.id === planId);
         toast({
           title: "Premium Activated! 👑",
-          description: `Welcome to Premium! Your ${plan?.duration} subscription is now active.`,
+          description: `Payment successful! Your ${plan?.duration} subscription is now active.`,
         });
       } else {
         toast({
           title: "Payment Failed",
-          description: result.error || "Something went wrong. Please try again.",
+          description: result.error || "Payment was not completed. Please try again.",
           variant: "destructive"
         });
       }
     } catch (error: any) {
       toast({
         title: "Payment Error",
-        description: error.message || "Failed to process payment.",
+        description: error.message || "Payment could not be processed. Please try again.",
         variant: "destructive"
       });
     } finally {
       setIsProcessing(false);
+      setProcessingPlan(null);
     }
   };
 
@@ -161,7 +166,9 @@ export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenPr
                   plan.badge === "Most Popular" 
                     ? "bg-white shadow-2xl ring-4 ring-white/50 scale-105" 
                     : "bg-white/90 backdrop-blur-sm shadow-xl hover:scale-105"
-                } ${isProcessing ? "opacity-50 pointer-events-none" : ""}`}
+                } ${isProcessing ? "opacity-50 pointer-events-none" : ""} ${
+                  processingPlan === plan.id ? "ring-2 ring-primary/50" : ""
+                }`}
                 onClick={() => handlePremiumPurchase(plan.id)}
               >
                 <CardContent className="p-6">
@@ -183,10 +190,17 @@ export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenPr
                       </div>
                     </div>
                     <Button 
-                      disabled={isProcessing}
+                      disabled={isProcessing || processingPlan === plan.id}
                       className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-poppins h-12 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                     >
-                      {isProcessing ? "Processing..." : "Select"}
+                      {processingPlan === plan.id ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Processing
+                        </>
+                      ) : (
+                        "Select"
+                      )}
                     </Button>
                   </div>
                 </CardContent>
@@ -197,10 +211,10 @@ export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenPr
           {/* Bottom CTA */}
           <div className="text-center mt-8 space-y-4">
             <p className="text-white/90 font-poppins text-lg">
-              ⚡ Upgrade now to choose your ideal matches!
+              ⚡ Complete payment to unlock premium features!
             </p>
             <p className="text-white/70 text-sm font-poppins">
-              Secure payments • Cancel anytime
+              🔒 Secure payments • Premium activates after successful payment
             </p>
           </div>
         </div>

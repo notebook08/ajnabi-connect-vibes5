@@ -177,19 +177,20 @@ const Index = () => {
   };
 
   const handleCoinPurchase = (pack: string) => {
-    // This will be called after successful payment
+    // This is called after successful payment - no action needed here
   };
 
   const handleCoinPurchaseSuccess = (pack: string, coins: number) => {
-    setShowCoinModal(false);
-    // Add coins to balance
-    setCoinBalance(prev => prev + amount);
+    // Add coins to balance after successful payment
     setCoinBalance(prev => prev + coins);
+    
+    toast({
+      title: "Coins Added Successfully! 💰",
+      description: `${coins} coins have been credited to your account.`,
+    });
   };
 
   const handleSubscription = (plan: string, autoRenew: boolean) => {
-    setShowCoinModal(false);
-    
     if (plan === 'daily-unlimited') {
       setHasUnlimitedCalls(true);
       setAutoRenewEnabled(autoRenew);
@@ -201,16 +202,19 @@ const Index = () => {
       
       toast({
         title: "Unlimited Calls Activated! 🎉",
-        description: `You now have unlimited voice calls for 24 hours. ${autoRenew ? 'Auto-renew is enabled.' : ''}`,
+        description: `Payment successful! You now have unlimited voice calls for 24 hours. ${autoRenew ? 'Auto-renew is enabled.' : ''}`,
       });
     }
   };
+  
   const handlePremiumSubscribe = (plan: string) => {
+    // Only activate premium after successful payment
     setIsPremium(true);
     setCurrentScreen("home");
+    
     toast({
-      title: "Welcome to Premium!",
-      description: "You now have access to all premium features including unlimited voice calls.",
+      title: "Premium Activated! 👑",
+      description: "Payment successful! You now have access to all premium features.",
     });
   };
 

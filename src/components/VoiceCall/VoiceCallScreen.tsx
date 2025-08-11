@@ -32,12 +32,23 @@ export function VoiceCallScreen({
   const canMakeCall = isPremium || hasUnlimitedCalls || coinBalance >= 20;
 
   const handleStartCall = () => {
-    if (isPremium || hasUnlimitedCalls) {
+    if (hasUnlimitedCalls) {
+      // User has unlimited calls subscription
       onStartCall();
+    } else if (isPremium) {
+      // Premium users still need to pay for voice calls unless they have unlimited
+      if (coinBalance >= 20) {
+        onSpendCoins(20);
+        onStartCall();
+      } else {
+        onBuyCoins?.();
+      }
     } else if (coinBalance >= 20) {
+      // Free users pay per call
       onSpendCoins(20);
       onStartCall();
     } else {
+      // Not enough coins
       onBuyCoins?.();
     }
   };

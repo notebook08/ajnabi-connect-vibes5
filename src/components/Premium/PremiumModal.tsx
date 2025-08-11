@@ -9,11 +9,13 @@ import {
   Heart, 
   MessageCircle, 
   X,
-  Sparkles 
+  Sparkles,
+  Loader2
 } from "lucide-react";
 import { PaymentService } from "@/services/paymentService";
 import { PREMIUM_PLANS } from "@/config/payments";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface PremiumModalProps {
   isOpen: boolean;
@@ -35,6 +37,8 @@ const premiumFeatures = [
 
 export function PremiumModal({ isOpen, onClose, onSubscribe, userInfo }: PremiumModalProps) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processingPlan, setProcessingPlan] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
   const plans = [
@@ -45,9 +49,10 @@ export function PremiumModal({ isOpen, onClose, onSubscribe, userInfo }: Premium
   ];
 
   const handlePremiumPurchase = async (planId: string) => {
-    if (isProcessing) return;
+    if (isProcessing || processingPlan) return;
     
     setIsProcessing(true);
+    setProcessingPlan(planId);
     
     try {
       const result = await PaymentService.subscribeToPremium(
@@ -56,28 +61,30 @@ export function PremiumModal({ isOpen, onClose, onSubscribe, userInfo }: Premium
       );
       
       if (result.success) {
+        // Only activate premium after successful payment
         onSubscribe(planId);
         onClose();
         const plan = plans.find(p => p.id === planId);
         toast({
           title: "Premium Activated! 👑",
-          description: `Welcome to Premium! Your ${plan?.duration} subscription is now active.`,
+          description: `Payment successful! Your ${plan?.duration} subscription is now active.`,
         });
       } else {
         toast({
           title: "Payment Failed",
-          description: result.error || "Something went wrong. Please try again.",
+          description: result.error || "Payment was not completed. Please try again.",
           variant: "destructive"
         });
       }
     } catch (error: any) {
       toast({
         title: "Payment Error",
-        description: error.message || "Failed to process payment.",
+        description: error.message || "Payment could not be processed. Please try again.",
         variant: "destructive"
       });
     } finally {
       setIsProcessing(false);
+      setProcessingPlan(null);
     }
   };
 
@@ -145,7 +152,9 @@ export function PremiumModal({ isOpen, onClose, onSubscribe, userInfo }: Premium
                 key={plan.id} 
                 className={`cursor-pointer transition-all duration-200 hover:shadow-warm border-2 ${
                   plan.badge === "Most Popular" ? "border-primary shadow-warm" : "border-border"
-                } ${isProcessing ? "opacity-50 pointer-events-none" : ""}`}
+                } ${isProcessing ? "opacity-50 pointer-events-none" : ""} ${
+                  processingPlan === plan.id ? "ring-2 ring-primary/50" : ""
+                }`}
                 onClick={() => handlePremiumPurchase(plan.id)}
               >
                 <CardContent className="p-4">
@@ -169,9 +178,17 @@ export function PremiumModal({ isOpen, onClose, onSubscribe, userInfo }: Premium
                     <Button 
                       variant="gradient" 
                       size="sm"
-                      disabled={isProcessing}
+                      disabled={isProcessing || processingPlan === plan.id}
+                      className="min-w-[80px]"
                     >
-                      {isProcessing ? "..." : "Select"}
+                      {processingPlan === plan.id ? (
+                        <>
+                          <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                          Processing
+                        </>
+                      ) : (
+                        "Select"
+                      )}
                     </Button>
                   </div>
                 </CardContent>
@@ -180,8 +197,8 @@ export function PremiumModal({ isOpen, onClose, onSubscribe, userInfo }: Premium
           </div>
 
           <div className="text-center text-xs text-muted-foreground">
-            <p className="font-poppins">⚡ Upgrade now to choose your ideal matches!</p>
-            <p className="text-[10px] mt-2 font-poppins">Secure payments powered by Razorpay</p>
+            <p className="font-poppins">⚡ Complete payment to activate premium features</p>
+            <p className="text-[10px] mt-2 font-poppins">🔒 Secure payments powered by Razorpay</p>
           </div>
         </div>
       </DialogContent>

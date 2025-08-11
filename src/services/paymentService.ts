@@ -36,13 +36,6 @@ export class PaymentService {
       return true;
     }
 
-    // Check if we're in development mode and handle gracefully
-    if (import.meta.env.DEV) {
-      console.warn('Razorpay in development mode - using mock payments');
-      this.isRazorpayLoaded = true;
-      return true;
-    }
-
     return new Promise((resolve) => {
       const script = document.createElement('script');
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -51,12 +44,23 @@ export class PaymentService {
         resolve(true);
       };
       script.onerror = () => {
-        console.warn('Failed to load Razorpay script - using mock payments');
-        this.isRazorpayLoaded = true;
-        resolve(true);
+        console.error('Failed to load Razorpay script');
+        resolve(false);
       };
       document.body.appendChild(script);
     });
+  }
+
+  // Create order on backend (simulated)
+  static async createOrder(amount: number, currency: string = 'INR'): Promise<{ orderId: string; amount: number }> {
+    // In a real app, this would call your backend API to create a Razorpay order
+    // For now, we'll simulate this
+    const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    return {
+      orderId,
+      amount
+    };
   }
 
   // Initialize payment
@@ -65,24 +69,16 @@ export class PaymentService {
       // Load Razorpay if not already loaded
       const isLoaded = await this.loadRazorpay();
       if (!isLoaded) {
-        throw new Error('Failed to load Razorpay');
+        throw new Error('Payment gateway is currently unavailable. Please try again later.');
       }
 
-      // In development mode or if Razorpay is not available, simulate payment
-      if (import.meta.env.DEV || !window.Razorpay) {
-        console.log('Simulating payment for development:', options);
-        
-        // Simulate payment processing delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Simulate successful payment
-        return {
-          success: true,
-          paymentId: 'pay_mock_' + Date.now(),
-          orderId: 'order_mock_' + Date.now(),
-          signature: 'mock_signature_' + Date.now()
-        };
+      // Check if Razorpay is available
+      if (!window.Razorpay) {
+        throw new Error('Payment gateway failed to initialize. Please refresh and try again.');
       }
+
+      // Create order
+      const order = await this.createOrder(options.amount);
 
       return new Promise((resolve) => {
         const razorpayOptions = {
@@ -92,8 +88,12 @@ export class PaymentService {
           name: PAYMENT_CONFIG.company.name,
           description: options.description,
           image: PAYMENT_CONFIG.company.logo,
-          order_id: options.orderId,
-          prefill: options.prefill || {},
+          order_id: order.orderId,
+          prefill: {
+            name: options.prefill?.name || '',
+            email: options.prefill?.email || '',
+            contact: options.prefill?.contact || ''
+          },
           notes: options.notes || {},
           theme: PAYMENT_CONFIG.company.theme,
           modal: {
@@ -104,24 +104,51 @@ export class PaymentService {
               });
             }
           },
-          handler: (response: any) => {
-            resolve({
-              success: true,
-              paymentId: response.razorpay_payment_id,
-              orderId: response.razorpay_order_id,
-              signature: response.razorpay_signature
-            });
+          handler: async (response: any) => {
+            try {
+              // Verify payment on backend (simulated)
+              const isValid = await this.verifyPayment(
+                response.razorpay_payment_id,
+                response.razorpay_order_id,
+                response.razorpay_signature
+              );
+
+              if (isValid) {
+                resolve({
+                  success: true,
+                  paymentId: response.razorpay_payment_id,
+                  orderId: response.razorpay_order_id,
+                  signature: response.razorpay_signature
+                });
+              } else {
+                resolve({
+                  success: false,
+                  error: 'Payment verification failed'
+                });
+              }
+            } catch (error: any) {
+              resolve({
+                success: false,
+                error: error.message || 'Payment verification failed'
+              });
+            }
           }
         };
 
         try {
           const razorpay = new window.Razorpay(razorpayOptions);
+          razorpay.on('payment.failed', (response: any) => {
+            resolve({
+              success: false,
+              error: response.error.description || 'Payment failed'
+            });
+          });
           razorpay.open();
-        } catch (error) {
+        } catch (error: any) {
           console.error('Razorpay initialization error:', error);
           resolve({
             success: false,
-            error: 'Payment gateway temporarily unavailable'
+            error: 'Payment gateway initialization failed'
           });
         }
       });
@@ -137,17 +164,22 @@ export class PaymentService {
   static async buyCoinPackage(packageType: keyof typeof COIN_PACKAGES, userInfo?: { name?: string; email?: string; phone?: string }): Promise<PaymentResult> {
     const coinPackage = COIN_PACKAGES[packageType];
     if (!coinPackage) {
-      return { success: false, error: 'Invalid coin package' };
+      return { success: false, error: 'Invalid coin package selected' };
     }
 
     const paymentOptions: PaymentOptions = {
       amount: coinPackage.price,
-      description: `${coinPackage.coins} Coins Package`,
-      prefill: userInfo,
+      description: `${coinPackage.coins} Coins Package - AjnabiCam`,
+      prefill: {
+        name: userInfo?.name,
+        email: userInfo?.email,
+        contact: userInfo?.phone
+      },
       notes: {
         package_type: packageType,
         coins: coinPackage.coins.toString(),
-        package_id: coinPackage.id
+        package_id: coinPackage.id,
+        product_type: 'coins'
       }
     };
 
@@ -158,17 +190,22 @@ export class PaymentService {
   static async subscribeToPremium(planType: keyof typeof PREMIUM_PLANS, userInfo?: { name?: string; email?: string; phone?: string }): Promise<PaymentResult> {
     const plan = PREMIUM_PLANS[planType];
     if (!plan) {
-      return { success: false, error: 'Invalid premium plan' };
+      return { success: false, error: 'Invalid premium plan selected' };
     }
 
     const paymentOptions: PaymentOptions = {
       amount: plan.price,
-      description: `Premium Subscription - ${plan.duration}`,
-      prefill: userInfo,
+      description: `Premium Subscription (${plan.duration}) - AjnabiCam`,
+      prefill: {
+        name: userInfo?.name,
+        email: userInfo?.email,
+        contact: userInfo?.phone
+      },
       notes: {
         plan_type: planType,
         duration: plan.duration,
-        plan_id: plan.id
+        plan_id: plan.id,
+        product_type: 'premium'
       }
     };
 
@@ -179,33 +216,81 @@ export class PaymentService {
   static async subscribeToUnlimitedCalls(autoRenew: boolean = false, userInfo?: { name?: string; email?: string; phone?: string }): Promise<PaymentResult> {
     const paymentOptions: PaymentOptions = {
       amount: UNLIMITED_CALLS_PLAN.price,
-      description: `Unlimited Voice Calls - ${UNLIMITED_CALLS_PLAN.duration}`,
-      prefill: userInfo,
+      description: `Unlimited Voice Calls (${UNLIMITED_CALLS_PLAN.duration}) - AjnabiCam`,
+      prefill: {
+        name: userInfo?.name,
+        email: userInfo?.email,
+        contact: userInfo?.phone
+      },
       notes: {
         plan_type: 'unlimited_calls',
         duration: UNLIMITED_CALLS_PLAN.duration,
         auto_renew: autoRenew.toString(),
-        plan_id: UNLIMITED_CALLS_PLAN.id
+        plan_id: UNLIMITED_CALLS_PLAN.id,
+        product_type: 'unlimited_calls'
       }
     };
 
     return this.initiatePayment(paymentOptions);
   }
 
-  // Verify payment (this would typically be done on your backend)
+  // Verify payment (this should be done on your backend in production)
   static async verifyPayment(paymentId: string, orderId: string, signature: string): Promise<boolean> {
-    // In a real application, this verification should be done on your backend
-    // using the Razorpay webhook or API
-    console.log('Payment verification:', { paymentId, orderId, signature });
-    
-    // For demo purposes, we'll assume all payments are valid
-    // In production, implement proper server-side verification
-    return true;
+    try {
+      // In production, this should call your backend API for verification
+      // For now, we'll do basic validation
+      
+      if (!paymentId || !orderId || !signature) {
+        return false;
+      }
+
+      // Simulate backend verification delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // In a real app, you would:
+      // 1. Send paymentId, orderId, and signature to your backend
+      // 2. Backend verifies with Razorpay using webhook secret
+      // 3. Backend returns verification result
+      
+      // For demo purposes, we'll validate the format
+      const isValidFormat = 
+        paymentId.startsWith('pay_') && 
+        orderId.startsWith('order_') && 
+        signature.length > 10;
+
+      return isValidFormat;
+    } catch (error) {
+      console.error('Payment verification error:', error);
+      return false;
+    }
   }
 
   // Get payment status
-  static getPaymentStatus(paymentId: string): Promise<any> {
-    // This would typically call your backend API to get payment status
-    return Promise.resolve({ status: 'captured' });
+  static async getPaymentStatus(paymentId: string): Promise<{ status: string; amount?: number }> {
+    try {
+      // This would typically call your backend API to get payment status from Razorpay
+      // For demo purposes, we'll simulate this
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      return { 
+        status: 'captured',
+        amount: 0 // Would be actual amount from Razorpay
+      };
+    } catch (error) {
+      console.error('Failed to get payment status:', error);
+      return { status: 'failed' };
+    }
+  }
+
+  // Cancel subscription (for auto-renew)
+  static async cancelSubscription(subscriptionId: string): Promise<boolean> {
+    try {
+      // This would call your backend to cancel the subscription
+      console.log('Cancelling subscription:', subscriptionId);
+      return true;
+    } catch (error) {
+      console.error('Failed to cancel subscription:', error);
+      return false;
+    }
   }
 }

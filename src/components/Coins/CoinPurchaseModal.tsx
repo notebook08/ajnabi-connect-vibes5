@@ -10,7 +10,8 @@ import { COIN_PACKAGES, UNLIMITED_CALLS_PLAN } from "@/config/payments";
 import { useToast } from "@/hooks/use-toast";
 
 interface CoinPurchaseModalProps {
-  isOpen: boolean;
+  RefreshCw,
+  Loader2
   onClose: () => void;
   onPurchase: (pack: string, coins: number) => void;
   onSubscribe?: (plan: string, autoRenew: boolean) => void;
@@ -24,6 +25,7 @@ interface CoinPurchaseModalProps {
 export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, userInfo }: CoinPurchaseModalProps) {
   const [autoRenewEnabled, setAutoRenewEnabled] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processingItem, setProcessingItem] = useState<string | null>(null);
   const { toast } = useToast();
 
   const coinPacks = [
@@ -54,9 +56,10 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
   ];
 
   const handleCoinPurchase = async (packId: string) => {
-    if (isProcessing) return;
+    if (isProcessing || processingItem) return;
     
     setIsProcessing(true);
+    setProcessingItem(packId);
     
     try {
       const result = await PaymentService.buyCoinPackage(
@@ -65,63 +68,68 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
       );
       
       if (result.success) {
+        // Only add coins after successful payment
         const pack = coinPacks.find(p => p.id === packId);
         if (pack) {
           onPurchase(packId, pack.coins);
           onClose();
           toast({
             title: "Payment Successful! 🎉",
-            description: `${pack.coins} coins have been added to your account.`,
+            description: `Payment completed! ${pack.coins} coins have been added to your account.`,
           });
         }
       } else {
         toast({
           title: "Payment Failed",
-          description: result.error || "Something went wrong. Please try again.",
+          description: result.error || "Payment was not completed. Please try again.",
           variant: "destructive"
         });
       }
     } catch (error: any) {
       toast({
         title: "Payment Error",
-        description: error.message || "Failed to process payment.",
+        description: error.message || "Payment could not be processed. Please try again.",
         variant: "destructive"
       });
     } finally {
       setIsProcessing(false);
+      setProcessingItem(null);
     }
   };
 
   const handleSubscribe = async () => {
-    if (isProcessing) return;
+    if (isProcessing || processingItem) return;
     
     setIsProcessing(true);
+    setProcessingItem('unlimited-calls');
     
     try {
       const result = await PaymentService.subscribeToUnlimitedCalls(autoRenewEnabled, userInfo);
       
       if (result.success) {
+        // Only activate subscription after successful payment
         onSubscribe?.('daily-unlimited', autoRenewEnabled);
         onClose();
         toast({
           title: "Subscription Activated! 🎉",
-          description: `You now have unlimited voice calls for 24 hours.`,
+          description: `Payment successful! You now have unlimited voice calls for 24 hours.`,
         });
       } else {
         toast({
           title: "Payment Failed",
-          description: result.error || "Something went wrong. Please try again.",
+          description: result.error || "Payment was not completed. Please try again.",
           variant: "destructive"
         });
       }
     } catch (error: any) {
       toast({
         title: "Payment Error",
-        description: error.message || "Failed to process payment.",
+        description: error.message || "Payment could not be processed. Please try again.",
         variant: "destructive"
       });
     } finally {
       setIsProcessing(false);
+      setProcessingItem(null);
     }
   };
 
@@ -219,12 +227,19 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
 
               <Button 
                 onClick={handleSubscribe}
-                disabled={isProcessing}
+                disabled={isProcessing || processingItem === 'unlimited-calls'}
                 className="w-full h-12 font-poppins font-semibold rounded-xl"
                 variant="gradient"
               >
                 <Crown className="w-5 h-5 mr-2" />
-                {isProcessing ? "Processing..." : `Subscribe for ₹${UNLIMITED_CALLS_PLAN.price}/day`}
+                {processingItem === 'unlimited-calls' ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Processing Payment...
+                  </>
+                ) : (
+                  `Subscribe for ₹${UNLIMITED_CALLS_PLAN.price}/day`
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -244,7 +259,9 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
               key={pack.id} 
               className={`cursor-pointer transition-all duration-200 hover:shadow-warm border-2 ${
                 pack.badge === "Most Popular" ? "border-primary shadow-warm" : "border-border"
-              } ${isProcessing ? "opacity-50 pointer-events-none" : ""}`}
+              } ${isProcessing ? "opacity-50 pointer-events-none" : ""} ${
+                processingItem === pack.id ? "ring-2 ring-primary/50" : ""
+              }`}
               onClick={() => handleCoinPurchase(pack.id)}
             >
               <CardContent className="p-4">
@@ -276,10 +293,15 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
                   <Button 
                     variant="gradient" 
                     size="sm"
-                    disabled={isProcessing}
+                    disabled={isProcessing || processingItem === pack.id}
+                    className="min-w-[60px]"
                   >
                     <CreditCard className="w-4 h-4 mr-1" />
-                    {isProcessing ? "..." : "Buy"}
+                    {processingItem === pack.id ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      "Buy"
+                    )}
                   </Button>
                 </div>
               </CardContent>
@@ -297,7 +319,7 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
               <Badge variant="outline" className="font-poppins">Cards</Badge>
             </div>
             <p className="text-xs text-muted-foreground font-poppins">
-              Secure payments powered by Razorpay
+              🔒 Secure payments powered by Razorpay
             </p>
           </div>
 
