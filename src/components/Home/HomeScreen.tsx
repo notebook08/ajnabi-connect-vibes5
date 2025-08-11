@@ -147,7 +147,7 @@ export default function HomeScreen({
         {/* Main CTA Button */}
         <Button 
           onClick={onStartMatch}
-          className="w-full h-16 font-poppins font-bold text-xl rounded-3xl shadow-warm"
+          className="w-full h-14 font-poppins font-bold text-xl rounded-3xl shadow-warm"
           variant="gradient"
           size="lg"
         >
