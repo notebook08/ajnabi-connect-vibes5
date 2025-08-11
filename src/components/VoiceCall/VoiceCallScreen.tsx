@@ -313,49 +313,6 @@ export function VoiceCallScreen({
           </CardContent>
         </Card>
 
-        {/* How Voice Chat Works */}
-        <Card className="bg-white/80 backdrop-blur-sm rounded-2xl border-0 shadow-card">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="p-2 bg-secondary/10 rounded-xl">
-                <Mic className="w-5 h-5 text-secondary" />
-              </div>
-              <h4 className="text-lg font-bold text-gray-800 font-poppins">How Voice Chat Works</h4>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold font-poppins text-sm flex-shrink-0">
-                  1
-                </div>
-                <div>
-                  <p className="font-semibold font-poppins text-gray-800 text-sm">Instant Connection</p>
-                  <p className="text-xs text-gray-600 font-poppins">Get matched with someone in seconds</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold font-poppins text-sm flex-shrink-0">
-                  2
-                </div>
-                <div>
-                  <p className="font-semibold font-poppins text-gray-800 text-sm">Voice Only Chat</p>
-                  <p className="text-xs text-gray-600 font-poppins">Focus on conversation without distractions</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold font-poppins text-sm flex-shrink-0">
-                  3
-                </div>
-                <div>
-                  <p className="font-semibold font-poppins text-gray-800 text-sm">Build Connections</p>
-                  <p className="text-xs text-gray-600 font-poppins">Continue chatting if you both connect</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Low Coins Warning */}
         {!isPremium && !hasUnlimitedCalls && coinBalance < 20 && (
