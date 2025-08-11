@@ -152,7 +152,7 @@ export default function HomeScreen({
           size="lg"
         >
           <Video className="w-7 h-7 mr-3" />
-          {isPremium ? "Start Targeted Matching" : "Start Random Matching"}
+          {isPremium ? "Start Targeted Matching" : "Start Matching"}
         </Button>
         <div className="space-y-4">
           <Button
