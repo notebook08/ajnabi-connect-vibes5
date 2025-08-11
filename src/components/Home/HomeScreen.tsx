@@ -106,27 +106,6 @@ export default function HomeScreen({
 
       <div className="px-6 space-y-8 max-w-md mx-auto">
         {/* Primary Actions */}
-        <div className="space-y-4">
-          
-          <Button
-            onClick={() => {/* Navigate to voice tab */}}
-            className={`w-full h-16 rounded-3xl text-white hover:scale-105 transition-all duration-300 border-0 shadow-warm ${
-              hasUnlimitedCalls 
-                ? "bg-gradient-to-r from-green-500 to-emerald-500" 
-                : "bg-gradient-to-r from-purple-500 to-pink-500"
-            }`}
-          >
-            <div className="flex items-center justify-center space-x-3">
-              <Phone className="w-7 h-7" />
-              <div className="text-left">
-                <div className="text-lg font-bold font-poppins">Voice Only</div>
-                <div className="text-sm opacity-90 font-poppins">
-                  {hasUnlimitedCalls ? "Unlimited access" : "Audio conversations"}
-                </div>
-              </div>
-            </div>
-          </Button>
-        </div>
 
         {/* Match Preferences */}
         <Card className="shadow-card rounded-3xl border-0 overflow-hidden bg-white/80 backdrop-blur-md">
@@ -175,6 +154,27 @@ export default function HomeScreen({
           <Video className="w-7 h-7 mr-3" />
           {isPremium ? "Start Targeted Matching" : "Start Random Matching"}
         </Button>
+        <div className="space-y-4">
+          
+          <Button
+            onClick={() => {/* Navigate to voice tab */}}
+            className={`w-full h-16 rounded-3xl text-white hover:scale-105 transition-all duration-300 border-0 shadow-warm ${
+              hasUnlimitedCalls 
+                ? "bg-gradient-to-r from-green-500 to-emerald-500" 
+                : "bg-gradient-to-r from-purple-500 to-pink-500"
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-3">
+              <Phone className="w-7 h-7" />
+              <div className="text-left">
+                <div className="text-lg font-bold font-poppins">Voice Only</div>
+                <div className="text-sm opacity-90 font-poppins">
+                  {hasUnlimitedCalls ? "Unlimited access" : "Audio conversations"}
+                </div>
+              </div>
+            </div>
+          </Button>
+        </div>
 
         {/* Daily Spin Wheel */}
         <Card 
