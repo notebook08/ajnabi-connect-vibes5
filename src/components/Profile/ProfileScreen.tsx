@@ -75,8 +75,8 @@ export function ProfileScreen({ profile, onEdit, onUpdateProfile, onBack, onBuyC
   return (
     <div className="min-h-screen bg-gray-50 pb-24 safe-area-top safe-area-bottom">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-gradient-primary px-4 py-1 pt-16 pb-6 rounded-b-1xl shadow-warm">
-        <div className="flex items-center justify-between">
+      <div className="sticky top-0 z-20 bg-gradient-primary px-4 py-3 pt-16 pb-6 rounded-b-1xl shadow-warm">
+        <div className="flex items-left justify-between">
           {onBack && (
             <Button 
               onClick={onBack}
