@@ -175,26 +175,6 @@ export function MatchScreen({
           </div>
         </div>
 
-        {/* Stats Card */}
-        <Card className="bg-white/80 backdrop-blur-sm rounded-3xl border-0 shadow-lg">
-          <CardContent className="p-6 text-center">
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-1">
-                <div className="text-2xl font-bold text-gray-800 font-poppins">2.5K</div>
-                <div className="text-xs text-gray-500 font-poppins">Online Now</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-2xl font-bold text-gray-800 font-poppins">98%</div>
-                <div className="text-xs text-gray-500 font-poppins">Match Rate</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-2xl font-bold text-gray-800 font-poppins">4.9</div>
-                <div className="text-xs text-gray-500 font-poppins">User Rating</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* How it works */}
         <div className="space-y-4">
           <h4 className="text-lg font-semibold text-gray-800 font-poppins text-center">How it works</h4>
