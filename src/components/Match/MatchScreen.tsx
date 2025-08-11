@@ -166,7 +166,8 @@ export function MatchScreen({
             <div className="flex items-center gap-2">
             </div>
             <div className="w-1 h-1 bg-gray-300 rounded-full" />
-            </div>
+            <div className="flex items-center gap-2">
+            </div
           </div>
         </div>
 
