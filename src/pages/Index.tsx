@@ -23,6 +23,7 @@ import { useBlurredProfiles } from "@/hooks/useBlurredProfiles";
 import { useToast } from "@/hooks/use-toast";
 import { useMatching } from "@/hooks/useMatching";
 import { CoinsScreen } from "@/components/Coins/CoinsScreen";
+import { PremiumScreen } from "@/components/Premium/PremiumScreen";
 import { Video, Gem, Phone, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
@@ -41,9 +42,8 @@ const Index = () => {
   // ALL HOOKS MUST BE CALLED AT THE TOP - NO CONDITIONAL HOOKS
   const [appState, setAppState] = useState<"splash" | "onboarding" | "main" | "spin-wheel">("splash");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [currentScreen, setCurrentScreen] = useState<"home" | "call" | "voice-call" | "post-call" | "chat-detail" | "blurred-profiles">("home");
+  const [currentScreen, setCurrentScreen] = useState<"home" | "call" | "voice-call" | "post-call" | "chat-detail" | "blurred-profiles" | "premium">("home");
   const [activeTab, setActiveTab] = useState("home");
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showCoinModal, setShowCoinModal] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const [hasUnlimitedCalls, setHasUnlimitedCalls] = useState(false);
@@ -173,7 +173,7 @@ const Index = () => {
   };
 
   const handleUpgradePremium = () => {
-    setShowPremiumModal(true);
+    setCurrentScreen("premium");
   };
 
   const handleCoinPurchase = (pack: string) => {
@@ -208,7 +208,7 @@ const Index = () => {
   };
   const handlePremiumSubscribe = (plan: string) => {
     setIsPremium(true);
-    setShowPremiumModal(false);
+    setCurrentScreen("home");
     toast({
       title: "Welcome to Premium!",
       description: "You now have access to all premium features including unlimited voice calls.",
@@ -418,6 +418,13 @@ const Index = () => {
             />
           )}
 
+          {currentScreen === "premium" && (
+            <PremiumScreen
+              onBack={() => setCurrentScreen("home")}
+              onSubscribe={handlePremiumSubscribe}
+            />
+          )}
+
           {currentScreen === "home" && (
             <>
               {/* Hero Background */}
@@ -447,6 +454,7 @@ const Index = () => {
                     isPremium={isPremium}
                     hasUnlimitedCalls={hasUnlimitedCalls}
                     onRequestUpgrade={() => setShowPremiumModal(true)}
+                    onRequestUpgrade={() => setCurrentScreen("premium")}
                   />
                 )}
                 
@@ -458,7 +466,7 @@ const Index = () => {
                     onChangePreference={(pref) => {
                       setUserProfile({...userProfile, matchPreference: pref});
                     }}
-                    onRequestUpgrade={() => setShowPremiumModal(true)}
+                    onRequestUpgrade={() => setCurrentScreen("premium")}
                     onBuyCoins={handleBuyCoins}
                   />
                 )}
@@ -473,7 +481,7 @@ const Index = () => {
                     onChangePreference={(pref) => {
                       setUserProfile({...userProfile, matchPreference: pref});
                     }}
-                    onRequestUpgrade={() => setShowPremiumModal(true)}
+                    onRequestUpgrade={() => setCurrentScreen("premium")}
                     onBuyCoins={handleBuyCoins}
                     onSpendCoins={handleSpendCoins}
                   />
@@ -532,12 +540,6 @@ const Index = () => {
       )}
 
       {/* Modals - These should always be rendered */}
-      <PremiumModal
-        isOpen={showPremiumModal}
-        onClose={() => setShowPremiumModal(false)}
-        onSubscribe={handlePremiumSubscribe}
-      />
-      
       <CoinPurchaseModal
         isOpen={showCoinModal}
         onClose={() => setShowCoinModal(false)}
