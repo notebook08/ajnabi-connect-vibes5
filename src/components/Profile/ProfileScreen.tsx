@@ -333,4 +333,4 @@ export function ProfileScreen({ profile, onEdit, onUpdateProfile, onBack, onBuyC
       />
     </div>
   );
-}</CardContent>
+}
