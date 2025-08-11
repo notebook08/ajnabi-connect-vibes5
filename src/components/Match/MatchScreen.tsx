@@ -167,10 +167,6 @@ export function MatchScreen({
             </div>
             <div className="w-1 h-1 bg-gray-300 rounded-full" />
             <div className="flex items-center gap-2">
-              <Heart className="w-4 h-4 text-pink-500" />
-              <span className="text-sm font-poppins font-medium">
-                {isPremium ? "Targeted" : "Random"}
-              </span>
             </div>
           </div>
         </div>
