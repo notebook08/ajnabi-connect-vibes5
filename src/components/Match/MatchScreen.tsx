@@ -164,8 +164,6 @@ export function MatchScreen({
           {/* Secondary indicators */}
           <div className="flex items-center justify-center gap-6 text-gray-500">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-sm font-poppins font-medium">Instant Connect</span>
             </div>
             <div className="w-1 h-1 bg-gray-300 rounded-full" />
             <div className="flex items-center gap-2">
