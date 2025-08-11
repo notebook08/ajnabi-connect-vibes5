@@ -338,29 +338,8 @@ export function VoiceCallScreen({
           </Card>
         )}
 
-        {/* Features Highlight */}
-        <div className="grid grid-cols-2 gap-3">
-          <Card className="bg-white/60 rounded-2xl border-0 shadow-card">
-            <CardContent className="p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
-              <p className="font-semibold font-poppins text-gray-800 text-sm">Instant Connect</p>
-              <p className="text-xs text-gray-600 font-poppins">No waiting time</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-white/60 rounded-2xl border-0 shadow-card">
-            <CardContent className="p-4 text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                <Heart className="w-6 h-6 text-white" />
-              </div>
-              <p className="font-semibold font-poppins text-gray-800 text-sm">Safe & Secure</p>
-              <p className="text-xs text-gray-600 font-poppins">Anonymous calls</p>
-            </CardContent>
-          </Card>
+       
         </div>
       </div>
-    </div>
   );
 }
