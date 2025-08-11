@@ -5,47 +5,124 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Coins, X, Zap, CreditCard, Crown, Phone, RefreshCw } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { RAZORPAY_KEY_ID } from "@/config/payments";
+import { PaymentService } from "@/services/paymentService";
+import { COIN_PACKAGES, UNLIMITED_CALLS_PLAN } from "@/config/payments";
+import { useToast } from "@/hooks/use-toast";
 
 interface CoinPurchaseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onPurchase: (pack: string) => void;
+  onPurchase: (pack: string, coins: number) => void;
   onSubscribe?: (plan: string, autoRenew: boolean) => void;
+  userInfo?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
 }
 
-const coinPacks = [
-  { 
-    id: "small", 
-    coins: 30, 
-    price: "₹29", 
-    originalPrice: "₹49",
-    badge: null,
-    bonus: null 
-  },
-  { 
-    id: "medium", 
-    coins: 100, 
-    price: "₹99", 
-    originalPrice: "₹149",
-    badge: "Most Popular",
-    bonus: "+20 Bonus" 
-  },
-  { 
-    id: "large", 
-    coins: 350, 
-    price: "₹299", 
-    originalPrice: "₹499",
-    badge: "Best Value",
-    bonus: "+100 Bonus" 
-  },
-];
-
-export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe }: CoinPurchaseModalProps) {
+export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, userInfo }: CoinPurchaseModalProps) {
   const [autoRenewEnabled, setAutoRenewEnabled] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubscribe = () => {
-    onSubscribe?.('daily-unlimited', autoRenewEnabled);
+  const coinPacks = [
+    { 
+      id: "small", 
+      coins: COIN_PACKAGES.small.coins, 
+      price: `₹${COIN_PACKAGES.small.price}`, 
+      originalPrice: `₹${COIN_PACKAGES.small.originalPrice}`,
+      badge: null,
+      bonus: null 
+    },
+    { 
+      id: "medium", 
+      coins: COIN_PACKAGES.medium.coins, 
+      price: `₹${COIN_PACKAGES.medium.price}`, 
+      originalPrice: `₹${COIN_PACKAGES.medium.originalPrice}`,
+      badge: "Most Popular",
+      bonus: "+20 Bonus" 
+    },
+    { 
+      id: "large", 
+      coins: COIN_PACKAGES.large.coins, 
+      price: `₹${COIN_PACKAGES.large.price}`, 
+      originalPrice: `₹${COIN_PACKAGES.large.originalPrice}`,
+      badge: "Best Value",
+      bonus: "+100 Bonus" 
+    },
+  ];
+
+  const handleCoinPurchase = async (packId: string) => {
+    if (isProcessing) return;
+    
+    setIsProcessing(true);
+    
+    try {
+      const result = await PaymentService.buyCoinPackage(
+        packId as keyof typeof COIN_PACKAGES,
+        userInfo
+      );
+      
+      if (result.success) {
+        const pack = coinPacks.find(p => p.id === packId);
+        if (pack) {
+          onPurchase(packId, pack.coins);
+          onClose();
+          toast({
+            title: "Payment Successful! 🎉",
+            description: `${pack.coins} coins have been added to your account.`,
+          });
+        }
+      } else {
+        toast({
+          title: "Payment Failed",
+          description: result.error || "Something went wrong. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Payment Error",
+        description: error.message || "Failed to process payment.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    if (isProcessing) return;
+    
+    setIsProcessing(true);
+    
+    try {
+      const result = await PaymentService.subscribeToUnlimitedCalls(autoRenewEnabled, userInfo);
+      
+      if (result.success) {
+        onSubscribe?.('daily-unlimited', autoRenewEnabled);
+        onClose();
+        toast({
+          title: "Subscription Activated! 🎉",
+          description: `You now have unlimited voice calls for 24 hours.`,
+        });
+      } else {
+        toast({
+          title: "Payment Failed",
+          description: result.error || "Something went wrong. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Payment Error",
+        description: error.message || "Failed to process payment.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -142,11 +219,12 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe }: 
 
               <Button 
                 onClick={handleSubscribe}
+                disabled={isProcessing}
                 className="w-full h-12 font-poppins font-semibold rounded-xl"
                 variant="gradient"
               >
                 <Crown className="w-5 h-5 mr-2" />
-                Subscribe for ₹19/day
+                {isProcessing ? "Processing..." : `Subscribe for ₹${UNLIMITED_CALLS_PLAN.price}/day`}
               </Button>
             </CardContent>
           </Card>
@@ -166,8 +244,8 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe }: 
               key={pack.id} 
               className={`cursor-pointer transition-all duration-200 hover:shadow-warm border-2 ${
                 pack.badge === "Most Popular" ? "border-primary shadow-warm" : "border-border"
-              }`}
-              onClick={() => onPurchase(pack.id)}
+              } ${isProcessing ? "opacity-50 pointer-events-none" : ""}`}
+              onClick={() => handleCoinPurchase(pack.id)}
             >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
@@ -195,9 +273,13 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe }: 
                       </div>
                     </div>
                   </div>
-                  <Button variant="gradient" size="sm">
+                  <Button 
+                    variant="gradient" 
+                    size="sm"
+                    disabled={isProcessing}
+                  >
                     <CreditCard className="w-4 h-4 mr-1" />
-                    Buy
+                    {isProcessing ? "..." : "Buy"}
                   </Button>
                 </div>
               </CardContent>
@@ -216,9 +298,6 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe }: 
             </div>
             <p className="text-xs text-muted-foreground font-poppins">
               Secure payments powered by Razorpay
-            </p>
-            <p className="text-[10px] text-muted-foreground font-poppins">
-              Razorpay ID: rzp_live_h3TuNA7JPL56Dh
             </p>
           </div>
 

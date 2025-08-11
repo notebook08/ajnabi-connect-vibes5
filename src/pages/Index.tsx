@@ -177,15 +177,14 @@ const Index = () => {
   };
 
   const handleCoinPurchase = (pack: string) => {
+    // This will be called after successful payment
+  };
+
+  const handleCoinPurchaseSuccess = (pack: string, coins: number) => {
     setShowCoinModal(false);
-    // Add coins based on pack
-    const coinAmounts = { small: 30, medium: 100, large: 350 };
-    const amount = coinAmounts[pack as keyof typeof coinAmounts] || 0;
+    // Add coins to balance
     setCoinBalance(prev => prev + amount);
-    toast({
-      title: "Coins purchased!",
-      description: `${amount} coins added to your account.`,
-    });
+    setCoinBalance(prev => prev + coins);
   };
 
   const handleSubscription = (plan: string, autoRenew: boolean) => {
@@ -543,8 +542,13 @@ const Index = () => {
       <CoinPurchaseModal
         isOpen={showCoinModal}
         onClose={() => setShowCoinModal(false)}
-        onPurchase={handleCoinPurchase}
+        onPurchase={handleCoinPurchaseSuccess}
         onSubscribe={handleSubscription}
+        userInfo={{
+          name: userProfile?.username,
+          email: undefined, // Add email if available
+          phone: undefined  // Add phone if available
+        }}
       />
       
       <LoginStreakModal

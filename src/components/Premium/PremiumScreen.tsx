@@ -11,10 +11,18 @@ import {
   Sparkles,
   X
 } from "lucide-react";
+import { PaymentService } from "@/services/paymentService";
+import { PREMIUM_PLANS } from "@/config/payments";
+import { useToast } from "@/hooks/use-toast";
 
 interface PremiumScreenProps {
   onBack: () => void;
   onSubscribe: (plan: string) => void;
+  userInfo?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
 }
 
 const premiumFeatures = [
@@ -24,14 +32,53 @@ const premiumFeatures = [
   { icon: Sparkles, text: "Advanced filtering options", checked: true },
 ];
 
-const plans = [
-  { id: "day", duration: "1 Day", price: "₹29", originalPrice: "₹49", badge: "Most Popular" },
-  { id: "week", duration: "1 Week", price: "₹199", originalPrice: "₹299", badge: null },
-  { id: "month", duration: "1 Month", price: "₹299", originalPrice: "₹499", badge: "Best Value" },
-  { id: "lifetime", duration: "Lifetime", price: "₹899", originalPrice: "₹1999", badge: "Limited Time" },
-];
+export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenProps) {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
 
-export function PremiumScreen({ onBack, onSubscribe }: PremiumScreenProps) {
+  const plans = [
+    { id: "day", duration: PREMIUM_PLANS.day.duration, price: `₹${PREMIUM_PLANS.day.price}`, originalPrice: `₹${PREMIUM_PLANS.day.originalPrice}`, badge: "Most Popular" },
+    { id: "week", duration: PREMIUM_PLANS.week.duration, price: `₹${PREMIUM_PLANS.week.price}`, originalPrice: `₹${PREMIUM_PLANS.week.originalPrice}`, badge: null },
+    { id: "month", duration: PREMIUM_PLANS.month.duration, price: `₹${PREMIUM_PLANS.month.price}`, originalPrice: `₹${PREMIUM_PLANS.month.originalPrice}`, badge: "Best Value" },
+    { id: "lifetime", duration: PREMIUM_PLANS.lifetime.duration, price: `₹${PREMIUM_PLANS.lifetime.price}`, originalPrice: `₹${PREMIUM_PLANS.lifetime.originalPrice}`, badge: "Limited Time" },
+  ];
+
+  const handlePremiumPurchase = async (planId: string) => {
+    if (isProcessing) return;
+    
+    setIsProcessing(true);
+    
+    try {
+      const result = await PaymentService.subscribeToPremium(
+        planId as keyof typeof PREMIUM_PLANS,
+        userInfo
+      );
+      
+      if (result.success) {
+        onSubscribe(planId);
+        const plan = plans.find(p => p.id === planId);
+        toast({
+          title: "Premium Activated! 👑",
+          description: `Welcome to Premium! Your ${plan?.duration} subscription is now active.`,
+        });
+      } else {
+        toast({
+          title: "Payment Failed",
+          description: result.error || "Something went wrong. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Payment Error",
+        description: error.message || "Failed to process payment.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 safe-area-top safe-area-bottom">
       {/* Header */}
@@ -113,8 +160,8 @@ export function PremiumScreen({ onBack, onSubscribe }: PremiumScreenProps) {
                   plan.badge === "Most Popular" 
                     ? "bg-white shadow-2xl ring-4 ring-white/50 scale-105" 
                     : "bg-white/90 backdrop-blur-sm shadow-xl hover:scale-105"
-                }`}
-                onClick={() => onSubscribe(plan.id)}
+                } ${isProcessing ? "opacity-50 pointer-events-none" : ""}`}
+                onClick={() => handlePremiumPurchase(plan.id)}
               >
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -135,9 +182,10 @@ export function PremiumScreen({ onBack, onSubscribe }: PremiumScreenProps) {
                       </div>
                     </div>
                     <Button 
+                      disabled={isProcessing}
                       className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-poppins h-12 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                     >
-                      Select
+                      {isProcessing ? "Processing..." : "Select"}
                     </Button>
                   </div>
                 </CardContent>
@@ -152,9 +200,6 @@ export function PremiumScreen({ onBack, onSubscribe }: PremiumScreenProps) {
             </p>
             <p className="text-white/70 text-sm font-poppins">
               Secure payments • Cancel anytime
-            </p>
-            <p className="text-white/60 text-xs font-poppins">
-              Razorpay ID: rzp_live_h3TuNA7JPL56Dh
             </p>
           </div>
         </div>

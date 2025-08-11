@@ -11,11 +11,19 @@ import {
   X,
   Sparkles 
 } from "lucide-react";
+import { PaymentService } from "@/services/paymentService";
+import { PREMIUM_PLANS } from "@/config/payments";
+import { useToast } from "@/hooks/use-toast";
 
 interface PremiumModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubscribe: (plan: string) => void;
+  userInfo?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
 }
 
 const premiumFeatures = [
@@ -25,14 +33,54 @@ const premiumFeatures = [
   { icon: Sparkles, text: "Advanced filtering options" },
 ];
 
-const plans = [
-  { id: "day", duration: "1 Day", price: "₹29", originalPrice: "₹49", badge: "Most Popular" },
-  { id: "week", duration: "1 Week", price: "₹199", originalPrice: "₹299", badge: null },
-  { id: "month", duration: "1 Month", price: "₹299", originalPrice: "₹499", badge: "Best Value" },
-  { id: "lifetime", duration: "Lifetime", price: "₹899", originalPrice: "₹1999", badge: "Limited Time" },
-];
+export function PremiumModal({ isOpen, onClose, onSubscribe, userInfo }: PremiumModalProps) {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
 
-export function PremiumModal({ isOpen, onClose, onSubscribe }: PremiumModalProps) {
+  const plans = [
+    { id: "day", duration: PREMIUM_PLANS.day.duration, price: `₹${PREMIUM_PLANS.day.price}`, originalPrice: `₹${PREMIUM_PLANS.day.originalPrice}`, badge: "Most Popular" },
+    { id: "week", duration: PREMIUM_PLANS.week.duration, price: `₹${PREMIUM_PLANS.week.price}`, originalPrice: `₹${PREMIUM_PLANS.week.originalPrice}`, badge: null },
+    { id: "month", duration: PREMIUM_PLANS.month.duration, price: `₹${PREMIUM_PLANS.month.price}`, originalPrice: `₹${PREMIUM_PLANS.month.originalPrice}`, badge: "Best Value" },
+    { id: "lifetime", duration: PREMIUM_PLANS.lifetime.duration, price: `₹${PREMIUM_PLANS.lifetime.price}`, originalPrice: `₹${PREMIUM_PLANS.lifetime.originalPrice}`, badge: "Limited Time" },
+  ];
+
+  const handlePremiumPurchase = async (planId: string) => {
+    if (isProcessing) return;
+    
+    setIsProcessing(true);
+    
+    try {
+      const result = await PaymentService.subscribeToPremium(
+        planId as keyof typeof PREMIUM_PLANS,
+        userInfo
+      );
+      
+      if (result.success) {
+        onSubscribe(planId);
+        onClose();
+        const plan = plans.find(p => p.id === planId);
+        toast({
+          title: "Premium Activated! 👑",
+          description: `Welcome to Premium! Your ${plan?.duration} subscription is now active.`,
+        });
+      } else {
+        toast({
+          title: "Payment Failed",
+          description: result.error || "Something went wrong. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Payment Error",
+        description: error.message || "Failed to process payment.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md p-0 overflow-hidden">
@@ -97,8 +145,8 @@ export function PremiumModal({ isOpen, onClose, onSubscribe }: PremiumModalProps
                 key={plan.id} 
                 className={`cursor-pointer transition-all duration-200 hover:shadow-warm border-2 ${
                   plan.badge === "Most Popular" ? "border-primary shadow-warm" : "border-border"
-                }`}
-                onClick={() => onSubscribe(plan.id)}
+                } ${isProcessing ? "opacity-50 pointer-events-none" : ""}`}
+                onClick={() => handlePremiumPurchase(plan.id)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
@@ -118,8 +166,12 @@ export function PremiumModal({ isOpen, onClose, onSubscribe }: PremiumModalProps
                         </span>
                       </div>
                     </div>
-                    <Button variant="gradient" size="sm">
-                      Select
+                    <Button 
+                      variant="gradient" 
+                      size="sm"
+                      disabled={isProcessing}
+                    >
+                      {isProcessing ? "..." : "Select"}
                     </Button>
                   </div>
                 </CardContent>
@@ -129,7 +181,7 @@ export function PremiumModal({ isOpen, onClose, onSubscribe }: PremiumModalProps
 
           <div className="text-center text-xs text-muted-foreground">
             <p className="font-poppins">⚡ Upgrade now to choose your ideal matches!</p>
-            <p className="text-[10px] mt-2 font-poppins">Razorpay ID: rzp_live_h3TuNA7JPL56Dh</p>
+            <p className="text-[10px] mt-2 font-poppins">Secure payments powered by Razorpay</p>
           </div>
         </div>
       </DialogContent>
