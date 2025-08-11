@@ -73,7 +73,7 @@ export function ProfileScreen({ profile, onEdit, onUpdateProfile, onBack, onBuyC
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24 safe-area-top safe-area-bottom">
+    <div className="min-h-screen bg-gray-50 pb-24 safe-area-top safe-area-bottom">
       {/* Header */}
       <div className="sticky top-0 z-20 bg-gradient-primary px-4 py-3 pt-16 pb-6 rounded-b-3xl shadow-warm">
         <div className="flex items-center justify-between">
@@ -116,54 +116,7 @@ export function ProfileScreen({ profile, onEdit, onUpdateProfile, onBack, onBuyC
 
       <div className="px-4 -mt-6 pb-24 space-y-6">
         <div className="max-w-4xl mx-auto">
-          {/* Profile Unlocks Section */}
-          {onViewBlurredProfiles && (
-            <Card className="shadow-card rounded-2xl border-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-3 bg-gradient-premium rounded-full">
-                      <Unlock className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold font-poppins">Profile Unlocks</h3>
-                      <p className="text-sm text-muted-foreground font-poppins">
-                        See who liked or viewed your profile
-                      </p>
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={onViewBlurredProfiles}
-                    variant="gradient" 
-                    className="font-poppins h-12 px-6 rounded-xl"
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    View
-                  </Button>
-                </div>
-                
-                {/* Preview stats */}
-                <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-purple-200">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 mb-1">
-                      <Heart className="w-4 h-4 text-red-500" />
-                      <span className="text-lg font-bold font-poppins">3</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground font-poppins">Liked You</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 mb-1">
-                      <Eye className="w-4 h-4 text-blue-500" />
-                      <span className="text-lg font-bold font-poppins">2</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground font-poppins">Viewed You</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Photo Grid */}
+          {/* Photo Grid - Keep exactly as it is */}
           <Card className="shadow-card rounded-2xl border-0 overflow-hidden">
             <CardContent className="p-0">
               {/* Scrollable Photo Section */}
@@ -240,66 +193,130 @@ export function ProfileScreen({ profile, onEdit, onUpdateProfile, onBack, onBuyC
             </CardContent>
           </Card>
 
-          {/* Bio Section */}
-          <Card className="shadow-card rounded-2xl border-0">
+          {/* Profile Unlocks Section - Redesigned as horizontal card */}
+          {onViewBlurredProfiles && (
+            <Card className="bg-white rounded-2xl shadow-card border-0">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-3 bg-primary/10 rounded-2xl">
+                      <Unlock className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold font-poppins text-gray-800">Profile Unlocks</h3>
+                      <p className="text-sm text-gray-600 font-poppins">
+                        See who's interested in you
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-6">
+                    {/* Liked You Count */}
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Heart className="w-5 h-5 text-red-500" />
+                        <span className="text-xl font-bold font-poppins text-gray-800">3</span>
+                      </div>
+                      <p className="text-xs text-gray-500 font-poppins font-medium">Liked You</p>
+                    </div>
+                    
+                    {/* Subtle divider */}
+                    <div className="w-px h-8 bg-gray-200"></div>
+                    
+                    {/* Viewed You Count */}
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Eye className="w-5 h-5 text-blue-500" />
+                        <span className="text-xl font-bold font-poppins text-gray-800">2</span>
+                      </div>
+                      <p className="text-xs text-gray-500 font-poppins font-medium">Viewed You</p>
+                    </div>
+                    
+                    {/* View Button */}
+                    <Button 
+                      onClick={onViewBlurredProfiles}
+                      variant="gradient" 
+                      className="font-poppins h-10 px-6 rounded-xl ml-4"
+                    >
+                      View
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* About Me Section - Separate card */}
+          <Card className="bg-white rounded-2xl shadow-card border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold font-poppins">About Me</h3>
-                <Button variant="ghost" size="sm" onClick={onEdit}>
+                <h3 className="text-lg font-semibold font-poppins text-gray-800">About Me</h3>
+                <Button variant="ghost" size="sm" onClick={onEdit} className="text-gray-500 hover:text-gray-700">
                   <Edit className="w-4 h-4" />
                 </Button>
               </div>
-              <p className="text-foreground leading-relaxed font-poppins">{bio}</p>
+              <div className="w-full h-px bg-gray-100 mb-4"></div>
+              <p className="text-gray-700 leading-relaxed font-poppins text-sm">{bio}</p>
             </CardContent>
           </Card>
 
-          {/* Lifestyle Tags */}
-          <Card className="shadow-card rounded-2xl border-0">
+          {/* Lifestyle Section - Separate card */}
+          <Card className="bg-white rounded-2xl shadow-card border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold font-poppins">Lifestyle</h3>
-                <Button variant="ghost" size="sm" onClick={onEdit}>
+                <h3 className="text-lg font-semibold font-poppins text-gray-800">Lifestyle</h3>
+                <Button variant="ghost" size="sm" onClick={onEdit} className="text-gray-500 hover:text-gray-700">
                   <Edit className="w-4 h-4" />
                 </Button>
               </div>
+              <div className="w-full h-px bg-gray-100 mb-4"></div>
               <div className="grid grid-cols-2 gap-3">
-                <Badge variant="outline" className="justify-center py-3 font-poppins">
-                  🚭 Non-smoker
-                </Badge>
-                <Badge variant="outline" className="justify-center py-3 font-poppins">
-                  🍷 Social Drinker
-                </Badge>
-                <Badge variant="outline" className="justify-center py-3 font-poppins">
-                  🏃‍♀️ Active
-                </Badge>
-                <Badge variant="outline" className="justify-center py-3 font-poppins">
-                  🐕 Dog Lover
-                </Badge>
+                <div className="bg-gray-50 rounded-xl p-3 text-center">
+                  <span className="text-lg mb-1 block">🚭</span>
+                  <span className="text-sm font-medium font-poppins text-gray-700">Non-smoker</span>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3 text-center">
+                  <span className="text-lg mb-1 block">🍷</span>
+                  <span className="text-sm font-medium font-poppins text-gray-700">Social Drinker</span>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3 text-center">
+                  <span className="text-lg mb-1 block">🏃‍♀️</span>
+                  <span className="text-sm font-medium font-poppins text-gray-700">Active</span>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3 text-center">
+                  <span className="text-lg mb-1 block">🐕</span>
+                  <span className="text-sm font-medium font-poppins text-gray-700">Dog Lover</span>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Interests Section */}
-          <Card className="shadow-card rounded-2xl border-0">
+          {/* My Interests Section - Separate card */}
+          <Card className="bg-white rounded-2xl shadow-card border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold font-poppins">My Interests</h3>
-                <Button variant="ghost" size="sm" onClick={onEdit}>
+                <h3 className="text-lg font-semibold font-poppins text-gray-800">My Interests</h3>
+                <Button variant="ghost" size="sm" onClick={onEdit} className="text-gray-500 hover:text-gray-700">
                   <Edit className="w-4 h-4" />
                 </Button>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="w-full h-px bg-gray-100 mb-4"></div>
+              <div className="flex flex-wrap gap-3">
                 {interests.map((interest, index) => (
                   <Badge 
                     key={index}
-                    variant="default"
-                    className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 font-poppins px-4 py-2"
+                    className="bg-primary/10 text-primary border-0 hover:bg-primary/15 font-poppins px-4 py-2 rounded-full text-sm font-medium"
                   >
                     {interest}
                   </Badge>
                 ))}
-                <Button variant="outline" size="sm" className="rounded-full" onClick={onEdit}>
-                  <Plus className="w-4 h-4" />
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="rounded-full h-8 w-8 p-0 border-gray-200 hover:border-primary/50 hover:bg-primary/5" 
+                  onClick={onEdit}
+                >
+                  <Plus className="w-4 h-4 text-gray-500" />
                 </Button>
               </div>
             </CardContent>
@@ -316,4 +333,4 @@ export function ProfileScreen({ profile, onEdit, onUpdateProfile, onBack, onBuyC
       />
     </div>
   );
-}
+}</CardContent>
