@@ -37,8 +37,24 @@ const premiumFeatures = [
 export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingPlan, setProcessingPlan] = useState<string | null>(null);
+  const [paymentMode, setPaymentMode] = useState<'live' | 'demo'>('live');
   const { toast } = useToast();
 
+  // Test payment gateway on component mount
+  useEffect(() => {
+    const testGateway = async () => {
+      const result = await PaymentService.testPaymentGateway();
+      if (!result.available) {
+        setPaymentMode('demo');
+        toast({
+          title: "Demo Payment Mode",
+          description: "Payment gateway unavailable. Using demo mode for testing.",
+        });
+      }
+    };
+    
+    testGateway();
+  }, [toast]);
   const plans = [
     { id: "day", duration: PREMIUM_PLANS.day.duration, price: `₹${PREMIUM_PLANS.day.price}`, originalPrice: `₹${PREMIUM_PLANS.day.originalPrice}`, badge: "Most Popular" },
     { id: "week", duration: PREMIUM_PLANS.week.duration, price: `₹${PREMIUM_PLANS.week.price}`, originalPrice: `₹${PREMIUM_PLANS.week.originalPrice}`, badge: null },
@@ -191,15 +207,22 @@ export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenPr
                     </div>
                     <Button 
                       disabled={isProcessing || processingPlan === plan.id}
-                      className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-poppins h-12 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-poppins h-12 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 relative"
                     >
                       {processingPlan === plan.id ? (
                         <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          <div className="w-4 h-4 mr-2 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                           Processing
                         </>
                       ) : (
-                        "Select"
+                        <>
+                          Select
+                          {paymentMode === 'demo' && (
+                            <span className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
+                              DEMO
+                            </span>
+                          )}
+                        </>
                       )}
                     </Button>
                   </div>
@@ -215,6 +238,11 @@ export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenPr
             </p>
             <p className="text-white/70 text-sm font-poppins">
               🔒 Secure payments • Premium activates after successful payment
+              {paymentMode === 'demo' && (
+                <span className="block mt-1 text-yellow-300">
+                  ⚠️ Demo mode active - No real charges will be made
+                </span>
+              )}
             </p>
           </div>
         </div>

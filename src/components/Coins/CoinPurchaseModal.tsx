@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -10,8 +10,7 @@ import { COIN_PACKAGES, UNLIMITED_CALLS_PLAN } from "@/config/payments";
 import { useToast } from "@/hooks/use-toast";
 
 interface CoinPurchaseModalProps {
-  RefreshCw,
-  Loader2
+  isOpen: boolean;
   onClose: () => void;
   onPurchase: (pack: string, coins: number) => void;
   onSubscribe?: (plan: string, autoRenew: boolean) => void;
@@ -26,7 +25,26 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
   const [autoRenewEnabled, setAutoRenewEnabled] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingItem, setProcessingItem] = useState<string | null>(null);
+  const [paymentMode, setPaymentMode] = useState<'live' | 'demo'>('live');
   const { toast } = useToast();
+
+  // Test payment gateway on component mount
+  useEffect(() => {
+    const testGateway = async () => {
+      const result = await PaymentService.testPaymentGateway();
+      if (!result.available) {
+        setPaymentMode('demo');
+        toast({
+          title: "Demo Payment Mode",
+          description: "Payment gateway unavailable. Using demo mode for testing.",
+        });
+      }
+    };
+    
+    if (isOpen) {
+      testGateway();
+    }
+  }, [isOpen, toast]);
 
   const coinPacks = [
     { 
@@ -228,17 +246,24 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
               <Button 
                 onClick={handleSubscribe}
                 disabled={isProcessing || processingItem === 'unlimited-calls'}
-                className="w-full h-12 font-poppins font-semibold rounded-xl"
+                className="w-full h-12 font-poppins font-semibold rounded-xl relative"
                 variant="gradient"
               >
-                <Crown className="w-5 h-5 mr-2" />
                 {processingItem === 'unlimited-calls' ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <div className="w-4 h-4 mr-2 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     Processing Payment...
                   </>
                 ) : (
-                  `Subscribe for ₹${UNLIMITED_CALLS_PLAN.price}/day`
+                  <>
+                    <Crown className="w-5 h-5 mr-2" />
+                    Subscribe for ₹{UNLIMITED_CALLS_PLAN.price}/day
+                    {paymentMode === 'demo' && (
+                      <span className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
+                        DEMO
+                      </span>
+                    )}
+                  </>
                 )}
               </Button>
             </CardContent>
@@ -294,13 +319,20 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
                     variant="gradient" 
                     size="sm"
                     disabled={isProcessing || processingItem === pack.id}
-                    className="min-w-[60px]"
+                    className="min-w-[60px] relative"
                   >
-                    <CreditCard className="w-4 h-4 mr-1" />
                     {processingItem === pack.id ? (
-                      <Loader2 className="w-3 h-3 animate-spin" />
+                      <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
-                      "Buy"
+                      <>
+                        <CreditCard className="w-4 h-4 mr-1" />
+                        Buy
+                        {paymentMode === 'demo' && (
+                          <span className="absolute -top-1 -right-1 bg-yellow-500 text-white text-[8px] px-1 rounded-full">
+                            DEMO
+                          </span>
+                        )}
+                      </>
                     )}
                   </Button>
                 </div>
@@ -320,6 +352,11 @@ export function CoinPurchaseModal({ isOpen, onClose, onPurchase, onSubscribe, us
             </div>
             <p className="text-xs text-muted-foreground font-poppins">
               🔒 Secure payments powered by Razorpay
+              {paymentMode === 'demo' && (
+                <span className="block mt-1 text-yellow-600">
+                  ⚠️ Demo mode active - No real charges will be made
+                </span>
+              )}
             </p>
           </div>
 

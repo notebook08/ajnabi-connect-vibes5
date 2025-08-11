@@ -1,7 +1,8 @@
 // Use test keys for development - replace with live keys in production
-export const RAZORPAY_KEY_ID = import.meta.env.PROD 
-  ? "rzp_live_4Ud6wv8v2YJvbw"  // Your live key
-  : "rzp_test_9WzaABVXdX8gHu";  // Test key for development
+export const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || 
+  (import.meta.env.PROD 
+    ? "rzp_live_4Ud6wv8v2YJvbw"  // Your live key
+    : "rzp_test_9WzaABVXdX8gHu");  // Test key for development
 
 // Payment configuration
 export const PAYMENT_CONFIG = {

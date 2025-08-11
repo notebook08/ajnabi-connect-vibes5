@@ -15,7 +15,7 @@ import {
 import { PaymentService } from "@/services/paymentService";
 import { PREMIUM_PLANS } from "@/config/payments";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface PremiumModalProps {
   isOpen: boolean;
@@ -38,8 +38,26 @@ const premiumFeatures = [
 export function PremiumModal({ isOpen, onClose, onSubscribe, userInfo }: PremiumModalProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingPlan, setProcessingPlan] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentMode, setPaymentMode] = useState<'live' | 'demo'>('live');
   const { toast } = useToast();
+
+  // Test payment gateway on component mount
+  useEffect(() => {
+    const testGateway = async () => {
+      const result = await PaymentService.testPaymentGateway();
+      if (!result.available) {
+        setPaymentMode('demo');
+        toast({
+          title: "Demo Payment Mode",
+          description: "Payment gateway unavailable. Using demo mode for testing.",
+        });
+      }
+    };
+    
+    if (isOpen) {
+      testGateway();
+    }
+  }, [isOpen, toast]);
 
   const plans = [
     { id: "day", duration: PREMIUM_PLANS.day.duration, price: `₹${PREMIUM_PLANS.day.price}`, originalPrice: `₹${PREMIUM_PLANS.day.originalPrice}`, badge: "Most Popular" },
