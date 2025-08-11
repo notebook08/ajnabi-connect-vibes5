@@ -107,18 +107,6 @@ export default function HomeScreen({
       <div className="px-6 space-y-8 max-w-md mx-auto">
         {/* Primary Actions */}
         <div className="space-y-4">
-          <Button
-            onClick={onStartMatch}
-            className="w-full h-16 rounded-3xl bg-gradient-secondary text-white hover:scale-105 transition-all duration-300 border-0 shadow-warm"
-          >
-            <div className="flex items-center justify-center space-x-3">
-              <Video className="w-7 h-7" />
-              <div className="text-left">
-                <div className="text-lg font-bold font-poppins">Video Call</div>
-                <div className="text-sm opacity-90 font-poppins">Face-to-face conversations</div>
-              </div>
-            </div>
-          </Button>
           
           <Button
             onClick={() => {/* Navigate to voice tab */}}
