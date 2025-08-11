@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Users, Zap, Heart, Crown, Filter, MapPin, ArrowLeft, Gem, Mic, MicOff } from "lucide-react";
+import { Phone, Crown, Gem, ArrowLeft, Mic, Users, Zap, Heart, Sparkles, Star } from "lucide-react";
 
 interface VoiceCallScreenProps {
   onStartCall: () => void;
@@ -38,7 +38,6 @@ export function VoiceCallScreen({
       onSpendCoins(20);
       onStartCall();
     } else {
-      // This shouldn't happen as button should be disabled
       onBuyCoins?.();
     }
   };
@@ -53,20 +52,19 @@ export function VoiceCallScreen({
     return (
       <button
         onClick={() => (locked ? onRequestUpgrade() : onChangePreference(value))}
-        className={`relative flex-1 h-16 sm:h-18 md:h-20 lg:h-24 rounded-xl sm:rounded-2xl border-2 text-sm font-medium transition-all duration-300 overflow-hidden
-           ${isActive 
-             ? "bg-gradient-primary text-white border-transparent shadow-warm scale-105" 
-             : "bg-background text-foreground border-border hover:border-primary/50 hover:bg-primary/5"
-           }
-           ${locked ? "opacity-60" : ""}`}
+        className={`relative flex-1 h-16 rounded-2xl border-2 transition-all duration-300 group ${
+          isActive 
+            ? "bg-gradient-primary text-white border-transparent shadow-warm scale-105" 
+            : "bg-white text-gray-700 border-gray-200 hover:border-primary/30 hover:bg-primary/5"
+        } ${locked ? "opacity-70" : ""}`}
         aria-disabled={locked}
       >
-        <div className="flex flex-col items-center justify-center h-full space-y-1 sm:space-y-2">
-          <span className="text-xl sm:text-2xl md:text-3xl">{emoji}</span>
-          <span className="font-poppins font-semibold text-xs sm:text-sm md:text-base">{label}</span>
+        <div className="flex flex-col items-center justify-center h-full space-y-2">
+          <span className="text-2xl">{emoji}</span>
+          <span className="font-poppins font-semibold text-sm">{label}</span>
           {locked && (
-            <div className="absolute top-1 right-1 sm:top-2 sm:right-2">
-              <Crown className="w-3 h-3 sm:w-4 sm:h-4 text-premium" />
+            <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-premium rounded-full flex items-center justify-center shadow-warm">
+              <Crown className="w-3 h-3 text-white" />
             </div>
           )}
         </div>
@@ -75,221 +73,335 @@ export function VoiceCallScreen({
   };
 
   return (
-    <div className="min-h-screen bg-background pb-16 sm:pb-20 md:pb-24 safe-area-top safe-area-bottom">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 pb-24 safe-area-top safe-area-bottom">
       {/* Header */}
-      <div className="bg-gradient-primary pt-12 sm:pt-16 pb-6 sm:pb-8 px-3 sm:px-4 md:px-6 rounded-b-3xl shadow-warm">
-        <div className="flex items-center justify-between mb-3 sm:mb-4 text-white">
+      <div className="pt-16 pb-6 px-6">
+        <div className="flex items-center justify-between mb-8">
           {onBack && (
             <Button 
               onClick={onBack}
               variant="ghost"
               size="icon"
-              className="text-white hover:bg-white/20 rounded-full w-10 h-10 sm:w-12 sm:h-12"
+              className="text-gray-600 hover:bg-white/80 rounded-full w-12 h-12 shadow-sm"
             >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              <ArrowLeft className="w-5 h-5" />
             </Button>
           )}
           <div className="flex-1" />
           {onBuyCoins && (
-            <Button 
+            <button 
               onClick={onBuyCoins}
-              variant="outline"
-              size="sm"
-              className="bg-white/20 border-white/30 text-white hover:bg-white/30 p-2 sm:p-3 rounded-full min-h-10 min-w-10 sm:min-h-12 sm:min-w-12"
+              className="bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-card hover:shadow-warm transition-all duration-300 hover:scale-105"
             >
-              <Gem className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-orange-100 rounded-full">
+                  <Gem className="w-4 h-4 text-orange-600" />
+                </div>
+                <div className="text-left">
+                  <p className="text-orange-600 text-xs font-medium font-poppins">Coins</p>
+                  <p className="text-orange-800 text-sm font-bold font-poppins">{coinBalance}</p>
+                </div>
+              </div>
+            </button>
           )}
         </div>
-        <div className="text-center text-white">
-          <Phone className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto mb-3 sm:mb-4 animate-float" />
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 font-dancing">Voice Chat</h1>
-          <p className="text-white/90 font-poppins text-sm sm:text-base md:text-lg">Connect through voice only</p>
+        
+        <div className="text-center">
+          <div className="w-20 h-20 bg-gradient-primary rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-warm">
+            <Phone className="w-10 h-10 text-white animate-float" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2 font-dancing">Voice Chat</h1>
+          <p className="text-gray-600 font-poppins text-lg">Connect through voice only</p>
         </div>
       </div>
 
-      <div className="px-3 sm:px-4 md:px-6 -mt-4 sm:-mt-6 space-y-4 sm:space-y-6">
-        <div className="max-w-4xl mx-auto w-full space-y-4 sm:space-y-6">
-          {/* Premium/Coin Requirement Card */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-premium/10 to-primary/10 p-4 sm:p-6">
-              <CardTitle className="font-poppins text-base sm:text-lg md:text-xl flex items-center gap-2">
-                <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-premium" />
-                Voice Chat Access
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-              {hasUnlimitedCalls ? (
-                <div className="bg-primary/10 border border-primary/20 rounded-xl p-3 sm:p-4">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium font-poppins text-primary">Unlimited Calls Active</p>
-                      <p className="text-xs text-muted-foreground font-poppins">
-                        No limits on voice calls for 24 hours
-                      </p>
-                    </div>
-                    <Badge className="bg-primary text-white font-poppins flex-shrink-0">Active</Badge>
+      <div className="px-6 space-y-6 max-w-md mx-auto">
+        {/* Access Type Cards */}
+        <div className="space-y-3">
+          {hasUnlimitedCalls ? (
+            <Card className="shadow-card rounded-2xl border-0 bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+              <CardContent className="p-5">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-2xl">
+                    <Phone className="w-6 h-6 text-white" />
                   </div>
-                </div>
-              ) : isPremium ? (
-                <div className="bg-premium/10 border border-premium/20 rounded-xl p-3 sm:p-4">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-premium flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium font-poppins text-premium">Premium Member</p>
-                      <p className="text-xs text-muted-foreground font-poppins">
-                        Unlimited voice calls included
-                      </p>
-                    </div>
-                    <Badge className="bg-premium text-white font-poppins flex-shrink-0">Active</Badge>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg font-poppins">Unlimited Access</h3>
+                    <p className="text-white/90 font-poppins text-sm">24 hours of unlimited voice calls</p>
                   </div>
+                  <Badge className="bg-white/20 text-white border-0 font-poppins">Active</Badge>
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  <div className="bg-coin/10 border border-coin/20 rounded-xl p-3 sm:p-4">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <Gem className="w-4 h-4 sm:w-5 sm:h-5 text-coin flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium font-poppins">Pay per Call</p>
-                        <p className="text-xs text-muted-foreground font-poppins">
-                          20 coins per voice call
-                        </p>
+              </CardContent>
+            </Card>
+          ) : isPremium ? (
+            <Card className="shadow-card rounded-2xl border-0 bg-gradient-premium text-white">
+              <CardContent className="p-5">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-2xl">
+                    <Crown className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg font-poppins">Premium Member</h3>
+                    <p className="text-white/90 font-poppins text-sm">Unlimited voice calls included</p>
+                  </div>
+                  <Badge className="bg-white/20 text-white border-0 font-poppins">Active</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-3">
+              {/* Pay per Call Option */}
+              <Card className="shadow-card rounded-2xl border-0 bg-white/80 backdrop-blur-md">
+                <CardContent className="p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-orange-100 rounded-2xl">
+                        <Gem className="w-6 h-6 text-orange-600" />
                       </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className="text-sm font-bold text-coin font-poppins">20 coins</p>
-                        <p className="text-xs text-muted-foreground font-poppins">
-                          You have: {coinBalance}
-                        </p>
+                      <div>
+                        <h3 className="font-bold text-lg font-poppins text-gray-800">Pay per Call</h3>
+                        <p className="text-gray-600 font-poppins text-sm">20 coins per voice call</p>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="bg-premium/10 border border-premium/20 rounded-xl p-3 sm:p-4">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-premium flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium font-poppins">Or Go Premium</p>
-                        <p className="text-xs text-muted-foreground font-poppins">
-                          Unlimited voice calls + all features
-                        </p>
-                      </div>
-                      <Button 
-                        onClick={onRequestUpgrade} 
-                        variant="outline" 
-                        size="sm"
-                        className="border-premium text-premium hover:bg-premium hover:text-white font-poppins flex-shrink-0"
-                      >
-                        Upgrade
-                      </Button>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-orange-600 font-poppins">20</div>
+                      <div className="text-xs text-gray-500 font-poppins">coins</div>
                     </div>
                   </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600 font-poppins">Your balance:</span>
+                      <span className="font-bold text-gray-800 font-poppins">{coinBalance} coins</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          {/* Match Preferences Card */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 sm:p-6">
-              <CardTitle className="font-poppins text-base sm:text-lg md:text-xl flex items-center gap-2">
-                <Filter className="w-4 h-4 sm:w-5 sm:h-5" />
-                {isPremium ? "Who do you want to talk to?" : "Voice Match Preference (Premium)"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                <PreferenceButton value="anyone" label="Everyone" emoji="🌟" />
-                <PreferenceButton value="men" label="Men" emoji="👨" />
-                <PreferenceButton value="women" label="Women" emoji="👩" />
-              </div>
-              {!isPremium && (
-                <div className="bg-premium/10 border border-premium/20 rounded-xl p-3 sm:p-4">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-premium flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium font-poppins">Premium Feature</p>
-                      <p className="text-xs text-muted-foreground font-poppins">
-                        Voice calls are matched randomly for free users. Premium users can choose.
-                      </p>
+              {/* Premium Option */}
+              <Card className="shadow-card rounded-2xl border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50">
+                <CardContent className="p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-gradient-premium rounded-2xl shadow-warm">
+                        <Crown className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg font-poppins text-purple-800">Go Premium</h3>
+                        <p className="text-purple-600 font-poppins text-sm">Unlimited calls + all features</p>
+                      </div>
                     </div>
                     <Button 
                       onClick={onRequestUpgrade} 
-                      variant="outline" 
                       size="sm"
-                      className="border-premium text-premium hover:bg-premium hover:text-white font-poppins flex-shrink-0"
+                      className="bg-gradient-premium text-white font-poppins rounded-xl shadow-warm hover:scale-105 transition-transform"
                     >
                       Upgrade
                     </Button>
                   </div>
-                </div>
-              )}
-              {!isPremium && (
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-3 sm:p-4 mt-3">
-                  <div className="text-center">
-                    <div className="flex justify-center items-center gap-2 mb-2">
-                      <Phone className="w-5 h-5 text-purple-600" />
-                      <span className="text-sm font-medium text-purple-800 font-poppins">Random Voice Matching</span>
-                    </div>
-                    <p className="text-xs text-purple-600 font-poppins">
-                      Connect with anyone for authentic voice conversations
-                    </p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
+
+        {/* Match Preferences */}
+        <Card className="shadow-card rounded-2xl border-0 bg-white/80 backdrop-blur-md">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="p-2 bg-primary/10 rounded-xl">
+                <Users className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg font-poppins text-gray-800">Voice Match Preference</h3>
+                <p className="text-gray-600 font-poppins text-sm">
+                  {isPremium ? "Choose who you want to talk to" : "Random matching for free users"}
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3 mb-4">
+              <PreferenceButton value="anyone" label="Everyone" emoji="🌟" />
+              <PreferenceButton value="men" label="Men" emoji="👨" />
+              <PreferenceButton value="women" label="Women" emoji="👩" />
+            </div>
+            
+            {!isPremium && (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 rounded-full">
+                    <Sparkles className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium font-poppins text-blue-800">Free Random Matching</p>
+                    <p className="text-xs text-blue-600 font-poppins">Connect with anyone for authentic conversations</p>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-          {/* Start Call Button */}
-          <Card className="shadow-card rounded-xl sm:rounded-2xl border-0 overflow-hidden">
-            <CardContent className="p-6 sm:p-8 text-center">
-              <div className="mb-4 sm:mb-6">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 animate-pulse-warm">
-                  <Phone className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white" />
+        {/* Main CTA Button */}
+        <div className="relative">
+          <Button 
+            onClick={handleStartCall}
+            disabled={!canMakeCall}
+            className={`w-full h-20 font-poppins font-bold text-xl rounded-3xl shadow-2xl transition-all duration-300 relative overflow-hidden group ${
+              canMakeCall 
+                ? "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white hover:scale-105 animate-pulse-warm" 
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            size="lg"
+          >
+            {/* Animated background for enabled state */}
+            {canMakeCall && (
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            )}
+            
+            <div className="relative flex items-center justify-center space-x-4">
+              <div className="p-3 bg-white/20 rounded-full">
+                <Phone className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-left">
+                <div className="text-xl font-bold">
+                  {hasUnlimitedCalls ? "Start Unlimited Voice" : 
+                   isPremium ? "Start Targeted Voice" : 
+                   "Start Random Voice Chat"}
                 </div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 font-poppins">Ready to Talk?</h3>
-                <p className="text-muted-foreground font-poppins text-sm sm:text-base">
-                  Start a voice-only conversation and connect through words
-                </p>
+                <div className="text-sm opacity-90">
+                  {!canMakeCall ? "Need 20 coins" : 
+                   hasUnlimitedCalls ? "No limits for 24h" :
+                   isPremium ? "Choose your match" : 
+                   "20 coins per call"}
+                </div>
+              </div>
+            </div>
+          </Button>
+          
+          {/* Glow effect for enabled state */}
+          {canMakeCall && (
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-3xl blur-xl opacity-30 -z-10 animate-pulse" />
+          )}
+        </div>
+
+        {/* Quick Stats */}
+        <Card className="bg-white/80 backdrop-blur-sm rounded-2xl border-0 shadow-card">
+          <CardContent className="p-5">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div className="space-y-2">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-xl font-bold text-gray-800 font-poppins">1.2K</div>
+                <div className="text-xs text-gray-500 font-poppins">Online Now</div>
+              </div>
+              <div className="space-y-2">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center mx-auto">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-xl font-bold text-gray-800 font-poppins">95%</div>
+                <div className="text-xs text-gray-500 font-poppins">Connect Rate</div>
+              </div>
+              <div className="space-y-2">
+                <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-red-500 rounded-2xl flex items-center justify-center mx-auto">
+                  <Heart className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-xl font-bold text-gray-800 font-poppins">4.8</div>
+                <div className="text-xs text-gray-500 font-poppins">User Rating</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* How Voice Chat Works */}
+        <Card className="bg-white/80 backdrop-blur-sm rounded-2xl border-0 shadow-card">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="p-2 bg-secondary/10 rounded-xl">
+                <Mic className="w-5 h-5 text-secondary" />
+              </div>
+              <h4 className="text-lg font-bold text-gray-800 font-poppins">How Voice Chat Works</h4>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold font-poppins text-sm flex-shrink-0">
+                  1
+                </div>
+                <div>
+                  <p className="font-semibold font-poppins text-gray-800 text-sm">Instant Connection</p>
+                  <p className="text-xs text-gray-600 font-poppins">Get matched with someone in seconds</p>
+                </div>
               </div>
               
-              <Button 
-                onClick={handleStartCall}
-                disabled={!canMakeCall}
-                className="w-full h-12 sm:h-14 md:h-16 font-poppins font-bold text-lg sm:text-xl rounded-xl sm:rounded-2xl mb-3 sm:mb-4"
-                variant="gradient"
-                size="lg"
-              >
-                <Phone className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" />
-                {hasUnlimitedCalls ? "Start Unlimited Voice Chat" : 
-                 isPremium ? "Start Targeted Voice Chat" : 
-                 `Start Random Voice Chat (20 coins)`}
-              </Button>
-              
-              {!canMakeCall && (
-                <p className="text-sm text-destructive font-poppins mb-3">
-                  Not enough coins. You need 20 coins to start a voice call.
-                </p>
-              )}
-              
-              <div className="flex items-center justify-center gap-3 sm:gap-4 text-sm text-muted-foreground font-poppins">
-                <div className="flex items-center gap-1">
-                  <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm">Instant Connect</span>
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold font-poppins text-sm flex-shrink-0">
+                  2
                 </div>
-                <div className="w-1 h-1 bg-muted-foreground rounded-full" />
-                <div className="flex items-center gap-1">
-                  <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm">
-                    {hasUnlimitedCalls ? "Unlimited Voice" : 
-                     isPremium ? "Targeted Voice" : 
-                     "Random Voice"}
-                  </span>
+                <div>
+                  <p className="font-semibold font-poppins text-gray-800 text-sm">Voice Only Chat</p>
+                  <p className="text-xs text-gray-600 font-poppins">Focus on conversation without distractions</p>
                 </div>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold font-poppins text-sm flex-shrink-0">
+                  3
+                </div>
+                <div>
+                  <p className="font-semibold font-poppins text-gray-800 text-sm">Build Connections</p>
+                  <p className="text-xs text-gray-600 font-poppins">Continue chatting if you both connect</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Low Coins Warning */}
+        {!isPremium && !hasUnlimitedCalls && coinBalance < 20 && (
+          <Card className="border-2 border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl shadow-card">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-orange-100 rounded-2xl">
+                  <Gem className="w-6 h-6 text-orange-600" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-orange-800 font-poppins">Need More Coins</h4>
+                  <p className="text-sm text-orange-700 font-poppins">You need 20 coins to start a voice call</p>
+                </div>
+                <Button 
+                  onClick={onBuyCoins}
+                  size="sm"
+                  className="bg-orange-600 hover:bg-orange-700 text-white font-poppins rounded-xl shadow-warm"
+                >
+                  Buy Coins
+                </Button>
               </div>
             </CardContent>
           </Card>
-         
+        )}
+
+        {/* Features Highlight */}
+        <div className="grid grid-cols-2 gap-3">
+          <Card className="bg-white/60 rounded-2xl border-0 shadow-card">
+            <CardContent className="p-4 text-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <p className="font-semibold font-poppins text-gray-800 text-sm">Instant Connect</p>
+              <p className="text-xs text-gray-600 font-poppins">No waiting time</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-white/60 rounded-2xl border-0 shadow-card">
+            <CardContent className="p-4 text-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <Heart className="w-6 h-6 text-white" />
+              </div>
+              <p className="font-semibold font-poppins text-gray-800 text-sm">Safe & Secure</p>
+              <p className="text-xs text-gray-600 font-poppins">Anonymous calls</p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
