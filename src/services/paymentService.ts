@@ -50,39 +50,48 @@ export class PaymentService {
         return;
       }
 
+      // Check if we're in a restricted environment (like WebContainer)
+      const isRestrictedEnv = window.location.hostname.includes('webcontainer') || 
+                             window.location.hostname.includes('local-credentialless') ||
+                             window.location.hostname.includes('stackblitz');
+      
+      if (isRestrictedEnv) {
+        console.warn('Detected restricted environment, skipping Razorpay script load');
+        this.isRazorpayLoaded = false;
+        this.loadingPromise = null;
+        resolve(false);
+        return;
+      }
+
       const script = document.createElement('script');
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
       script.async = true;
       script.defer = true;
       
       script.onload = () => {
+        clearTimeout(timeout);
         this.isRazorpayLoaded = true;
         console.log('Razorpay script loaded successfully');
         resolve(true);
       };
       
       script.onerror = (error) => {
+        clearTimeout(timeout);
         console.error('Failed to load Razorpay script:', error);
         this.isRazorpayLoaded = false;
         this.loadingPromise = null;
+        script.remove();
         resolve(false);
       };
 
-      // Add timeout for script loading
+      // Reduced timeout for faster fallback
       const timeout = setTimeout(() => {
         console.error('Razorpay script loading timeout');
         script.remove();
         this.isRazorpayLoaded = false;
         this.loadingPromise = null;
         resolve(false);
-      }, 10000); // 10 second timeout
-
-      script.onload = () => {
-        clearTimeout(timeout);
-        this.isRazorpayLoaded = true;
-        console.log('Razorpay script loaded successfully');
-        resolve(true);
-      };
+      }, 3000); // 3 second timeout for faster fallback
 
       document.head.appendChild(script);
     });
@@ -237,29 +246,18 @@ export class PaymentService {
     console.log('Using demo payment mode');
     
     return new Promise((resolve) => {
-      // Show a simple confirmation dialog
-      const confirmed = window.confirm(
-        `Demo Payment Mode\n\n` +
-        `Amount: ₹${options.amount}\n` +
-        `Description: ${options.description}\n\n` +
-        `Click OK to simulate successful payment, or Cancel to simulate failure.`
-      );
-
+      // Auto-approve demo payments for better UX in development
+      console.log(`Demo payment: ₹${options.amount} for ${options.description}`);
+      
+      // Simulate processing delay
       setTimeout(() => {
-        if (confirmed) {
-          resolve({
-            success: true,
-            paymentId: 'demo_pay_' + Date.now(),
-            orderId: 'demo_order_' + Date.now(),
-            signature: 'demo_signature_' + Date.now()
-          });
-        } else {
-          resolve({
-            success: false,
-            error: 'Payment cancelled in demo mode'
-          });
-        }
-      }, 1000); // Simulate processing delay
+        resolve({
+          success: true,
+          paymentId: 'demo_pay_' + Date.now(),
+          orderId: 'demo_order_' + Date.now(),
+          signature: 'demo_signature_' + Date.now()
+        });
+      }, 1500); // Simulate realistic processing delay
     });
   }
 
@@ -425,12 +423,24 @@ export class PaymentService {
   // Test payment gateway availability
   static async testPaymentGateway(): Promise<{ available: boolean; error?: string }> {
     try {
+      // Check for restricted environments first
+      const isRestrictedEnv = window.location.hostname.includes('webcontainer') || 
+                             window.location.hostname.includes('local-credentialless') ||
+                             window.location.hostname.includes('stackblitz');
+      
+      if (isRestrictedEnv) {
+        return {
+          available: false,
+          error: 'Payment gateway not available in development environment. Using demo mode.'
+        };
+      }
+
       const isLoaded = await this.loadRazorpay();
       
       if (!isLoaded) {
         return {
           available: false,
-          error: 'Payment gateway is currently unavailable. Using demo mode.'
+          error: 'Payment gateway failed to load. Using demo mode.'
         };
       }
 
