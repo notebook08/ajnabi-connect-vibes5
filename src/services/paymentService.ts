@@ -222,7 +222,7 @@ export class PaymentService {
         } catch (error: any) {
           console.error('Razorpay initialization error:', error);
           // Fallback to demo mode if Razorpay fails
-          resolve(await this.simulatePayment(options));
+          this.simulatePayment(options).then(resolve);
         }
       });
     } catch (error: any) {
