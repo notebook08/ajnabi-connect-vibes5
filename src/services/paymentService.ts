@@ -158,8 +158,6 @@ export class PaymentService {
           name: PAYMENT_CONFIG.company.name,
           description: options.description,
           order_id: order.orderId,
-          callback_url: window.location.origin + '/payment/callback',
-          redirect: true,
           prefill: {
             name: options.prefill?.name || '',
             email: options.prefill?.email || '',
@@ -206,14 +204,14 @@ export class PaymentService {
             try {
               console.log('Payment successful:', response);
               
-              // Verify payment on backend (simulated)
-              const isValid = await this.verifyPayment(
+              // Send payment details to backend for verification
+              const verificationResult = await this.verifyPaymentWithBackend(
                 response.razorpay_payment_id,
                 response.razorpay_order_id,
                 response.razorpay_signature
               );
 
-              if (isValid) {
+              if (verificationResult.success) {
                 resolve({
                   success: true,
                   paymentId: response.razorpay_payment_id,
@@ -223,7 +221,7 @@ export class PaymentService {
               } else {
                 resolve({
                   success: false,
-                  error: 'Payment verification failed'
+                  error: verificationResult.error || 'Payment verification failed'
                 });
               }
             } catch (error: any) {
@@ -380,7 +378,56 @@ export class PaymentService {
     }
   }
 
-  // Verify payment with better validation
+  // Verify payment with backend endpoint
+  static async verifyPaymentWithBackend(paymentId: string, orderId: string, signature: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      console.log('Verifying payment with backend:', { paymentId, orderId, signature });
+      
+      if (!paymentId || !orderId || !signature) {
+        console.error('Missing payment verification parameters');
+        return { success: false, error: 'Missing payment parameters' };
+      }
+
+      // Send verification request to backend
+      const response = await fetch('/api/verify-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          razorpay_payment_id: paymentId,
+          razorpay_order_id: orderId,
+          razorpay_signature: signature
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('Backend verification result:', result);
+      
+      return {
+        success: result.verified === true,
+        error: result.verified ? undefined : (result.error || 'Payment verification failed')
+      };
+    } catch (error: any) {
+      console.error('Backend verification error:', error);
+      
+      // Fallback to client-side validation for demo purposes
+      console.log('Falling back to client-side verification');
+      const clientVerification = await this.verifyPayment(paymentId, orderId, signature);
+      
+      return {
+        success: clientVerification,
+        error: clientVerification ? undefined : 'Payment verification failed'
+      };
+    }
+  }
+
+  // Keep existing client-side verification as fallback
   static async verifyPayment(paymentId: string, orderId: string, signature: string): Promise<boolean> {
     try {
       console.log('Verifying payment:', { paymentId, orderId, signature });
