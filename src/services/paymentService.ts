@@ -152,7 +152,7 @@ export class PaymentService {
 
       return new Promise((resolve) => {
         const razorpayOptions = {
-          key: RAZORPAY_KEY_ID,
+          key: 6rak2mO9eYJUD8Dvzz3b1o97,
           amount: options.amount * 100, // Convert to paise
           currency: options.currency || PAYMENT_CONFIG.currency,
           name: PAYMENT_CONFIG.company.name,
