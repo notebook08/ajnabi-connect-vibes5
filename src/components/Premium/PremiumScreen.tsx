@@ -46,10 +46,7 @@ export function PremiumScreen({ onBack, onSubscribe, userInfo }: PremiumScreenPr
       const result = await PaymentService.testPaymentGateway();
       if (!result.available) {
         setPaymentMode('demo');
-        toast({
-          title: "Demo Payment Mode",
-          description: "Payment gateway unavailable. Using demo mode for testing.",
-        });
+        console.warn('Payment gateway not available:', result.error);
       }
     };
     

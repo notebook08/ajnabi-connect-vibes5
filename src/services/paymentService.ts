@@ -50,19 +50,6 @@ export class PaymentService {
         return;
       }
 
-      // Check if we're in a restricted environment (like WebContainer)
-      const isRestrictedEnv = window.location.hostname.includes('webcontainer') || 
-                             window.location.hostname.includes('local-credentialless') ||
-                             window.location.hostname.includes('stackblitz');
-      
-      if (isRestrictedEnv) {
-        console.warn('Detected restricted environment, skipping Razorpay script load');
-        this.isRazorpayLoaded = false;
-        this.loadingPromise = null;
-        resolve(false);
-        return;
-      }
-
       const script = document.createElement('script');
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
       script.async = true;
@@ -84,14 +71,14 @@ export class PaymentService {
         resolve(false);
       };
 
-      // Reduced timeout for faster fallback
+      // Timeout for script loading
       const timeout = setTimeout(() => {
         console.error('Razorpay script loading timeout');
         script.remove();
         this.isRazorpayLoaded = false;
         this.loadingPromise = null;
         resolve(false);
-      }, 3000); // 3 second timeout for faster fallback
+      }, 10000); // 10 second timeout
 
       document.head.appendChild(script);
     });
@@ -100,23 +87,32 @@ export class PaymentService {
   }
 
   // Create order on backend (simulated with better validation)
-  static async createOrder(amount: number, currency: string = 'INR'): Promise<{ orderId: string; amount: number }> {
+  static async createOrder(amount: number, currency: string = 'INR', receipt?: string): Promise<{ orderId: string; amount: number; receipt: string }> {
     try {
       // Validate amount
       if (amount <= 0 || amount > 100000) {
         throw new Error('Invalid payment amount');
       }
 
-      // In a real app, this would call your backend API to create a Razorpay order
-      // For now, we'll simulate this with better validation
-      const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      // Create order using Razorpay Orders API
+      const orderData = {
+        amount: amount * 100, // Convert to paise
+        currency: currency,
+        receipt: receipt || 'receipt_' + Date.now(),
+        payment_capture: 1
+      };
+
+      // In production, this should be done on your backend server
+      // For now, we'll create a mock order ID that follows Razorpay format
+      const orderId = 'order_' + Date.now() + Math.random().toString(36).substr(2, 9);
       
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 500));
       
       return {
         orderId,
-        amount
+        amount,
+        receipt: orderData.receipt
       };
     } catch (error: any) {
       throw new Error(`Failed to create order: ${error.message}`);
@@ -151,7 +147,7 @@ export class PaymentService {
 
       console.log('Creating order...');
       // Create order
-      const order = await this.createOrder(options.amount);
+      const order = await this.createOrder(options.amount, options.currency, 'receipt_' + Date.now());
       console.log('Order created:', order);
 
       return new Promise((resolve) => {
@@ -161,8 +157,9 @@ export class PaymentService {
           currency: options.currency || PAYMENT_CONFIG.currency,
           name: PAYMENT_CONFIG.company.name,
           description: options.description,
-          image: PAYMENT_CONFIG.company.logo,
           order_id: order.orderId,
+          callback_url: window.location.origin + '/payment/callback',
+          redirect: true,
           prefill: {
             name: options.prefill?.name || '',
             email: options.prefill?.email || '',
@@ -170,6 +167,30 @@ export class PaymentService {
           },
           notes: options.notes || {},
           theme: PAYMENT_CONFIG.company.theme,
+          config: {
+            display: {
+              blocks: {
+                banks: {
+                  name: 'Pay using ' + PAYMENT_CONFIG.company.name,
+                  instruments: [
+                    {
+                      method: 'upi'
+                    },
+                    {
+                      method: 'card'
+                    },
+                    {
+                      method: 'netbanking'
+                    }
+                  ]
+                }
+              },
+              sequence: ['block.banks'],
+              preferences: {
+                show_default_blocks: true
+              }
+            }
+          },
           modal: {
             ondismiss: () => {
               console.log('Payment modal dismissed');
@@ -178,8 +199,8 @@ export class PaymentService {
                 error: 'Payment cancelled by user'
               });
             },
-            escape: false,
-            backdropclose: false
+            escape: true,
+            backdropclose: true
           },
           handler: async (response: any) => {
             try {
@@ -423,31 +444,19 @@ export class PaymentService {
   // Test payment gateway availability
   static async testPaymentGateway(): Promise<{ available: boolean; error?: string }> {
     try {
-      // Check for restricted environments first
-      const isRestrictedEnv = window.location.hostname.includes('webcontainer') || 
-                             window.location.hostname.includes('local-credentialless') ||
-                             window.location.hostname.includes('stackblitz');
-      
-      if (isRestrictedEnv) {
-        return {
-          available: false,
-          error: 'Payment gateway not available in development environment. Using demo mode.'
-        };
-      }
-
       const isLoaded = await this.loadRazorpay();
       
       if (!isLoaded) {
         return {
           available: false,
-          error: 'Payment gateway failed to load. Using demo mode.'
+          error: 'Payment gateway failed to load. Please check your internet connection.'
         };
       }
 
       if (!window.Razorpay) {
         return {
           available: false,
-          error: 'Payment gateway failed to initialize. Using demo mode.'
+          error: 'Payment gateway failed to initialize.'
         };
       }
 
