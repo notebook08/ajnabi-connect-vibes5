@@ -174,6 +174,27 @@ export default function HomeScreen({
             </Button>
             <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 rounded-3xl blur-xl opacity-20 -z-10" />
           </div>
+
+          {/* Enhanced Video Chat CTA */}
+          <div className="relative">
+            <Button
+              onClick={() => window.location.href = '/enhanced-video-chat'}
+              className="w-full h-16 rounded-3xl text-white hover:scale-105 transition-all duration-300 border-0 shadow-xl relative overflow-hidden group bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700"
+            >
+              <div className="relative flex items-center justify-center space-x-3">
+                <div className="p-2 bg-white/20 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                  <Video className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="text-lg font-bold font-poppins">Enhanced Video Chat</div>
+                  <div className="text-sm opacity-90 font-poppins">
+                    Advanced features & better quality
+                  </div>
+                </div>
+              </div>
+            </Button>
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-3xl blur-xl opacity-20 -z-10" />
+          </div>
         </div>
 
         {/* Match Preferences */}

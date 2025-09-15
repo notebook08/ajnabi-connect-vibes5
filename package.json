@@ -8,7 +8,11 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "start-server": "node server.js"
+    "start-server": "node server.js",
+    "start:enhanced-server": "nodemon enhanced-server.js",
+    "start:client": "vite",
+    "dev:enhanced": "concurrently \"npm run start:enhanced-server\" \"npm run start:client\"",
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

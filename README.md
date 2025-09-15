@@ -59,6 +59,11 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- Socket.io (for real-time communication)
+- WebRTC (for peer-to-peer video/audio)
+- Enhanced signaling server with Redis support
+- Connection quality monitoring
+- Advanced matching algorithms
 
 ## How can I deploy this project?
 
